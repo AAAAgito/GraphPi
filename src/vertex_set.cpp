@@ -207,3 +207,8 @@ int VertexSet::unorderd_subtraction_size(const VertexSet& set0, const VertexSet&
             --ret;
     return ret;
 }
+
+void VertexSet::deepcopy(VertexSet v) {
+    this->init(v.size);
+    this->copy(v.size,v.data);
+}

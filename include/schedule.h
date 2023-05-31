@@ -46,6 +46,7 @@ public:
     void GraphZero_aggressive_optimize(std::vector< std::pair<int,int> >& ordered_pairs) const;
     void GraphZero_get_automorphisms(std::vector< std::vector<int> > &Aut) const;
 
+    void gen_k_hop_matrix();
     std::vector< std::vector<int> > get_isomorphism_vec() const;
     static std::vector< std::vector<int> > calc_permutation_group(const std::vector<int> vec, int size);
     inline const int* get_adj_mat_ptr() const {return adj_mat;}
@@ -56,6 +57,7 @@ public:
     std::vector< std::vector< std::vector<int> > >in_exclusion_optimize_group;
     std::vector< int > in_exclusion_optimize_val;
     std::vector< std::pair<int,int> > restrict_pair;
+    std::vector<int> k_hop_matrix;
 private:
     int* adj_mat;
     int* father_prefix_id;

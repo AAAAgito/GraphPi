@@ -78,8 +78,8 @@ TEST(aggressive_optimize_test, aggre_ssive_optimize)
     DataLoader D;
     
     std::string type = "Patents";
-    //std::string path = "/home/zms/orkut_input";
-    std::string path = "/home/zms/patents_input";
+    //std::string path = "/mnt/d/graph/orkut_input";
+    std::string path = "/mnt/d/graph/patents_input";
     //std::string path = "/home/xuyi/input/4.in";
     
     DataType my_type;

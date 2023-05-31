@@ -140,8 +140,129 @@ void Graph::tc_mt(long long *global_ans) {
 
 void Graph::get_edge_index(int v, unsigned int& l, unsigned int& r) const
 {
+    v = intra_vertex_dict.at(v);
     l = vertex[v];
     r = vertex[v + 1];
+}
+void Graph::get_extern_edge_index(int v, unsigned int& l, unsigned int& r) const
+{
+    v = inter_vertex_dict.at(v);
+    l = inter_vertex[v];
+    r = inter_vertex[v + 1];
+}
+
+void Graph::load_extern_data(int file_id) {
+    //read file and get N(v)
+
+    // append further neighbor to load_list
+    return;
+}
+
+void Graph::load_order_manage() {
+    while (!load_list.empty()) {
+        std::vector<loader> load_vertex;
+        load_vertex.push_back(load_list.back());
+        int file_id = load_list.back().file_id;
+        load_vertex.pop_back();
+        //add a mutex lock;
+        while (load_vertex.back().file_id == file_id) {
+            load_vertex.push_back(load_list.back());
+            load_list.pop_back();
+        }
+        //release lock
+        load_extern_data(file_id);
+    }
+}
+
+void Graph::load_list_append(loader l){
+    int idx = 0;
+    for (auto it : load_list) {
+        if (v_state_map[it.vertex].is_intra) continue;
+        if ((v_state_map[it.vertex].is_loaded || v_state_map[it.vertex].is_loading) && v_state_map[it.vertex].k_hop >= l.k_hop) continue;
+        if (it.vertex == l.vertex) {
+            it.k_hop = std::max(it.k_hop,l.k_hop);
+            return;
+        }
+        if (it.file_id > l.file_id) {
+            load_list.insert(load_list.begin()+idx,l);
+            return;
+        }
+        idx++;
+    }
+    load_list.push_back(l);
+    return;
+}
+
+bool Graph::extern_store_manage(const Schedule& schedule) {
+    // first calculate the available space
+    std::vector<int> k_hop_matrix = schedule.k_hop_matrix;
+    float extern_usage = external_used / external_space;
+    // second base on the available determine if drop the data
+    if (extern_usage > extern_thresold){
+        extern_drop_manage();
+        return false;
+    }
+    // third base on the available space, determine how much vertex will be loaded.
+    unsigned int remain_space = external_space - external_used;
+    extern_load_manage(remain_space, schedule);
+    for (int i=candidate_bin.size()-1; i >=0 ; i--) {
+        int k_hop = k_hop_matrix[candidate_bin[i]->depth];
+        bool vector_load = true;
+        for (int j=0; j< candidate_bin[i]->vertex.size();j++) {
+            int vertex = candidate_bin[i]->vertex.at(j);
+            // two version can be formulated, one is one by one. another is satisfying only when all in vectors are satisfied.
+            // satisfy conditions
+            vector_load &= v_state_map[vertex].is_loaded && v_state_map[vertex].k_hop >= k_hop;
+            if (!vector_load) break;
+        }
+        if (vector_load) {
+            ready_bin.push_back(candidate_bin[i]);
+            candidate_bin.erase(candidate_bin.begin()+i);
+        }
+    }
+}
+
+void Graph::extern_drop_manage() {
+    for (auto it : inter_vertex_dict) {
+        v_state_map[it.first].is_loaded = false;
+        v_state_map[it.first].k_hop = 0;
+        v_state_map[it.first].is_loading = false;
+    }
+    inter_vertex_dict.clear();
+    inter_edge_num = 0;
+    inter_vtx_num = 0;
+}
+
+void Graph::extern_load_manage(unsigned int available_space, const Schedule& schedule) {
+    // manage candidate_bin to to_load set
+    std::vector<int> k_hop_matrix = schedule.k_hop_matrix;
+    for (auto & i : candidate_bin) {
+        if (i->load_queue) continue;
+        i->load_queue = true;
+        int k_hop = k_hop_matrix[i->depth];
+        for (auto j : i->vertex) {
+            // case 1: to_load vertex is not loaded
+            if (!v_state_map[j].is_loaded && !v_state_map[j].is_loading) load_list_append(loader{k_hop, j, v_state_map[j].file_id});
+            // case 2: to_load vertex is loaded and loaded hop is larger
+            if (v_state_map[j].is_loaded && v_state_map[j].k_hop >= k_hop) continue;
+            // case 3: to_load vertex is loaded but loaded hop is smaller
+            if (v_state_map[j].is_loaded && v_state_map[j].k_hop < k_hop) {
+                v_state_map[j].is_loaded = false;
+                v_state_map[j].is_loading = true;
+                v_state_map[j].k_hop = k_hop;
+                load_list_append(loader{k_hop, j, v_state_map[j].file_id});
+            }
+            // case 4: to_load vertex is loading and loading hop is larger
+            if (v_state_map[j].is_loading && v_state_map[j].k_hop >= k_hop) continue;
+            // case 5: to_load vertex is loading but loading hop is smaller
+            if (v_state_map[j].is_loading && v_state_map[j].k_hop < k_hop) {
+                v_state_map[j].k_hop = k_hop;
+                load_list_append(loader{k_hop, j, v_state_map[j].file_id});
+            }
+        }
+    }
+    // a loading function from class DataLoader
+    load_order_manage();
 }
 
 void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_set, VertexSet& subtraction_set, long long& local_ans, int depth, bool clique)
@@ -161,7 +282,7 @@ void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_se
     {
         // TODO : try more kinds of calculation.
         // For example, we can maintain an ordered set, but it will cost more to maintain itself when entering or exiting recursion.
-        if (clique == true)
+        if (clique)
             local_ans += loop_size;
         else if (loop_size > 0)
             local_ans += VertexSet::unorderd_subtraction_size(vertex_set[loop_set_prefix_id], subtraction_set);
@@ -171,7 +292,7 @@ void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_se
     int last_vertex = subtraction_set.get_last();
     for (int i = 0; i < loop_size; ++i)
     {
-        if (last_vertex <= loop_data_ptr[i] && clique == true)
+        if (last_vertex <= loop_data_ptr[i] && clique)
             break;
         int vertex = loop_data_ptr[i];
         if (!clique)
@@ -196,9 +317,37 @@ void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_se
     }
 }
 
+void Graph::resume_matching(const Schedule& schedule, path *p) {
+
+    VertexSet tmp_set;
+    unsigned int l,r;
+    int depth = p->depth;
+    for (int i=0; i< p->vertex.size();i++) {
+        int vertex = p->vertex[i];
+        get_extern_edge_index(vertex, l, r);
+        bool is_zero = false;
+        for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
+        {
+            p->vertex_set[prefix_id].build_vertex_set(schedule, p->vertex_set, &inter_edge[l], (int)r - l, prefix_id, vertex);
+            if( p->vertex_set[prefix_id].get_size() == 0) {
+                is_zero = true;
+                break;
+            }
+        }
+        if( is_zero ) continue;
+        p->subtraction_set.push_back(vertex);
+        pattern_matching_aggressive_func(schedule,p->vertex_set,p->subtraction_set,tmp_set,p->local_ans,depth+1);
+    }
+    // after done release memory
+    delete[] p->vertex_set;
+    delete[] p->subtraction_set.get_data_ptr();
+    delete p;
+}
+
 long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bool clique)
 {
     long long global_ans = 0;
+    std::vector<int> k_hop_table = schedule.k_hop_matrix;
 #pragma omp parallel num_threads(thread_count) reduction(+: global_ans)
     {
         double start_time = get_wall_time();
@@ -210,32 +359,59 @@ long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bo
         long long local_ans = 0;
         // TODO : try different chunksize
 #pragma omp for schedule(dynamic) nowait
-        for (int vertex = 0; vertex < v_cnt; ++vertex)
+        for (int v = 0; v < v_cnt; ++v)
         {
-            unsigned int l, r;
-            get_edge_index(vertex, l, r);
-            for (int prefix_id = schedule.get_last(0); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
-            {
-                vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id);
-            }
-            //subtraction_set.insert_ans_sort(vertex);
-            subtraction_set.push_back(vertex);
-            //if (schedule.get_total_restrict_num() > 0 && clique == false)
-            if(true)
-                pattern_matching_aggressive_func(schedule, vertex_set, subtraction_set, tmp_set, local_ans, 1);
-            else
-                pattern_matching_func(schedule, vertex_set, subtraction_set, local_ans, 1, clique);
-            subtraction_set.pop_back();
-            /*
-            if( (vertex & (-vertex)) == (1<<15) ) {
-                current_time = get_wall_time();
-                if( current_time - start_time > max_running_time) {
-                    printf("TIMEOUT!\n");
-                    fflush(stdout);
-                    assert(0);
+            if (v_state_map[v].is_rooted) continue;
+            std::queue<int> bfs_queue;
+            bfs_queue.push(v);
+            while (!bfs_queue.empty()) {
+                // TODO: add a manager to allocate task from candidate bin to each thread.
+                // clear remain task in the ready bin is the highest priority
+                while (!ready_bin.empty()) {
+                    // do remain work in ready bin
+                    path *p = ready_bin.back();
+                    ready_bin.pop_back();
+                    resume_matching(schedule,p);
                 }
-            }*/
+                int vtx = bfs_queue.front();
+                bfs_queue.pop();
+                if (v_state_map[vtx].is_rooted == true) continue;
+                v_state_map[vtx].is_rooted = true;
+                unsigned int l, r;
+                get_edge_index(vtx, l, r);
+                for (int i=0; i<=r-l;i++) {
+                    int enqueue_vtx = edge[l+i];
+                    // for vertex that do not belong to this partition, it will not be selected as a root
+                    if (!v_state_map[enqueue_vtx].is_intra) continue;
+                    if (v_state_map[enqueue_vtx].is_rooted) continue;
+                    bfs_queue.push(enqueue_vtx);
+                }
+                for (int prefix_id = schedule.get_last(0); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
+                {
+                    // get N(v)
+                    // As root must be intra-partition, external_edge will not be used
+                    vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id);
+                }
+                //subtraction_set.insert_ans_sort(vertex);
+                subtraction_set.push_back(vtx);
+                //if (schedule.get_total_restrict_num() > 0 && clique == false)
+                if(true)
+                    pattern_matching_aggressive_func(schedule, vertex_set, subtraction_set, tmp_set, local_ans, 1);
+                else
+                    pattern_matching_func(schedule, vertex_set, subtraction_set, local_ans, 1, clique);
+                subtraction_set.pop_back();
+                // TODO: add break condition
+                if (!extern_store_manage(schedule)) break;
+            }
         }
+        // TODO: parallel I/O
+        while (!candidate_bin.empty()) extern_store_manage(schedule);
+#pragma omp for schedule(dynamic) nowait
+        for (int i=0; i< ready_bin.size();i++) {
+            // do remain work in ready bin
+            resume_matching(schedule,ready_bin[i]);
+        }
+        ready_bin.clear();
         delete[] vertex_set;
         // TODO : Computing multiplicty for a pattern
         global_ans += local_ans;
@@ -370,6 +546,7 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
             min_vertex = subtraction_set.get_data(schedule.get_restrict_index(i));
     if (depth == 1) Graphmpi::getinstance().get_loop(loop_data_ptr, loop_size);
     int ii = 0;
+    std::vector<int> inter_vertex;
     for (int &i = ii; i < loop_size; ++i)
     {
         if (min_vertex <= loop_data_ptr[i])
@@ -378,23 +555,61 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
         if (subtraction_set.has_data(vertex))
             continue;
         unsigned int l, r;
-        get_edge_index(vertex, l, r);
-        bool is_zero = false;
-        for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
-        {
-            vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex);
-            if( vertex_set[prefix_id].get_size() == 0) {
-                is_zero = true;
-                break;
-            }
+        VertexTable t = v_state_map[vertex];
+        if(!t.is_intra && !t.is_loaded) {
+            inter_vertex.push_back(vertex);
+            continue;
         }
-        if( is_zero ) continue;
-        //subtraction_set.insert_ans_sort(vertex);
-        subtraction_set.push_back(vertex);
-        pattern_matching_aggressive_func(schedule, vertex_set, subtraction_set, tmp_set, local_ans, depth + 1);// @@@
-        subtraction_set.pop_back(); // @@@
-    } 
-    //if (depth == 1 && ii < loop_size) Graphmpi::getinstance().set_cur(subtraction_set.get_data(0));// @@@
+        else if (t.is_intra){
+            get_edge_index(vertex, l, r);
+            bool is_zero = false;
+            for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
+            {
+                vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex);
+                if( vertex_set[prefix_id].get_size() == 0) {
+                    is_zero = true;
+                    break;
+                }
+            }
+            if( is_zero ) continue;
+            //subtraction_set.insert_ans_sort(vertex);
+            subtraction_set.push_back(vertex);
+            pattern_matching_aggressive_func(schedule, vertex_set, subtraction_set, tmp_set, local_ans, depth + 1);// @@@
+            subtraction_set.pop_back(); // @@@
+        }
+        else if (t.is_loaded) {
+            get_extern_edge_index(vertex, l, r);
+            bool is_zero = false;
+            for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
+            {
+                vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &inter_edge[l], (int)r - l, prefix_id, vertex);
+                if( vertex_set[prefix_id].get_size() == 0) {
+                    is_zero = true;
+                    break;
+                }
+            }
+            if( is_zero ) continue;
+            //subtraction_set.insert_ans_sort(vertex);
+            subtraction_set.push_back(vertex);
+            pattern_matching_aggressive_func(schedule, vertex_set, subtraction_set, tmp_set, local_ans, depth + 1);// @@@
+            subtraction_set.pop_back(); // @@@
+        }
+    }
+    if (!inter_vertex.empty()){
+
+        path *path_ptr = new path;
+        path_ptr->depth = depth;
+        path_ptr->load_queue = false;
+        path_ptr->vertex = inter_vertex;
+        path_ptr->local_ans = local_ans;
+        // deep copy
+        path_ptr->subtraction_set.deepcopy(subtraction_set);
+        // deep copy vertex_set
+        // will it be too large to save?
+        path_ptr->vertex_set = new VertexSet[schedule.get_total_prefix_num()];
+        for (int i=0; i< schedule.get_total_prefix_num(); i++) path_ptr->vertex_set[i].deepcopy(vertex_set[i]);
+        candidate_bin.push_back(path_ptr);
+    }
 } 
 // ###
 long long Graph::pattern_matching_mpi(const Schedule& schedule, int thread_count, bool clique)

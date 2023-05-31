@@ -1,5 +1,5 @@
-#include <../include/graph.h>
-#include <../include/dataloader.h>
+#include "../include/graph.h"
+#include "../include/dataloader.h"
 #include "../include/pattern.h"
 #include "../include/schedule.h"
 #include "../include/common.h"

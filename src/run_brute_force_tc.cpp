@@ -24,12 +24,12 @@ int main(int argc,char *argv[])
     DataType my_type;
     if (type == "Patents")
     {
-        path = "/home/zms/patents_input";
+        path = "/mnt/d/graph/patents_input";
         my_type = DataType::Patents;
     }
     else if (type == "Orkut")
     {
-        path = "/home/zms/orkut_input";
+        path = "/mnt/d/graph/orkut_input";
         my_type = DataType::Orkut;
     }
     else {

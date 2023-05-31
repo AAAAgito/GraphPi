@@ -326,6 +326,43 @@ int Schedule::get_max_degree() const{
     return mx;
 }
 
+// Input: Current Schedule
+// Output: An array of which vtx should load K_v- hops
+void Schedule::gen_k_hop_matrix(){
+    int k_table[size];
+    k_table[0] = 0;
+    for (int d = 1; d < size; d++) {
+        int k_hop[size];
+        int k=0;
+        for (int i = 0; i <= size; i++){
+            if (i <= d) k_hop[i] = 0;
+            else k_hop[i] = size;
+        }
+        for (int depth = d+1; depth < size; depth ++) {
+            for (int prefix_id = this->get_last(depth); prefix_id != -1; prefix_id = this->get_next(prefix_id))
+            {
+                // vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex, clique);
+                if (prefix_id == d) {
+                    k=1;
+                    k_hop[depth]=1;
+                    break;
+                }
+                else if (prefix_id < d) continue;
+                k_hop[depth] = std::min(k_hop[depth],k_hop[prefix_id]+1);
+            }
+        }
+        for (int depth = d+1; depth < size; depth++) {
+            if (k_hop[depth] == size) continue;
+            k = std::max(k,k_hop[depth]);
+        }
+        k_table[d]=k;
+    }
+    for (int i = 0; i < size; i++) {
+        k_hop_matrix.push_back(k_table[i]);
+    }
+}
+
+
 void Schedule::build_loop_invariant()
 {
     int* tmp_data = new int[size];

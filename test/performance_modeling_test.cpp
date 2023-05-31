@@ -14,7 +14,7 @@ TEST(performance_modeling_test, performance_modeling_patents_qg3) {
     DataLoader D;
     
     std::string type = "Patents";
-    std::string path = "/home/zms/patents_input";
+    std::string path = "/mnt/d/graph/patents_input";
     DataType my_type;
     if(type == "Patents") my_type = DataType::Patents;
     else {

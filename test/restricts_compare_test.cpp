@@ -67,7 +67,7 @@ TEST(restricts_compare_test, restricts_compare_patents) {
     DataLoader D;
     
     std::string type = "Patents";
-    std::string path = "/home/zms/patents_input";
+    std::string path = "/mnt/d/graph/patents_input";
     DataType my_type;
     if(type == "Patents") my_type = DataType::Patents;
     else {

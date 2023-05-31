@@ -14,7 +14,7 @@ TEST(pattern_matching_test, pattern_matching_patents_Cycle6Tri) {
     DataLoader D;
     
     std::string type = "Patents";
-    std::string path = "/home/zms/patents_input";
+    std::string path = "/mnt/d/graph/patents_input";
     DataType my_type;
     if(type == "Patents") my_type = DataType::Patents;
     else {

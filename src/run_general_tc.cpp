@@ -1,5 +1,5 @@
-#include <../include/graph.h>
-#include <../include/dataloader.h>
+#include "../include/graph.h"
+#include "../include/dataloader.h"
 #include "../include/pattern.h"
 #include "../include/schedule.h"
 #include "../include/common.h"
@@ -24,12 +24,12 @@ int main(int argc,char *argv[])
     DataType my_type;
     if (type == "Patents")
     {
-        path = "/home/zms/patents_input";
+        path = "/mnt/d/graph/patents_input";
         my_type = DataType::Patents;
     }
     else if (type == "Orkut")
     {
-        path = "/home/zms/orkut_input";
+        path = "/mnt/d/graph/orkut_input";
         my_type = DataType::Orkut;
     }
     else {
@@ -49,13 +49,14 @@ int main(int argc,char *argv[])
     tc_pattern.add_edge(1, 2);
     bool is_pattern_valid;
     bool use_in_exclusion_optimize = false;
-    int performance_type = 0;
-    int restricts_type = 0;
+    int performance_type = 1;
+    int restricts_type = 1;
     Schedule tc_schedule(tc_pattern, is_pattern_valid, performance_type, restricts_type, use_in_exclusion_optimize, g->v_cnt, g->e_cnt);
 
     int thread_num = atoi(argv[2]);
     double t1 = get_wall_time();
-    g->pattern_matching(tc_schedule, thread_num, true);
+    long long r = g->pattern_matching(tc_schedule, thread_num, true);
+    printf("match result %lld\n",r);
     double t2 = get_wall_time();
     printf("brute force %d thread TC with root symmetry time: %.6lf\n", thread_num, t2 - t1);
 }

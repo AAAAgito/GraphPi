@@ -10,6 +10,7 @@ public:
     // use memory from Graph, do not allocate new memory
     void init(int input_size, int* input_data);
     void copy(int input_size, const int* input_data);
+    void deepcopy(VertexSet v);
     ~VertexSet();
     void intersection(const VertexSet& set0, const VertexSet& set1, int min_vertex = -1, bool clique = false);
     void intersection_with(const VertexSet& set1);

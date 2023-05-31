@@ -35,6 +35,9 @@ public:
         //               == 2 low degree first
     bool load_complete(Graph* &g, int clique_size);
 
+    void gen_csr_data(Graph *&g, const char* path);
+
+
 private:
     static bool cmp_pair(std::pair<int,int>a, std::pair<int,int>b);
     static bool cmp_degree_gt(std::pair<int,int> a,std::pair<int,int> b);
