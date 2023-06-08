@@ -138,59 +138,439 @@ void Graph::tc_mt(long long *global_ans) {
     }
 }
 
+void Graph::init_extern_storage(int v_num, int e_num) {
+    inter_edge = new int[e_num];
+    inter_vertex = new unsigned int[v_num];
+}
+
+void Graph::to_global_csr(const std::string &path) {
+    std::vector<int> vid, edges, v_order;
+    std::vector<int> vtx_offset;
+    unsigned int cursor = 0;
+    if (intra_vertex_dict.empty()) {
+        for (int i=0; i< v_cnt; i++) intra_vertex_dict[i] = i;
+    }
+    for (auto i: intra_vertex_dict) {
+        std::vector<int> local_edges;
+        int len;
+        if (i.second == v_cnt - 1) len = e_cnt - vertex[i.second];
+        else len = vertex[i.second+1] - vertex[i.second];
+        for (int j = 0; j < len; j++) local_edges.push_back(edge[vertex[i.second]+j]);
+        std::sort(local_edges.begin(), local_edges.end());
+        for (auto j : local_edges) edges.push_back(j);
+        vtx_offset.push_back(cursor);
+        vid.push_back(i.first);
+        v_order.push_back(v_order.size());
+        cursor+= len;
+    }
+
+    std::string map_data = path + std::string("_m");
+    DataLoader::gen_map_file(vid.data(), v_order.data(), v_cnt, map_data);
+    DataLoader::gen_partition_file(v_cnt,e_cnt,vtx_offset.data(),edges.data(),path);
+}
+
+void Graph::load_global_graph(const std::string &path) {
+    intra_vertex_dict.clear();
+    v_state_map.clear();
+    DataLoader::load_data_size(v_cnt,e_cnt,path);
+    vertex = new unsigned int[v_cnt];
+    edge = new int[e_cnt];
+    DataLoader::load_partition_data(v_cnt,e_cnt,vertex,edge,path);
+    std::string map_data = path + std::string("_m");
+    int *vkey = new int[v_cnt];
+    int *vvalue = new int[v_cnt];
+    DataLoader::load_map_data(vkey,vvalue,v_cnt,map_data);
+    for (int i=0;i<v_cnt;i++) {
+        int key = vkey[i];
+        int value = vvalue[i];
+        VertexTable d;
+        v_state_map.insert({key, d});
+        v_state_map[key].is_intra = true;
+        intra_vertex_dict.insert(std::make_pair(key,value));
+    }
+    std::string file_map;
+    if (blockType == BlockType::K_CORE_BLOCK) file_map = path + std::string("_fk");
+    if (blockType == BlockType::RANDOM_BLOCK) file_map = path + std::string("_fr");
+    int *fkey = new int[v_cnt];
+    int *fvalue = new int[v_cnt];
+    DataLoader::load_map_data(fkey,fvalue,v_cnt,file_map);
+    delete[] vkey;
+    delete[] vvalue;
+}
+
+void Graph::load_partition_graph(int pid, int num, const std::string &path) {
+    intra_vertex_dict.clear();
+    v_state_map.clear();
+    std::string partition_path = path+ std::to_string(pid) + std::string("_") + std::to_string(num) + std::string("_p");
+    DataLoader::load_data_size(v_cnt,e_cnt,partition_path);
+    vertex = new unsigned int[v_cnt];
+    edge = new int[e_cnt];
+    DataLoader::load_partition_data(v_cnt,e_cnt,vertex,edge,path);
+    std::string partition_map_data = path+ std::to_string(pid) + std::string("_") + std::to_string(num) + std::string("_m");
+    int *vkey = new int[v_cnt];
+    int *vvalue = new int[v_cnt];
+    DataLoader::load_map_data(vkey,vvalue,v_cnt,partition_map_data);
+    for (int i=0; i<v_cnt; i++) intra_vertex_dict[vkey[i]] = vvalue[i];
+    std::string file_map;
+    if (blockType == BlockType::K_CORE_BLOCK) file_map = path + std::string("_fk");
+    if (blockType == BlockType::RANDOM_BLOCK) file_map = path + std::string("_fr");
+    int *fkey = new int[g_vcnt];
+    int *fvalue = new int[g_vcnt];
+    DataLoader::load_map_data(fkey,fvalue,g_vcnt,file_map);
+    for (int i=0;i<g_vcnt;i++) {
+        v_state_map.insert({fkey[i], VertexTable{}});
+        v_state_map[fkey[i]].file_id = fvalue[i];
+    }
+    for (int i=0; i<v_cnt; i++) v_state_map[vkey[i]].is_intra = true;
+    delete[] vkey;
+    delete[] vvalue;
+    delete[] fkey;
+    delete[] fvalue;
+}
+
+
+
+void Graph::to_block_csr(int block_size, const std::string& path, int k_core) {
+    int len = sizeof (char) * block_size / sizeof (int);
+    //TODO: is there any blocking algorithm that helps?
+    if (blockType == BlockType::RANDOM_BLOCK) {
+        std::vector<int> vid, edges, map_k, map_v;
+        std::vector<unsigned int> vtx_offset;
+        std::vector<int> file_len;
+        file_len.push_back(0);
+        // id should be sorted by keys
+        for(auto & id : intra_vertex_dict) {
+
+            int adj_len;
+            if (id.second < v_cnt - 1) adj_len = vertex[id.second +1] - vertex[id.second];
+            else adj_len = e_cnt - vertex[id.second];
+            for(int i=0; i< file_len.size(); i++) {
+                if (file_len[i]+ 2 + adj_len < len) {
+                    file_len[i] += 2+adj_len;
+                    map_k.push_back(id.first);
+                    map_v.push_back(i);
+                    break;
+                }
+                if (i == file_len.size()-1) {
+                    map_k.push_back(id.first);
+                    map_v.push_back(file_len.size()+1);
+                    file_len.push_back(2+adj_len);
+                    break;
+                }
+            }
+        }
+        // dump vertex-block map
+        std::string block_map_path = path + std::string("_fr");
+        DataLoader::gen_map_file(map_k.data(),map_v.data(),map_v.size(),block_map_path);
+        // dump each block
+        for (int block_id = 0; block_id < file_len.size(); block_id++) {
+            int vtx_cursor = 0;
+            vid.clear();
+            edges.clear();
+            vtx_offset.clear();
+            for (int i = 0; i< map_v.size(); i++) {
+                if (map_v[i]==block_id) {
+                    vtx_offset.push_back(vtx_cursor);
+                    vid.push_back(map_k[i]);
+                    int adj_len;
+                    int adj_poi = vertex[intra_vertex_dict[map_k[i]]];
+                    if (intra_vertex_dict[map_k[i]] == v_cnt-1) adj_len = e_cnt - adj_poi;
+                    else adj_len = vertex[intra_vertex_dict[map_k[i]]+1] - vertex[intra_vertex_dict[map_k[i]]];
+                    for(int j = 0; j < adj_len; j++) edges.push_back(adj_poi+j);
+                    vtx_cursor += adj_len;
+                }
+            }
+            std::string block_csr_path = path + std::string("_blocks/") + std::to_string(block_id) + std::string("_br");
+            DataLoader::gen_block_file(vid.data(),vtx_offset.data(),edges.data(),vid.size(),edges.size(),block_csr_path);
+        }
+    }
+    if (blockType == BlockType::K_CORE_BLOCK) {
+        std::map<int,int> degree;
+        std::map<int,int> revert_dict;
+        for (auto i : intra_vertex_dict) {
+            revert_dict[i.second] = i.first;
+        }
+        int block_id = 0;
+        std::vector<int> block_vid, vid, file_id;
+        int local_block_size = 0;
+        std::vector<int> to_insert_block;
+        for (int i = 0; i < v_cnt; i++) {
+            if (i==v_cnt-1) {
+                degree[i] = e_cnt - vertex[i];
+                break;
+            }
+            degree[i] = vertex[i+1] - vertex[i];
+        }
+        for (int core = 1; core <= k_core; core++) {
+            bool keep_lop = true;
+            while (keep_lop) {
+//                printf("%d %zu\n",core,degree.size());
+                keep_lop = false;
+                std::vector<int> local_remove;
+                for (auto i: degree) {
+                    if (i.second < core) {
+                        for (int j = vertex[i.first]; j < vertex[i.first + 1]; j++) {
+                            if (degree.find(edge[j]) != degree.end()) degree[edge[j]] -= 1;
+                        }
+                        to_insert_block.push_back(i.first);
+                        local_remove.push_back(i.first);
+                    }
+                }
+                for (auto i : local_remove) degree.erase(i);
+                for (auto i : degree) keep_lop |= i.second < core;
+            }
+//            printf("done\n");
+            blocking_data_manage_k_core(len,block_id,local_block_size,block_vid,revert_dict,to_insert_block, vid, file_id, path);
+        }
+        for (auto i : degree) to_insert_block.push_back(i.first);
+        blocking_data_manage_k_core(len,block_id,local_block_size,block_vid,revert_dict,to_insert_block, vid, file_id, path);
+
+        std::string block_map_path = path + std::string("_fk");
+        DataLoader::gen_map_file(block_vid.data(),file_id.data(),block_vid.size(),block_map_path);
+    }
+//    printf("totally k_core done\n");
+}
+
+void Graph::blocking_data_manage_k_core(int len, int &block_id, int &local_block_size, std::vector<int> &block_vid, const std::map<int, int> &revert_dict, std::vector<int> &to_insert_block, std::vector<int> &vid, std::vector<int> &file_id, const std::string& path) {
+    std::queue<int> q;
+    while (!to_insert_block.empty() || !q.empty()) {
+        if (q.empty()) {
+            q.push(to_insert_block.back());
+            to_insert_block.pop_back();
+        }
+        int q_len;
+        if (q.front() == v_cnt -1) q_len = e_cnt-vertex[q.front()];
+        else q_len = vertex[q.front()+1] - vertex[q.front()];
+        if (local_block_size + 2 + q_len > len && !block_vid.empty()) {
+            //TODO: write block_vid to block file
+            std::sort(block_vid.begin(), block_vid.end());
+            int cursor = 0;
+            std::vector<unsigned int> vtx_offset;
+            std::vector<int> edges;
+            vtx_offset.push_back(cursor);
+            for (int i=0; i< block_vid.size()-1;i++) {
+                if (intra_vertex_dict[block_vid[i]] == v_cnt-1) cursor += e_cnt - vertex[intra_vertex_dict[block_vid[i]]];
+                else cursor +=vertex[intra_vertex_dict[block_vid[i]]+1] - vertex[intra_vertex_dict[block_vid[i]]];
+                for (int j = vtx_offset.back(); j < cursor; j++) edges.push_back(edge[j]);
+                vtx_offset.push_back(cursor);
+            }
+            std::string block_csr_path = path + std::string("_blocks/") + std::to_string(block_id) + std::string("_bk");
+            DataLoader::gen_block_file(block_vid.data(),vtx_offset.data(),edges.data(),block_vid.size(),edges.size(),block_csr_path);
+            for (auto i : block_vid) {
+                vid.push_back(i);
+                file_id.push_back(block_id);
+            }
+            block_id+=1;
+            printf("%d\n",block_id);
+            local_block_size = 0;
+            block_vid.clear();
+        }
+        int insert_v = q.front();
+        block_vid.push_back(revert_dict.at(insert_v));
+        local_block_size += 2+ q_len;
+        q.pop();
+        for (int j = 0; j < q_len; j++) {
+            int target_vtx_offset = intra_vertex_dict[vertex[insert_v]+j];
+            if (std::find(to_insert_block.begin(), to_insert_block.end(), target_vtx_offset)!= to_insert_block.end()) {
+                q.push(target_vtx_offset);
+                to_insert_block.erase(std::remove(to_insert_block.begin(),to_insert_block.end(), target_vtx_offset), to_insert_block.end());
+            }
+        }
+    }
+}
+
+void Graph::to_partition_csr(PartitionType t, int num, const std::string& path) {
+    if (t == PartitionType::RANDOM) {
+        for (int p = 0; p<num; p++) {
+            auto *g = new Graph;
+            g->v_cnt = v_cnt /num;
+            if (p < v_cnt % num) g->v_cnt += 1;
+            g->vertex = new unsigned int[g->v_cnt];
+            int mapk[g->v_cnt];
+            int mapv[g->v_cnt];
+            unsigned int len;
+            unsigned int e_num = 0;
+            std::vector<int> adj_list;
+            //TODO: map should consider vertex is not continuous even in global graph
+            auto it = intra_vertex_dict.begin();
+            for (int i = 0; i< p; i++) it++;
+            // TODO: ensure that begin to end is a sorted sequence of key
+            int idx = 0;
+            for(it ; it != intra_vertex_dict.end();) {
+                std::vector<int> local_adj_list;
+                int i = intra_vertex_dict[it->first];
+
+                //calculate adj list len
+                if (i == v_cnt-1) len = e_cnt-vertex[i];
+                else len = vertex[i+1]-vertex[i];
+
+                //collect adj list and sort
+                for (unsigned int j = vertex[i]; j < vertex[i]+len; j++) local_adj_list.push_back(edge[j]);
+                std::sort(local_adj_list.begin(), local_adj_list.end());
+
+                //insert to global partition adj list
+                for (auto &&j : local_adj_list) adj_list.push_back(j);
+                mapk[idx] = i;
+                if (idx==0) {
+                    g->vertex[idx] = 0;
+                    mapv[idx] = 0;
+                }
+                if (idx < g->v_cnt-1){
+                    g->vertex[idx+1] = g->vertex[idx] + len;
+                    mapv[idx+1] = mapv[idx] + len;
+                }
+                if (idx == g->v_cnt-1) e_num = g->vertex[idx] + len;
+                for (int l=0; l< num; l++) {
+                    if (it == intra_vertex_dict.end()) break;
+                    it++;
+                }
+                idx++;
+            }
+            g->e_cnt = e_num;
+            g->edge = new int[e_num];
+            for (int i = 0; i < e_num; i++) {
+                g->edge[i] = adj_list[i];
+            }
+            std::string partition_map = path + std::to_string(num) + std::string("m");
+            DataLoader::gen_map_file(mapk,mapv,g->v_cnt,partition_map);
+            std::string partition_path = path+ std::to_string(num) + std::string("p");
+            DataLoader::gen_partition_file(g, partition_path);
+        }
+    }
+    if (t == PartitionType::METIS) {
+    }
+}
+
+struct loader_cmp {
+    bool operator() (loader a, loader b) {return a.vertex< b.vertex;}
+} loaderCmp;
+
 void Graph::get_edge_index(int v, unsigned int& l, unsigned int& r) const
 {
-    v = intra_vertex_dict.at(v);
-    l = vertex[v];
-    r = vertex[v + 1];
+    int vtx = intra_vertex_dict.at(v);
+    l = vertex[vtx];
+    if (vtx == v_cnt) r = e_cnt;
+    else r = vertex[v + 1];
 }
 void Graph::get_extern_edge_index(int v, unsigned int& l, unsigned int& r) const
 {
-    v = inter_vertex_dict.at(v);
-    l = inter_vertex[v];
-    r = inter_vertex[v + 1];
+    int vtx = inter_vertex_dict.at(v);
+    l = inter_vertex[vtx];
+    if (vtx == inter_vtx_num) r = inter_edge_num;
+    else r = inter_vertex[vtx + 1];
 }
 
-void Graph::load_extern_data(int file_id) {
+void Graph::load_extern_data(int file_id, const std::vector<loader>& load_vertex) {
     //read file and get N(v)
+    // fread, scanf, getline..
+    int *vid = nullptr;
+    unsigned int *vertex_offset = nullptr;
+    int *adj_list = nullptr;
 
-    // append further neighbor to load_list
-    return;
+    std::string block_path;
+    if (blockType == BlockType::K_CORE_BLOCK) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bk");
+    else if (blockType == BlockType::RANDOM_BLOCK) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_br");
+    int load_v_len=0;
+    unsigned int load_e_len=0;
+//    printf("%s\n",block_path.c_str());
+    DataLoader::load_data_size(load_v_len,load_e_len,block_path);
+//    printf("%d %d\n",load_v_len,load_e_len);
+    vid = new int[load_v_len];
+    vertex_offset = new unsigned int[load_v_len];
+    adj_list = new int[load_e_len];
+    DataLoader::load_block_data(vid,vertex_offset,adj_list, load_v_len, load_e_len, block_path);
+//    for (int i = 0; i< load_v_len; i++) printf("read offset %d\n",vid[i]);
+    int vid_cursor = 0;
+    for (auto i : load_vertex) {
+        // find vertex
+        while (vid[vid_cursor] != i.vertex && vid_cursor < load_v_len) {
+            vid_cursor++;
+            if (vid_cursor >= load_v_len) printf("expect err");
+        }
+        // add this vertex to list
+        // add lock
+        inter_vertex_dict[i.vertex] = inter_vtx_num;
+        inter_vertex[inter_vtx_num] = inter_edge_num;
+        inter_vtx_num +=1;
+        unsigned int edge_cursor = inter_edge_num;
+        unsigned int len;
+        if (vid_cursor <load_v_len-1 ) len = vertex_offset[vid_cursor+1] - vertex_offset[vid_cursor];
+        else len = load_e_len - vertex_offset[vid_cursor];
+        inter_edge_num += len;
+        // release lock
+        if (i.k_hop==1) {
+            for (int j = 0; j < len; j++) {
+                inter_edge[edge_cursor] = adj_list[vertex_offset[vid_cursor]+j];
+                edge_cursor += 1;
+            }
+            v_state_map[i.vertex].k_hop = 1;
+        } else if (i.k_hop > 1) {
+            for (int j = 0; j < len; j++) {
+                inter_edge[edge_cursor] = adj_list[vertex_offset[vid_cursor]+j];
+                edge_cursor += 1;
+                //here add recursive function (to achieve, just need append load_list, as loading_manage will keep calling this function until load_list becomes empty)
+                load_list_append(loader{i.k_hop-1, adj_list[vertex_offset[vid_cursor]+j], v_state_map[adj_list[vertex_offset[vid_cursor]+j]].file_id});
+            }
+        }
+    }
+    delete[] vid;
+    delete[] vertex_offset;
+    delete[] adj_list;
+
+
 }
 
-void Graph::load_order_manage() {
+void Graph::loading_manage() {
+    std::set<int> load_vtx;
     while (!load_list.empty()) {
         std::vector<loader> load_vertex;
         load_vertex.push_back(load_list.back());
         int file_id = load_list.back().file_id;
-        load_vertex.pop_back();
+        load_list.pop_back();
         //add a mutex lock;
-        while (load_vertex.back().file_id == file_id) {
+        while (load_list.back().file_id == file_id) {
+            if (load_vtx.find(load_list.back().vertex)==load_vtx.end()) load_vtx.insert(load_list.back().vertex);
             load_vertex.push_back(load_list.back());
             load_list.pop_back();
         }
         //release lock
-        load_extern_data(file_id);
+        std::sort(load_vertex.begin(), load_vertex.end(),loaderCmp);
+        load_extern_data(file_id, load_vertex);
+    }
+    for (auto i : load_vtx) {
+        v_state_map[i].k_hop = v_state_map[i].loading;
+        v_state_map[i].loading = 0;
     }
 }
 
 void Graph::load_list_append(loader l){
     int idx = 0;
+    // if it is not inter-partition vertex, no considering to load k-hop
+    if (v_state_map[l.vertex].is_intra) return;
+    // when there already exist a loading process that contain higher k-hop, or current k-hop is larger, no need to append to task queue
+    if ( v_state_map[l.vertex].loading >= l.k_hop || v_state_map[l.vertex].k_hop >= l.k_hop) return;
+    if (v_state_map[l.vertex].k_hop >= 1) {
+        unsigned int i,j;
+        get_extern_edge_index(l.vertex,i,j);
+        for (int k = 0; k<j-i; k++) {
+            load_list_append(loader{l.k_hop-1, inter_edge[i+k], l.file_id});
+        }
+        return;
+    }
     for (auto it : load_list) {
-        if (v_state_map[it.vertex].is_intra) continue;
-        if ((v_state_map[it.vertex].is_loaded || v_state_map[it.vertex].is_loading) && v_state_map[it.vertex].k_hop >= l.k_hop) continue;
         if (it.vertex == l.vertex) {
             it.k_hop = std::max(it.k_hop,l.k_hop);
+            v_state_map[it.vertex].loading = it.k_hop;
             return;
         }
         if (it.file_id > l.file_id) {
             load_list.insert(load_list.begin()+idx,l);
+            v_state_map[it.vertex].loading = it.k_hop;
             return;
         }
         idx++;
     }
     load_list.push_back(l);
-    return;
 }
 
 bool Graph::extern_store_manage(const Schedule& schedule) {
@@ -199,20 +579,23 @@ bool Graph::extern_store_manage(const Schedule& schedule) {
     float extern_usage = external_used / external_space;
     // second base on the available determine if drop the data
     if (extern_usage > extern_thresold){
-        extern_drop_manage();
+        // to avoiding load extern info drop even when it is not used, it will only stop loading if ready_bin is not empty
+        if (ready_bin.empty()) extern_drop_manage();
         return false;
     }
     // third base on the available space, determine how much vertex will be loaded.
     unsigned int remain_space = external_space - external_used;
     extern_load_manage(remain_space, schedule);
+    // only this function is allocate to multi thread
+    loading_manage();
     for (int i=candidate_bin.size()-1; i >=0 ; i--) {
         int k_hop = k_hop_matrix[candidate_bin[i]->depth];
         bool vector_load = true;
-        for (int j=0; j< candidate_bin[i]->vertex.size();j++) {
-            int vertex = candidate_bin[i]->vertex.at(j);
+        for (int v : candidate_bin[i]->vertex) {
+            // TODO: change it into per vertex, use smart pointer to vertex_set
             // two version can be formulated, one is one by one. another is satisfying only when all in vectors are satisfied.
             // satisfy conditions
-            vector_load &= v_state_map[vertex].is_loaded && v_state_map[vertex].k_hop >= k_hop;
+            vector_load &= v_state_map[v].k_hop >= k_hop;
             if (!vector_load) break;
         }
         if (vector_load) {
@@ -220,13 +603,13 @@ bool Graph::extern_store_manage(const Schedule& schedule) {
             candidate_bin.erase(candidate_bin.begin()+i);
         }
     }
+    return true;
 }
 
 void Graph::extern_drop_manage() {
     for (auto it : inter_vertex_dict) {
-        v_state_map[it.first].is_loaded = false;
         v_state_map[it.first].k_hop = 0;
-        v_state_map[it.first].is_loading = false;
+        v_state_map[it.first].loading = 0;
     }
     inter_vertex_dict.clear();
     inter_edge_num = 0;
@@ -241,28 +624,9 @@ void Graph::extern_load_manage(unsigned int available_space, const Schedule& sch
         i->load_queue = true;
         int k_hop = k_hop_matrix[i->depth];
         for (auto j : i->vertex) {
-            // case 1: to_load vertex is not loaded
-            if (!v_state_map[j].is_loaded && !v_state_map[j].is_loading) load_list_append(loader{k_hop, j, v_state_map[j].file_id});
-            // case 2: to_load vertex is loaded and loaded hop is larger
-            if (v_state_map[j].is_loaded && v_state_map[j].k_hop >= k_hop) continue;
-            // case 3: to_load vertex is loaded but loaded hop is smaller
-            if (v_state_map[j].is_loaded && v_state_map[j].k_hop < k_hop) {
-                v_state_map[j].is_loaded = false;
-                v_state_map[j].is_loading = true;
-                v_state_map[j].k_hop = k_hop;
-                load_list_append(loader{k_hop, j, v_state_map[j].file_id});
-            }
-            // case 4: to_load vertex is loading and loading hop is larger
-            if (v_state_map[j].is_loading && v_state_map[j].k_hop >= k_hop) continue;
-            // case 5: to_load vertex is loading but loading hop is smaller
-            if (v_state_map[j].is_loading && v_state_map[j].k_hop < k_hop) {
-                v_state_map[j].k_hop = k_hop;
-                load_list_append(loader{k_hop, j, v_state_map[j].file_id});
-            }
+            if (v_state_map[j].k_hop < k_hop) load_list_append(loader{k_hop, j, v_state_map[j].file_id});
         }
     }
-    // a loading function from class DataLoader
-    load_order_manage();
 }
 
 void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_set, VertexSet& subtraction_set, long long& local_ans, int depth, bool clique)
@@ -294,16 +658,16 @@ void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_se
     {
         if (last_vertex <= loop_data_ptr[i] && clique)
             break;
-        int vertex = loop_data_ptr[i];
+        int v = loop_data_ptr[i];
         if (!clique)
-            if (subtraction_set.has_data(vertex))
+            if (subtraction_set.has_data(v))
                 continue;
         unsigned int l, r;
-        get_edge_index(vertex, l, r);
+        get_edge_index(v, l, r);
         bool is_zero = false;
         for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
         {
-            vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex, clique);
+            vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, v, clique);
             if( vertex_set[prefix_id].get_size() == 0) {
                 is_zero = true;
                 break;
@@ -311,7 +675,7 @@ void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_se
         }
         if( is_zero ) continue;
         //subtraction_set.insert_ans_sort(vertex);
-        subtraction_set.push_back(vertex);
+        subtraction_set.push_back(v);
         pattern_matching_func(schedule, vertex_set, subtraction_set, local_ans, depth + 1, clique);
         subtraction_set.pop_back();
     }
@@ -323,19 +687,19 @@ void Graph::resume_matching(const Schedule& schedule, path *p) {
     unsigned int l,r;
     int depth = p->depth;
     for (int i=0; i< p->vertex.size();i++) {
-        int vertex = p->vertex[i];
-        get_extern_edge_index(vertex, l, r);
+        int v = p->vertex[i];
+        get_extern_edge_index(v, l, r);
         bool is_zero = false;
         for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
         {
-            p->vertex_set[prefix_id].build_vertex_set(schedule, p->vertex_set, &inter_edge[l], (int)r - l, prefix_id, vertex);
+            p->vertex_set[prefix_id].build_vertex_set(schedule, p->vertex_set, &inter_edge[l], (int)r - l, prefix_id, v);
             if( p->vertex_set[prefix_id].get_size() == 0) {
                 is_zero = true;
                 break;
             }
         }
         if( is_zero ) continue;
-        p->subtraction_set.push_back(vertex);
+        p->subtraction_set.push_back(v);
         pattern_matching_aggressive_func(schedule,p->vertex_set,p->subtraction_set,tmp_set,p->local_ans,depth+1);
     }
     // after done release memory
@@ -365,9 +729,9 @@ long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bo
             std::queue<int> bfs_queue;
             bfs_queue.push(v);
             while (!bfs_queue.empty()) {
-                // TODO: add a manager to allocate task from candidate bin to each thread.
                 // clear remain task in the ready bin is the highest priority
                 while (!ready_bin.empty()) {
+                    // Highest priority to allocate task from candidate bin to each thread.
                     // do remain work in ready bin
                     path *p = ready_bin.back();
                     ready_bin.pop_back();
@@ -375,7 +739,7 @@ long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bo
                 }
                 int vtx = bfs_queue.front();
                 bfs_queue.pop();
-                if (v_state_map[vtx].is_rooted == true) continue;
+                if (v_state_map[vtx].is_rooted) continue;
                 v_state_map[vtx].is_rooted = true;
                 unsigned int l, r;
                 get_edge_index(vtx, l, r);
@@ -546,26 +910,26 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
             min_vertex = subtraction_set.get_data(schedule.get_restrict_index(i));
     if (depth == 1) Graphmpi::getinstance().get_loop(loop_data_ptr, loop_size);
     int ii = 0;
-    std::vector<int> inter_vertex;
+    std::vector<int> to_load_vertex;
     for (int &i = ii; i < loop_size; ++i)
     {
         if (min_vertex <= loop_data_ptr[i])
             break;
-        int vertex = loop_data_ptr[i];
-        if (subtraction_set.has_data(vertex))
+        int load_v = loop_data_ptr[i];
+        if (subtraction_set.has_data(load_v))
             continue;
         unsigned int l, r;
-        VertexTable t = v_state_map[vertex];
-        if(!t.is_intra && !t.is_loaded) {
-            inter_vertex.push_back(vertex);
+        VertexTable t = v_state_map[load_v];
+        if(!t.is_intra && t.k_hop == 0) {
+            to_load_vertex.push_back(load_v);
             continue;
         }
         else if (t.is_intra){
-            get_edge_index(vertex, l, r);
+            get_edge_index(load_v, l, r);
             bool is_zero = false;
             for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
             {
-                vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex);
+                vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, load_v);
                 if( vertex_set[prefix_id].get_size() == 0) {
                     is_zero = true;
                     break;
@@ -573,16 +937,16 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
             }
             if( is_zero ) continue;
             //subtraction_set.insert_ans_sort(vertex);
-            subtraction_set.push_back(vertex);
+            subtraction_set.push_back(load_v);
             pattern_matching_aggressive_func(schedule, vertex_set, subtraction_set, tmp_set, local_ans, depth + 1);// @@@
             subtraction_set.pop_back(); // @@@
         }
-        else if (t.is_loaded) {
-            get_extern_edge_index(vertex, l, r);
+        else if (t.k_hop > 0) {
+            get_extern_edge_index(load_v, l, r);
             bool is_zero = false;
             for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
             {
-                vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &inter_edge[l], (int)r - l, prefix_id, vertex);
+                vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &inter_edge[l], (int)r - l, prefix_id, load_v);
                 if( vertex_set[prefix_id].get_size() == 0) {
                     is_zero = true;
                     break;
@@ -590,17 +954,17 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
             }
             if( is_zero ) continue;
             //subtraction_set.insert_ans_sort(vertex);
-            subtraction_set.push_back(vertex);
+            subtraction_set.push_back(load_v);
             pattern_matching_aggressive_func(schedule, vertex_set, subtraction_set, tmp_set, local_ans, depth + 1);// @@@
             subtraction_set.pop_back(); // @@@
         }
     }
-    if (!inter_vertex.empty()){
+    if (!to_load_vertex.empty()){
 
         path *path_ptr = new path;
         path_ptr->depth = depth;
         path_ptr->load_queue = false;
-        path_ptr->vertex = inter_vertex;
+        path_ptr->vertex = to_load_vertex;
         path_ptr->local_ans = local_ans;
         // deep copy
         path_ptr->subtraction_set.deepcopy(subtraction_set);

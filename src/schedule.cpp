@@ -106,7 +106,7 @@ Schedule::Schedule(const Pattern& pattern, bool &is_pattern_valid, int performan
                     }
                 }
 
-                if(have_best == false || val < min_val) {
+                if(!have_best || val < min_val) {
                     have_best = true;
                     min_val = val;
                     for(int i = 0; i < size; ++i) best_order[i] = vec[i];

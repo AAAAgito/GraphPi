@@ -281,3 +281,103 @@ long long DataLoader::comb(int n, int k) {
         ans = ans / k;
     return ans;
 }
+
+void DataLoader::gen_partition_file(int v_cnt, int e_cnt, int *v, int *e, const std::string &path) {
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char *)&v_cnt, sizeof(int));
+    binaryIo.write((char *)&e_cnt, sizeof(int));
+
+    binaryIo.write((char*)v, v_cnt * sizeof(v[0]));
+    binaryIo.write((char*)e, e_cnt * sizeof(e[0]));
+
+}
+
+void DataLoader::gen_partition_file(Graph *&g, const std::string& path) {
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char *)&g->v_cnt, sizeof(int));
+    binaryIo.write((char *)&g->e_cnt, sizeof(int));
+
+    binaryIo.write((char*)g->vertex, g->v_cnt * sizeof(g->vertex[0]));
+    binaryIo.write((char*)g->edge, g->e_cnt * sizeof(g->edge[0]));
+    binaryIo.close();
+}
+
+void DataLoader::load_partition_data(int &v_cnt, unsigned int &e_cnt, unsigned int *v, int *e, const std::string& path) {
+    std::fstream binaryIo;
+
+    binaryIo.open(path, std::ios::in | std::ios::binary);
+    binaryIo.read(reinterpret_cast<char *>(&v_cnt), sizeof(int)); // read the number of elements
+    binaryIo.read(reinterpret_cast<char *>(&e_cnt), sizeof(int));
+    binaryIo.read((char *)v, v_cnt * sizeof(int));
+    binaryIo.read((char *)e, e_cnt * sizeof(int));
+    binaryIo.close();
+}
+
+void DataLoader::load_data_size(int &v_cnt, unsigned int &e_cnt, const std::string& path) {
+    std::fstream binaryIo;
+
+    binaryIo.open(path, std::ios::in | std::ios::binary);
+    binaryIo.read(reinterpret_cast<char *>(&v_cnt), sizeof(int)); // read the number of elements
+    binaryIo.read(reinterpret_cast<char *>(&e_cnt), sizeof(int));
+    binaryIo.close();
+}
+
+void DataLoader::gen_block_file(int* vid, unsigned int *vertex, int *edge, int v_len, unsigned int e_len, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char *)&v_len, sizeof(int));
+    binaryIo.write((char *)&e_len, sizeof(int));
+
+    binaryIo.write((char*)vid, v_len * sizeof(vid[0]));
+    binaryIo.write((char*)vertex, v_len * sizeof(vertex[0]));
+    binaryIo.write((char*)edge, e_len * sizeof(edge[0]));
+    binaryIo.close();
+}
+
+void DataLoader::load_block_data_size(int &v_len, unsigned int &e_len, const std::string& path) {
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::in | std::ios::binary);
+    int v,e;
+    binaryIo.read(reinterpret_cast<char *>(&v), sizeof(int));
+    binaryIo.read(reinterpret_cast<char *>(&e), sizeof(int));
+    binaryIo.close();
+}
+
+void DataLoader::load_block_data(int *vid, unsigned int *vertex, int *edge, int &v_len, unsigned int &e_len, const std::string& path) {
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::in | std::ios::binary);
+    binaryIo.seekp(0);
+    binaryIo.read(reinterpret_cast<char *>(&v_len), sizeof(int));
+    binaryIo.read(reinterpret_cast<char *>(&e_len), sizeof(int));
+    binaryIo.read((char*)vid, v_len * sizeof(int));
+    binaryIo.read((char*)vertex, v_len * sizeof(unsigned int));
+    binaryIo.read((char*)edge, e_len * sizeof(int));
+    binaryIo.close();
+}
+
+void DataLoader::gen_map_file(int* key, int* value, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char*)key, size * sizeof(key[0]));
+    binaryIo.write((char*)value, size * sizeof(value[0]));
+    binaryIo.close();
+
+}
+
+void DataLoader::load_map_data(int* key, int* value, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::in| std::ios::binary);
+    binaryIo.read((char*)key, size * sizeof(int));
+    binaryIo.read((char*)value, size * sizeof(int));
+    binaryIo.close();
+
+}
