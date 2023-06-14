@@ -1,0 +1,1 @@
+mpicxx  -fopenmp  -O3 -Wall -fopenmp CMakeFiles/restricts_printer.dir/restricts_printer.cpp.o -o ../bin/restricts_printer  -Wl,-rpath,/mnt/d/Github/GraphPi/libs ../libs/libgraph_mining.so 

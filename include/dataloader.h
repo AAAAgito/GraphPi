@@ -3,6 +3,9 @@
 #include <map>
 #include <algorithm>
 #include <vector>
+#include <fstream>
+#include <ostream>
+#include <istream>
 
 enum DataType {
     Patents,
@@ -35,7 +38,21 @@ public:
         //               == 2 low degree first
     bool load_complete(Graph* &g, int clique_size);
 
-    void gen_csr_data(Graph *&g, const char* path);
+
+    static void gen_partition_file(int v_cnt, unsigned int e_cnt, unsigned int *v, int *e, const std::string& path);
+
+    static void load_partition_data(int &v_cnt, unsigned int &e_cnt, unsigned int *v, int *e, const std::string& path);
+
+    static void load_data_size(int &v_cnt, unsigned int &e_cnt, const std::string& path);
+
+    static void gen_map_file(int* key, int* value, int size, const std::string& path);
+
+    static void load_map_data(int* key, int* value, int size, const std::string& path);
+
+    static void gen_block_file(int* vid, unsigned int* vertex, int* edge, int v_len, unsigned int e_len, const std::string& path);
+
+    static void load_block_data(int* vid, unsigned int* vertex, int* edge, int &v_len, unsigned int &e_len, const std::string& path);
+
 
 
 private:
@@ -49,3 +66,4 @@ private:
 
     std::map<int,int> id;
 };
+

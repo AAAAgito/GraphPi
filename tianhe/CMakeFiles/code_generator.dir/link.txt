@@ -1,0 +1,1 @@
+mpicxx  -fopenmp  -O3 -Wall -fopenmp CMakeFiles/code_generator.dir/code_generator.cpp.o -o ../bin/code_generator  -Wl,-rpath,/mnt/d/Github/GraphPi/libs ../libs/libgraph_mining.so 

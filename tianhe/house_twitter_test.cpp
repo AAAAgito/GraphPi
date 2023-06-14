@@ -58,7 +58,7 @@ int main(int argc,char *argv[]) {
     DataLoader D;
 
     std::string type = "Twitter";
-    std::string path = "/home/zms/twitter_input";
+    std::string path = "/mnt/d/graph/twitter_input";
     DataType my_type;
     if(type == "Twitter") my_type = DataType::Twitter;
     else {

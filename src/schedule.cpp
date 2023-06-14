@@ -17,7 +17,7 @@ Schedule::Schedule(const Pattern& pattern, bool &is_pattern_valid, int performan
     is_pattern_valid = true;
     size = pattern.get_size();
     adj_mat = new int[size * size];
-    
+
     // not use performance_modeling, simply copy the adj_mat from pattern
     memcpy(adj_mat, pattern.get_adj_mat_ptr(), size * size * sizeof(int));
 
@@ -129,7 +129,7 @@ Schedule::Schedule(const Pattern& pattern, bool &is_pattern_valid, int performan
                     }
                 }
 
-                if(have_best == false || val < min_val) {
+                if(!have_best || val < min_val) {
                     have_best = true;
                     min_val = val;
                     for(int i = 0; i < size; ++i) best_order[i] = vec[i];
@@ -329,36 +329,39 @@ int Schedule::get_max_degree() const{
 // Input: Current Schedule
 // Output: An array of which vtx should load K_v- hops
 void Schedule::gen_k_hop_matrix(){
-    int k_table[size];
-    k_table[0] = 0;
-    for (int d = 1; d < size; d++) {
-        int k_hop[size];
-        int k=0;
-        for (int i = 0; i <= size; i++){
-            if (i <= d) k_hop[i] = 0;
-            else k_hop[i] = size;
-        }
-        for (int depth = d+1; depth < size; depth ++) {
-            for (int prefix_id = this->get_last(depth); prefix_id != -1; prefix_id = this->get_next(prefix_id))
-            {
-                // vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex, clique);
-                if (prefix_id == d) {
-                    k=1;
-                    k_hop[depth]=1;
-                    break;
-                }
-                else if (prefix_id < d) continue;
-                k_hop[depth] = std::min(k_hop[depth],k_hop[prefix_id]+1);
-            }
-        }
-        for (int depth = d+1; depth < size; depth++) {
-            if (k_hop[depth] == size) continue;
-            k = std::max(k,k_hop[depth]);
-        }
-        k_table[d]=k;
-    }
-    for (int i = 0; i < size; i++) {
-        k_hop_matrix.push_back(k_table[i]);
+//    int k_table[size];
+//    k_table[0] = 0;
+//    for (int d = 1; d < size; d++) {
+//        int k_hop[size];
+//        int k=0;
+//        for (int i = 0; i <= size; i++){
+//            if (i <= d) k_hop[i] = 0;
+//            else k_hop[i] = size;
+//        }
+//        for (int depth = d+1; depth < size; depth ++) {
+//            for (int prefix_id = this->get_last(depth); prefix_id != -1; prefix_id = this->get_next(prefix_id))
+//            {
+//                // vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex, clique);
+//                if (prefix_id == d) {
+//                    k=1;
+//                    k_hop[depth]=1;
+//                    break;
+//                }
+//                k_hop[depth] = std::min(k_hop[depth],k_hop[prefix_id]+1);
+//            }
+//        }
+//        for (int depth = d+1; depth < size; depth++) {
+//            if (k_hop[depth] == size) continue;
+//            k = std::max(k,k_hop[depth]);
+//        }
+//        k_table[d]=k;
+//    }
+//    for (int i = 0; i < size; i++) {
+//        k_hop_matrix.push_back(k_table[i]);
+//    }
+    k_hop_matrix.resize(size);
+    for (int i = size-1; i>=0; i--) {
+
     }
 }
 
@@ -1786,6 +1789,7 @@ void Schedule::set_in_exclusion_optimize_redundancy() {
         in_exclusion_optimize_redundancy = 1;
     }
     else {
+        printf("else %d",tmp);
         Graph* complete;
         DataLoader* D = new DataLoader();
         assert(D->load_complete(complete, get_size()));

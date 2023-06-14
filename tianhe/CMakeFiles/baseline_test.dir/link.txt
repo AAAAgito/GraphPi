@@ -1,0 +1,1 @@
+mpicxx  -fopenmp  -O3 -Wall -fopenmp CMakeFiles/baseline_test.dir/baseline_test.cpp.o -o ../bin/baseline_test  -Wl,-rpath,/mnt/d/Github/GraphPi/libs ../libs/libgraph_mining.so 

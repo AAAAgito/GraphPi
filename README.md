@@ -21,7 +21,7 @@ Since GraphPi's performance model needs the number of triangles of the dataset, 
 When the dataset is prepared, we can load the dataset easily. First,  you need to define a pointer of a graph and a dataloader.
 
 ```cpp
-Graph *g;
+Graph *g;-
 Dataloader D;
 ```
 

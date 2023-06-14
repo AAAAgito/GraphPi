@@ -1,0 +1,1 @@
+mpicxx  -fopenmp  -O3 -Wall -fopenmp CMakeFiles/run_mpi_trivial.dir/run_mpi_trivial.cpp.o -o ../bin/run_mpi_trivial  -Wl,-rpath,/mnt/d/Github/GraphPi/libs ../libs/libgraph_mining.so 

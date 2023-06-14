@@ -1,0 +1,14 @@
+/home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/ninja/linux/x64/ninja -G Ninja -S /mnt/d/Github/GraphPi -B /mnt/d/Github/GraphPi/cmake-build-debug
+OPENMP FOUND
+CMAKE_C_FLAGS =  -fopenmp
+CMAKE_CXX_FLAGS =  -fopenmp
+CMAKE_CXX_FLAGS_RELEASE =  -O3 -Wall -fopenmp
+CMAKE_CXX_FLAGS_DEBUG =  -O0 -Wall -g -ggdb -fopenmp
+CMAKE_EXE_LINKER_FLAGS= 
+PROJECT BINARY DIR = /mnt/d/Github/GraphPi/cmake-build-debug
+INCLUDE DIRECTORIES = 
+CMAKE_BUILD_TYPE = RELEASE
+CMAKE_INSTALL_PREFIX = /usr/local
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/d/Github/GraphPi/cmake-build-debug

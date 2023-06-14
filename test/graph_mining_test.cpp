@@ -19,7 +19,7 @@ TEST(graph_mining_test, patents_triangle_counting) {
     DataLoader D;
     
     std::string type = "Patents";
-    std::string path = "/home/zms/patents_input";
+    std::string path = "/mnt/d/graph/patents_input";
     //std::string path = "/home/xuyi/input/4.in";
     DataType my_type;
     if(type == "Patents") my_type = DataType::Patents;
@@ -92,7 +92,7 @@ TEST(graph_mining_test, orkut_triangle_counting) {
     DataLoader D;
     
     std::string type = "Orkut";
-    std::string path = "/home/zms/orkut_input";
+    std::string path = "/mnt/d/graph/orkut_input";
     DataType my_type;
     my_type = DataType::Orkut;
     

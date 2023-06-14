@@ -1,0 +1,216 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"jsonFile" : "directory-.-RELEASE-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "src",
+					"jsonFile" : "directory-src-RELEASE-b6cf2213fc5053b67c22.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src",
+					"targetIndexes" : 
+					[
+						4,
+						7,
+						8,
+						9,
+						10
+					]
+				},
+				{
+					"build" : "test",
+					"jsonFile" : "directory-test-RELEASE-451c0598f41488bb20b9.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "test",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "tianhe",
+					"jsonFile" : "directory-tianhe-RELEASE-60df73818f39b7594a88.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "tianhe",
+					"targetIndexes" : 
+					[
+						0,
+						2,
+						3,
+						5,
+						6,
+						11,
+						12
+					]
+				}
+			],
+			"name" : "RELEASE",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					],
+					"name" : "GraphMining",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 3,
+					"id" : "all_schedule_test::@025df42a3b5b249b1c5b",
+					"jsonFile" : "target-all_schedule_test-RELEASE-3db83cf57eaa7e69cb8e.json",
+					"name" : "all_schedule_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "asgs_test::@36f028580bb02cc8272a",
+					"jsonFile" : "target-asgs_test-RELEASE-d081aa8f85fe16e66292.json",
+					"name" : "asgs_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "baseline_test::@025df42a3b5b249b1c5b",
+					"jsonFile" : "target-baseline_test-RELEASE-2477bf63f1b0952486ac.json",
+					"name" : "baseline_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "code_generator::@025df42a3b5b249b1c5b",
+					"jsonFile" : "target-code_generator-RELEASE-548db1fb6cf5ec0ddba8.json",
+					"name" : "code_generator",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "graph_mining::@145eef247bfb46b6828c",
+					"jsonFile" : "target-graph_mining-RELEASE-bacab0b5acc515410b79.json",
+					"name" : "graph_mining",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "in_exclusion_optimize_test::@025df42a3b5b249b1c5b",
+					"jsonFile" : "target-in_exclusion_optimize_test-RELEASE-9ac78b96a7deba484429.json",
+					"name" : "in_exclusion_optimize_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "performance_test::@025df42a3b5b249b1c5b",
+					"jsonFile" : "target-performance_test-RELEASE-802314656077f3b39d39.json",
+					"name" : "performance_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "restricts_printer::@145eef247bfb46b6828c",
+					"jsonFile" : "target-restricts_printer-RELEASE-7a5576649f9df212032a.json",
+					"name" : "restricts_printer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "run_general_tc::@145eef247bfb46b6828c",
+					"jsonFile" : "target-run_general_tc-RELEASE-3520b60db11c2a6d2701.json",
+					"name" : "run_general_tc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "run_mpi_trivial::@145eef247bfb46b6828c",
+					"jsonFile" : "target-run_mpi_trivial-RELEASE-4c020ca9e6ee3d96ba9b.json",
+					"name" : "run_mpi_trivial",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "schedule_printer::@145eef247bfb46b6828c",
+					"jsonFile" : "target-schedule_printer-RELEASE-3d81d82a61ea97d257e1.json",
+					"name" : "schedule_printer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "schedules_test::@025df42a3b5b249b1c5b",
+					"jsonFile" : "target-schedules_test-RELEASE-dffbc84e7f98577a0eda.json",
+					"name" : "schedules_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "unfold_test::@025df42a3b5b249b1c5b",
+					"jsonFile" : "target-unfold_test-RELEASE-979ab843681905bd5d17.json",
+					"name" : "unfold_test",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/mnt/d/Github/GraphPi/cmake-build-debug",
+		"source" : "/mnt/d/Github/GraphPi"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

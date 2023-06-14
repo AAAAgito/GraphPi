@@ -64,7 +64,6 @@ void VertexSet::intersection(const VertexSet& set0, const VertexSet& set1, int m
     int j = 0;
     int size0 = set0.get_size();
     int size1 = set1.get_size();
-
     // TODO : Try more kinds of calculation.
     // Like
     // while (true)
@@ -80,20 +79,15 @@ void VertexSet::intersection(const VertexSet& set0, const VertexSet& set1, int m
     if (clique)
         // TODO : Try more kinds of calculation.
         // For example, we can use binary search find the last element which is smaller than min_vertex, and set its index as loop_size.
-        while (i < size0 && j < size1)
-        {
-            if (data0 < data1)
-            {
+    {
+        while (i < size0 && j < size1) {
+            if (data0 < data1) {
                 if ((data0 = set0.get_data(++i)) >= min_vertex)
                     break;
-            }
-            else if (data0 > data1)
-            {
+            } else if (data0 > data1) {
                 if ((data1 = set1.get_data(++j)) >= min_vertex)
                     break;
-            }
-            else
-            {
+            } else {
                 push_back(data0);
                 if ((data0 = set0.get_data(++i)) >= min_vertex)
                     break;
@@ -101,22 +95,23 @@ void VertexSet::intersection(const VertexSet& set0, const VertexSet& set1, int m
                     break;
             }
         }
-    else
-        while (i < size0 && j < size1)
-        {
+    }
+    else {
+
+        while (i < size0 && j < size1) {
             data0 = set0.get_data(i);
             data1 = set1.get_data(j);
             if (data0 < data1)
                 ++i;
             else if (data0 > data1)
                 ++j;
-            else
-            {
+            else {
                 push_back(data0);
                 ++i;
                 ++j;
             }
         }
+    }
 }
 
 void VertexSet::intersection_with(const VertexSet& set1) {
@@ -158,8 +153,10 @@ void VertexSet::intersection_with(const VertexSet& set1) {
 void VertexSet::build_vertex_set(const Schedule& schedule, const VertexSet* vertex_set, int* input_data, int input_size, int prefix_id, int min_vertex, bool clique)
 {
     int father_id = schedule.get_father_prefix_id(prefix_id);
-    if (father_id == -1)
+    if (father_id == -1) {
         init(input_size, input_data);
+
+    }
     else
     {
         init();

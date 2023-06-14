@@ -1,0 +1,1 @@
+mpicxx  -fopenmp  -O3 -Wall -fopenmp CMakeFiles/performance_test.dir/performance_test.cpp.o -o ../bin/performance_test  -Wl,-rpath,/mnt/d/Github/GraphPi/libs ../libs/libgraph_mining.so 
