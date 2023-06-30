@@ -85,10 +85,6 @@ clean: tianhe/clean
 
 # Recursive "all" directory target.
 src/all: src/CMakeFiles/graph_mining.dir/all
-src/all: src/CMakeFiles/run_general_tc.dir/all
-src/all: src/CMakeFiles/run_mpi_trivial.dir/all
-src/all: src/CMakeFiles/schedule_printer.dir/all
-src/all: src/CMakeFiles/restricts_printer.dir/all
 .PHONY : src/all
 
 # Recursive "preinstall" directory target.
@@ -97,10 +93,6 @@ src/preinstall:
 
 # Recursive "clean" directory target.
 src/clean: src/CMakeFiles/graph_mining.dir/clean
-src/clean: src/CMakeFiles/run_general_tc.dir/clean
-src/clean: src/CMakeFiles/run_mpi_trivial.dir/clean
-src/clean: src/CMakeFiles/schedule_printer.dir/clean
-src/clean: src/CMakeFiles/restricts_printer.dir/clean
 .PHONY : src/clean
 
 #=============================================================================
@@ -122,13 +114,7 @@ test/clean: test/CMakeFiles/asgs_test.dir/clean
 # Directory level rules for directory tianhe
 
 # Recursive "all" directory target.
-tianhe/all: tianhe/CMakeFiles/baseline_test.dir/all
-tianhe/all: tianhe/CMakeFiles/in_exclusion_optimize_test.dir/all
-tianhe/all: tianhe/CMakeFiles/all_schedule_test.dir/all
-tianhe/all: tianhe/CMakeFiles/performance_test.dir/all
-tianhe/all: tianhe/CMakeFiles/schedules_test.dir/all
-tianhe/all: tianhe/CMakeFiles/code_generator.dir/all
-tianhe/all: tianhe/CMakeFiles/unfold_test.dir/all
+tianhe/all:
 .PHONY : tianhe/all
 
 # Recursive "preinstall" directory target.
@@ -136,13 +122,7 @@ tianhe/preinstall:
 .PHONY : tianhe/preinstall
 
 # Recursive "clean" directory target.
-tianhe/clean: tianhe/CMakeFiles/baseline_test.dir/clean
-tianhe/clean: tianhe/CMakeFiles/in_exclusion_optimize_test.dir/clean
-tianhe/clean: tianhe/CMakeFiles/all_schedule_test.dir/clean
-tianhe/clean: tianhe/CMakeFiles/performance_test.dir/clean
-tianhe/clean: tianhe/CMakeFiles/schedules_test.dir/clean
-tianhe/clean: tianhe/CMakeFiles/code_generator.dir/clean
-tianhe/clean: tianhe/CMakeFiles/unfold_test.dir/clean
+tianhe/clean:
 .PHONY : tianhe/clean
 
 #=============================================================================
@@ -152,7 +132,7 @@ tianhe/clean: tianhe/CMakeFiles/unfold_test.dir/clean
 src/CMakeFiles/graph_mining.dir/all:
 	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/depend
 	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=10,11,12,13,14,15,16,17,18,19,20,21 "Built target graph_mining"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15 "Built target graph_mining"
 .PHONY : src/CMakeFiles/graph_mining.dir/all
 
 # Build rule for subdir invocation for target.
@@ -172,117 +152,13 @@ src/CMakeFiles/graph_mining.dir/clean:
 .PHONY : src/CMakeFiles/graph_mining.dir/clean
 
 #=============================================================================
-# Target rules for target src/CMakeFiles/run_general_tc.dir
-
-# All Build rule for target.
-src/CMakeFiles/run_general_tc.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/depend
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=28,29 "Built target run_general_tc"
-.PHONY : src/CMakeFiles/run_general_tc.dir/all
-
-# Build rule for subdir invocation for target.
-src/CMakeFiles/run_general_tc.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/run_general_tc.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : src/CMakeFiles/run_general_tc.dir/rule
-
-# Convenience name for target.
-run_general_tc: src/CMakeFiles/run_general_tc.dir/rule
-.PHONY : run_general_tc
-
-# clean rule for target.
-src/CMakeFiles/run_general_tc.dir/clean:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/clean
-.PHONY : src/CMakeFiles/run_general_tc.dir/clean
-
-#=============================================================================
-# Target rules for target src/CMakeFiles/run_mpi_trivial.dir
-
-# All Build rule for target.
-src/CMakeFiles/run_mpi_trivial.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/depend
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=30,31 "Built target run_mpi_trivial"
-.PHONY : src/CMakeFiles/run_mpi_trivial.dir/all
-
-# Build rule for subdir invocation for target.
-src/CMakeFiles/run_mpi_trivial.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/run_mpi_trivial.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : src/CMakeFiles/run_mpi_trivial.dir/rule
-
-# Convenience name for target.
-run_mpi_trivial: src/CMakeFiles/run_mpi_trivial.dir/rule
-.PHONY : run_mpi_trivial
-
-# clean rule for target.
-src/CMakeFiles/run_mpi_trivial.dir/clean:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/clean
-.PHONY : src/CMakeFiles/run_mpi_trivial.dir/clean
-
-#=============================================================================
-# Target rules for target src/CMakeFiles/schedule_printer.dir
-
-# All Build rule for target.
-src/CMakeFiles/schedule_printer.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/depend
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=32,33 "Built target schedule_printer"
-.PHONY : src/CMakeFiles/schedule_printer.dir/all
-
-# Build rule for subdir invocation for target.
-src/CMakeFiles/schedule_printer.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/schedule_printer.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : src/CMakeFiles/schedule_printer.dir/rule
-
-# Convenience name for target.
-schedule_printer: src/CMakeFiles/schedule_printer.dir/rule
-.PHONY : schedule_printer
-
-# clean rule for target.
-src/CMakeFiles/schedule_printer.dir/clean:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/clean
-.PHONY : src/CMakeFiles/schedule_printer.dir/clean
-
-#=============================================================================
-# Target rules for target src/CMakeFiles/restricts_printer.dir
-
-# All Build rule for target.
-src/CMakeFiles/restricts_printer.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/depend
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=26,27 "Built target restricts_printer"
-.PHONY : src/CMakeFiles/restricts_printer.dir/all
-
-# Build rule for subdir invocation for target.
-src/CMakeFiles/restricts_printer.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/restricts_printer.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : src/CMakeFiles/restricts_printer.dir/rule
-
-# Convenience name for target.
-restricts_printer: src/CMakeFiles/restricts_printer.dir/rule
-.PHONY : restricts_printer
-
-# clean rule for target.
-src/CMakeFiles/restricts_printer.dir/clean:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/clean
-.PHONY : src/CMakeFiles/restricts_printer.dir/clean
-
-#=============================================================================
 # Target rules for target test/CMakeFiles/asgs_test.dir
 
 # All Build rule for target.
 test/CMakeFiles/asgs_test.dir/all: src/CMakeFiles/graph_mining.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/asgs_test.dir/build.make test/CMakeFiles/asgs_test.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/asgs_test.dir/build.make test/CMakeFiles/asgs_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=3,4,5 "Built target asgs_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=1,2,3 "Built target asgs_test"
 .PHONY : test/CMakeFiles/asgs_test.dir/all
 
 # Build rule for subdir invocation for target.
@@ -300,188 +176,6 @@ asgs_test: test/CMakeFiles/asgs_test.dir/rule
 test/CMakeFiles/asgs_test.dir/clean:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/asgs_test.dir/build.make test/CMakeFiles/asgs_test.dir/clean
 .PHONY : test/CMakeFiles/asgs_test.dir/clean
-
-#=============================================================================
-# Target rules for target tianhe/CMakeFiles/baseline_test.dir
-
-# All Build rule for target.
-tianhe/CMakeFiles/baseline_test.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/baseline_test.dir/build.make tianhe/CMakeFiles/baseline_test.dir/depend
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/baseline_test.dir/build.make tianhe/CMakeFiles/baseline_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=6,7 "Built target baseline_test"
-.PHONY : tianhe/CMakeFiles/baseline_test.dir/all
-
-# Build rule for subdir invocation for target.
-tianhe/CMakeFiles/baseline_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tianhe/CMakeFiles/baseline_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : tianhe/CMakeFiles/baseline_test.dir/rule
-
-# Convenience name for target.
-baseline_test: tianhe/CMakeFiles/baseline_test.dir/rule
-.PHONY : baseline_test
-
-# clean rule for target.
-tianhe/CMakeFiles/baseline_test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/baseline_test.dir/build.make tianhe/CMakeFiles/baseline_test.dir/clean
-.PHONY : tianhe/CMakeFiles/baseline_test.dir/clean
-
-#=============================================================================
-# Target rules for target tianhe/CMakeFiles/in_exclusion_optimize_test.dir
-
-# All Build rule for target.
-tianhe/CMakeFiles/in_exclusion_optimize_test.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/in_exclusion_optimize_test.dir/build.make tianhe/CMakeFiles/in_exclusion_optimize_test.dir/depend
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/in_exclusion_optimize_test.dir/build.make tianhe/CMakeFiles/in_exclusion_optimize_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=22,23 "Built target in_exclusion_optimize_test"
-.PHONY : tianhe/CMakeFiles/in_exclusion_optimize_test.dir/all
-
-# Build rule for subdir invocation for target.
-tianhe/CMakeFiles/in_exclusion_optimize_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tianhe/CMakeFiles/in_exclusion_optimize_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : tianhe/CMakeFiles/in_exclusion_optimize_test.dir/rule
-
-# Convenience name for target.
-in_exclusion_optimize_test: tianhe/CMakeFiles/in_exclusion_optimize_test.dir/rule
-.PHONY : in_exclusion_optimize_test
-
-# clean rule for target.
-tianhe/CMakeFiles/in_exclusion_optimize_test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/in_exclusion_optimize_test.dir/build.make tianhe/CMakeFiles/in_exclusion_optimize_test.dir/clean
-.PHONY : tianhe/CMakeFiles/in_exclusion_optimize_test.dir/clean
-
-#=============================================================================
-# Target rules for target tianhe/CMakeFiles/all_schedule_test.dir
-
-# All Build rule for target.
-tianhe/CMakeFiles/all_schedule_test.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/all_schedule_test.dir/build.make tianhe/CMakeFiles/all_schedule_test.dir/depend
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/all_schedule_test.dir/build.make tianhe/CMakeFiles/all_schedule_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=1,2 "Built target all_schedule_test"
-.PHONY : tianhe/CMakeFiles/all_schedule_test.dir/all
-
-# Build rule for subdir invocation for target.
-tianhe/CMakeFiles/all_schedule_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tianhe/CMakeFiles/all_schedule_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : tianhe/CMakeFiles/all_schedule_test.dir/rule
-
-# Convenience name for target.
-all_schedule_test: tianhe/CMakeFiles/all_schedule_test.dir/rule
-.PHONY : all_schedule_test
-
-# clean rule for target.
-tianhe/CMakeFiles/all_schedule_test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/all_schedule_test.dir/build.make tianhe/CMakeFiles/all_schedule_test.dir/clean
-.PHONY : tianhe/CMakeFiles/all_schedule_test.dir/clean
-
-#=============================================================================
-# Target rules for target tianhe/CMakeFiles/performance_test.dir
-
-# All Build rule for target.
-tianhe/CMakeFiles/performance_test.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/performance_test.dir/build.make tianhe/CMakeFiles/performance_test.dir/depend
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/performance_test.dir/build.make tianhe/CMakeFiles/performance_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=24,25 "Built target performance_test"
-.PHONY : tianhe/CMakeFiles/performance_test.dir/all
-
-# Build rule for subdir invocation for target.
-tianhe/CMakeFiles/performance_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tianhe/CMakeFiles/performance_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : tianhe/CMakeFiles/performance_test.dir/rule
-
-# Convenience name for target.
-performance_test: tianhe/CMakeFiles/performance_test.dir/rule
-.PHONY : performance_test
-
-# clean rule for target.
-tianhe/CMakeFiles/performance_test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/performance_test.dir/build.make tianhe/CMakeFiles/performance_test.dir/clean
-.PHONY : tianhe/CMakeFiles/performance_test.dir/clean
-
-#=============================================================================
-# Target rules for target tianhe/CMakeFiles/schedules_test.dir
-
-# All Build rule for target.
-tianhe/CMakeFiles/schedules_test.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/schedules_test.dir/build.make tianhe/CMakeFiles/schedules_test.dir/depend
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/schedules_test.dir/build.make tianhe/CMakeFiles/schedules_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=34,35 "Built target schedules_test"
-.PHONY : tianhe/CMakeFiles/schedules_test.dir/all
-
-# Build rule for subdir invocation for target.
-tianhe/CMakeFiles/schedules_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tianhe/CMakeFiles/schedules_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : tianhe/CMakeFiles/schedules_test.dir/rule
-
-# Convenience name for target.
-schedules_test: tianhe/CMakeFiles/schedules_test.dir/rule
-.PHONY : schedules_test
-
-# clean rule for target.
-tianhe/CMakeFiles/schedules_test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/schedules_test.dir/build.make tianhe/CMakeFiles/schedules_test.dir/clean
-.PHONY : tianhe/CMakeFiles/schedules_test.dir/clean
-
-#=============================================================================
-# Target rules for target tianhe/CMakeFiles/code_generator.dir
-
-# All Build rule for target.
-tianhe/CMakeFiles/code_generator.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/code_generator.dir/build.make tianhe/CMakeFiles/code_generator.dir/depend
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/code_generator.dir/build.make tianhe/CMakeFiles/code_generator.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=8,9 "Built target code_generator"
-.PHONY : tianhe/CMakeFiles/code_generator.dir/all
-
-# Build rule for subdir invocation for target.
-tianhe/CMakeFiles/code_generator.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tianhe/CMakeFiles/code_generator.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : tianhe/CMakeFiles/code_generator.dir/rule
-
-# Convenience name for target.
-code_generator: tianhe/CMakeFiles/code_generator.dir/rule
-.PHONY : code_generator
-
-# clean rule for target.
-tianhe/CMakeFiles/code_generator.dir/clean:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/code_generator.dir/build.make tianhe/CMakeFiles/code_generator.dir/clean
-.PHONY : tianhe/CMakeFiles/code_generator.dir/clean
-
-#=============================================================================
-# Target rules for target tianhe/CMakeFiles/unfold_test.dir
-
-# All Build rule for target.
-tianhe/CMakeFiles/unfold_test.dir/all: src/CMakeFiles/graph_mining.dir/all
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/unfold_test.dir/build.make tianhe/CMakeFiles/unfold_test.dir/depend
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/unfold_test.dir/build.make tianhe/CMakeFiles/unfold_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=36,37 "Built target unfold_test"
-.PHONY : tianhe/CMakeFiles/unfold_test.dir/all
-
-# Build rule for subdir invocation for target.
-tianhe/CMakeFiles/unfold_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 14
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tianhe/CMakeFiles/unfold_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/d/Github/GraphPi/CMakeFiles 0
-.PHONY : tianhe/CMakeFiles/unfold_test.dir/rule
-
-# Convenience name for target.
-unfold_test: tianhe/CMakeFiles/unfold_test.dir/rule
-.PHONY : unfold_test
-
-# clean rule for target.
-tianhe/CMakeFiles/unfold_test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/unfold_test.dir/build.make tianhe/CMakeFiles/unfold_test.dir/clean
-.PHONY : tianhe/CMakeFiles/unfold_test.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

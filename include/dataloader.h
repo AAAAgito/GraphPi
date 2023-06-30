@@ -47,13 +47,21 @@ public:
 
     static void gen_map_file(int* key, int* value, int size, const std::string& path);
 
+    static void gen_map_file(unsigned int* key, int* value, int size, const std::string& path);
+
     static void load_map_data(int* key, int* value, int size, const std::string& path);
+
+    static void load_map_data(unsigned int* key, int* value, int size, const std::string& path);
+
+    static void gen_block_size_file(int* key, int* value, int* value2, int size, const std::string& path);
+
+    static void load_block_size_data(int* key, int* value, int* value2, int size, const std::string& path);
 
     static void gen_block_file(int* vid, unsigned int* vertex, int* edge, int v_len, unsigned int e_len, const std::string& path);
 
     static void load_block_data(int* vid, unsigned int* vertex, int* edge, int &v_len, unsigned int &e_len, const std::string& path);
 
-
+    static void load_block_data_aggregate(int *data, int size, const std::string& path);
 
 private:
     static bool cmp_pair(std::pair<int,int>a, std::pair<int,int>b);

@@ -16,6 +16,7 @@ void VertexSet::init()
         size = 0;
         allocate = true;
         data = new int[max_intersection_size];
+//        printf("addr %d insert\n",data);
     }
 }
 
@@ -29,6 +30,7 @@ void VertexSet::init(int input_size)
         size = 0;
         allocate = true;
         data = new int[input_size];
+//        printf("addr %d insert\n",data);
     }
 }
 
@@ -40,6 +42,15 @@ void VertexSet::init(int input_size, int* input_data)
     data = input_data;
     allocate = false;
 }
+void VertexSet::extern_init(int input_size, int* input_data)
+{
+    if (allocate == true && data != nullptr)
+        delete[] data;
+    data = new int[input_size];
+    size = input_size;
+    copy(size,input_data);
+    allocate = false;
+}
 
 void VertexSet::copy(int input_size, const int* input_data)
 {
@@ -49,8 +60,10 @@ void VertexSet::copy(int input_size, const int* input_data)
 
 VertexSet::~VertexSet()
 {
-    if (allocate== true && data != nullptr)
+    if (allocate== true && data != nullptr) {
+//        printf("addr %d release\n", data);
         delete[] data;
+    }
 }
 
 void VertexSet::intersection(const VertexSet& set0, const VertexSet& set1, int min_vertex, bool clique)
@@ -166,6 +179,7 @@ void VertexSet::build_vertex_set(const Schedule& schedule, const VertexSet* vert
     }
 }
 
+
 void VertexSet::insert_ans_sort(int val)
 {
     int i;
@@ -205,7 +219,9 @@ int VertexSet::unorderd_subtraction_size(const VertexSet& set0, const VertexSet&
     return ret;
 }
 
-void VertexSet::deepcopy(VertexSet v) {
-    this->init(v.size);
-    this->copy(v.size,v.data);
+void VertexSet::deepcopy(VertexSet& v) {
+    if (v.size > 0) {
+        this->init(max_intersection_size);
+        this->copy(v.size, v.data);
+    }
 }

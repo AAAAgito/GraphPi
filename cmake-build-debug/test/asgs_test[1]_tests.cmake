@@ -1,3 +1,5 @@
-add_test([=[testMatching.match_in_global]=]  /mnt/d/Github/GraphPi/cmake-build-debug/bin/asgs_test [==[--gtest_filter=testMatching.match_in_global]==] --gtest_also_run_disabled_tests)
-set_tests_properties([=[testMatching.match_in_global]=]  PROPERTIES WORKING_DIRECTORY /mnt/d/Github/GraphPi/cmake-build-debug/test SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
-set(  asgs_test_TESTS testMatching.match_in_global)
+add_test([=[testMatching.match_in_partition_r]=]  /mnt/d/Github/GraphPi/cmake-build-debug/bin/asgs_test [==[--gtest_filter=testMatching.match_in_partition_r]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[testMatching.match_in_partition_r]=]  PROPERTIES WORKING_DIRECTORY /mnt/d/Github/GraphPi/cmake-build-debug/test SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+add_test([=[testMatching.match_in_partition_c]=]  /mnt/d/Github/GraphPi/cmake-build-debug/bin/asgs_test [==[--gtest_filter=testMatching.match_in_partition_c]==] --gtest_also_run_disabled_tests)
+set_tests_properties([=[testMatching.match_in_partition_c]=]  PROPERTIES WORKING_DIRECTORY /mnt/d/Github/GraphPi/cmake-build-debug/test SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
+set(  asgs_test_TESTS testMatching.match_in_partition_r testMatching.match_in_partition_c)

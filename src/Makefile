@@ -130,62 +130,6 @@ graph_mining/fast:
 	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/build
 .PHONY : graph_mining/fast
 
-# Convenience name for target.
-src/CMakeFiles/run_general_tc.dir/rule:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/run_general_tc.dir/rule
-.PHONY : src/CMakeFiles/run_general_tc.dir/rule
-
-# Convenience name for target.
-run_general_tc: src/CMakeFiles/run_general_tc.dir/rule
-.PHONY : run_general_tc
-
-# fast build rule for target.
-run_general_tc/fast:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/build
-.PHONY : run_general_tc/fast
-
-# Convenience name for target.
-src/CMakeFiles/run_mpi_trivial.dir/rule:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/run_mpi_trivial.dir/rule
-.PHONY : src/CMakeFiles/run_mpi_trivial.dir/rule
-
-# Convenience name for target.
-run_mpi_trivial: src/CMakeFiles/run_mpi_trivial.dir/rule
-.PHONY : run_mpi_trivial
-
-# fast build rule for target.
-run_mpi_trivial/fast:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/build
-.PHONY : run_mpi_trivial/fast
-
-# Convenience name for target.
-src/CMakeFiles/schedule_printer.dir/rule:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/schedule_printer.dir/rule
-.PHONY : src/CMakeFiles/schedule_printer.dir/rule
-
-# Convenience name for target.
-schedule_printer: src/CMakeFiles/schedule_printer.dir/rule
-.PHONY : schedule_printer
-
-# fast build rule for target.
-schedule_printer/fast:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/build
-.PHONY : schedule_printer/fast
-
-# Convenience name for target.
-src/CMakeFiles/restricts_printer.dir/rule:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/restricts_printer.dir/rule
-.PHONY : src/CMakeFiles/restricts_printer.dir/rule
-
-# Convenience name for target.
-restricts_printer: src/CMakeFiles/restricts_printer.dir/rule
-.PHONY : restricts_printer
-
-# fast build rule for target.
-restricts_printer/fast:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/build
-.PHONY : restricts_printer/fast
-
 TestClass.o: TestClass.cpp.o
 .PHONY : TestClass.o
 
@@ -402,78 +346,6 @@ prefix.cpp.s:
 	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/prefix.cpp.s
 .PHONY : prefix.cpp.s
 
-restricts_printer.o: restricts_printer.cpp.o
-.PHONY : restricts_printer.o
-
-# target to build an object file
-restricts_printer.cpp.o:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/restricts_printer.cpp.o
-.PHONY : restricts_printer.cpp.o
-
-restricts_printer.i: restricts_printer.cpp.i
-.PHONY : restricts_printer.i
-
-# target to preprocess a source file
-restricts_printer.cpp.i:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/restricts_printer.cpp.i
-.PHONY : restricts_printer.cpp.i
-
-restricts_printer.s: restricts_printer.cpp.s
-.PHONY : restricts_printer.s
-
-# target to generate assembly for a file
-restricts_printer.cpp.s:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/restricts_printer.cpp.s
-.PHONY : restricts_printer.cpp.s
-
-run_general_tc.o: run_general_tc.cpp.o
-.PHONY : run_general_tc.o
-
-# target to build an object file
-run_general_tc.cpp.o:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/run_general_tc.cpp.o
-.PHONY : run_general_tc.cpp.o
-
-run_general_tc.i: run_general_tc.cpp.i
-.PHONY : run_general_tc.i
-
-# target to preprocess a source file
-run_general_tc.cpp.i:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/run_general_tc.cpp.i
-.PHONY : run_general_tc.cpp.i
-
-run_general_tc.s: run_general_tc.cpp.s
-.PHONY : run_general_tc.s
-
-# target to generate assembly for a file
-run_general_tc.cpp.s:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/run_general_tc.cpp.s
-.PHONY : run_general_tc.cpp.s
-
-run_mpi_trivial.o: run_mpi_trivial.cpp.o
-.PHONY : run_mpi_trivial.o
-
-# target to build an object file
-run_mpi_trivial.cpp.o:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/run_mpi_trivial.cpp.o
-.PHONY : run_mpi_trivial.cpp.o
-
-run_mpi_trivial.i: run_mpi_trivial.cpp.i
-.PHONY : run_mpi_trivial.i
-
-# target to preprocess a source file
-run_mpi_trivial.cpp.i:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/run_mpi_trivial.cpp.i
-.PHONY : run_mpi_trivial.cpp.i
-
-run_mpi_trivial.s: run_mpi_trivial.cpp.s
-.PHONY : run_mpi_trivial.s
-
-# target to generate assembly for a file
-run_mpi_trivial.cpp.s:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/run_mpi_trivial.cpp.s
-.PHONY : run_mpi_trivial.cpp.s
-
 schedule.o: schedule.cpp.o
 .PHONY : schedule.o
 
@@ -497,30 +369,6 @@ schedule.s: schedule.cpp.s
 schedule.cpp.s:
 	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/schedule.cpp.s
 .PHONY : schedule.cpp.s
-
-schedule_printer.o: schedule_printer.cpp.o
-.PHONY : schedule_printer.o
-
-# target to build an object file
-schedule_printer.cpp.o:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/schedule_printer.cpp.o
-.PHONY : schedule_printer.cpp.o
-
-schedule_printer.i: schedule_printer.cpp.i
-.PHONY : schedule_printer.i
-
-# target to preprocess a source file
-schedule_printer.cpp.i:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/schedule_printer.cpp.i
-.PHONY : schedule_printer.cpp.i
-
-schedule_printer.s: schedule_printer.cpp.s
-.PHONY : schedule_printer.s
-
-# target to generate assembly for a file
-schedule_printer.cpp.s:
-	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/schedule_printer.cpp.s
-.PHONY : schedule_printer.cpp.s
 
 vertex_set.o: vertex_set.cpp.o
 .PHONY : vertex_set.o
@@ -555,10 +403,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... graph_mining"
-	@echo "... restricts_printer"
-	@echo "... run_general_tc"
-	@echo "... run_mpi_trivial"
-	@echo "... schedule_printer"
 	@echo "... TestClass.o"
 	@echo "... TestClass.i"
 	@echo "... TestClass.s"
@@ -586,21 +430,9 @@ help:
 	@echo "... prefix.o"
 	@echo "... prefix.i"
 	@echo "... prefix.s"
-	@echo "... restricts_printer.o"
-	@echo "... restricts_printer.i"
-	@echo "... restricts_printer.s"
-	@echo "... run_general_tc.o"
-	@echo "... run_general_tc.i"
-	@echo "... run_general_tc.s"
-	@echo "... run_mpi_trivial.o"
-	@echo "... run_mpi_trivial.i"
-	@echo "... run_mpi_trivial.s"
 	@echo "... schedule.o"
 	@echo "... schedule.i"
 	@echo "... schedule.s"
-	@echo "... schedule_printer.o"
-	@echo "... schedule_printer.i"
-	@echo "... schedule_printer.s"
 	@echo "... vertex_set.o"
 	@echo "... vertex_set.i"
 	@echo "... vertex_set.s"

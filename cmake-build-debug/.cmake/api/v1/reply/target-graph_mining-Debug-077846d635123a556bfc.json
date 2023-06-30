@@ -36,7 +36,7 @@
 			{
 				"command" : 1,
 				"file" : 1,
-				"line" : 13,
+				"line" : 14,
 				"parent" : 2
 			},
 			{
@@ -53,7 +53,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always"
+					"fragment" : " -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always"
 				},
 				{
 					"backtrace" : 3,

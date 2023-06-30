@@ -322,8 +322,6 @@ void DataLoader::gen_block_file(int* vid, unsigned int *vertex, int *edge, int v
     std::fstream binaryIo;
     binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
     binaryIo.seekp(0);
-    binaryIo.write((char *)&v_len, sizeof(int));
-    binaryIo.write((char *)&e_len, sizeof(int));
 
     binaryIo.write((char*)vid, v_len * sizeof(vid[0]));
     binaryIo.write((char*)vertex, v_len * sizeof(vertex[0]));
@@ -335,11 +333,16 @@ void DataLoader::gen_block_file(int* vid, unsigned int *vertex, int *edge, int v
 void DataLoader::load_block_data(int *vid, unsigned int *vertex, int *edge, int &v_len, unsigned int &e_len, const std::string& path) {
     std::fstream binaryIo;
     binaryIo.open(path, std::ios::in | std::ios::binary);
-    binaryIo.read(reinterpret_cast<char *>(&v_len), sizeof(int));
-    binaryIo.read(reinterpret_cast<char *>(&e_len), sizeof(int));
     binaryIo.read((char*)vid, v_len * sizeof(int));
     binaryIo.read((char*)vertex, v_len * sizeof(unsigned int));
     binaryIo.read((char*)edge, e_len * sizeof(int));
+    binaryIo.close();
+}
+
+void DataLoader::load_block_data_aggregate(int *data, int size, const std::string& path) {
+    std::ifstream binaryIo;
+    binaryIo.open(path, std::ios::binary);
+    binaryIo.read((char*)data, size * sizeof(int));
     binaryIo.close();
 }
 
@@ -351,10 +354,51 @@ void DataLoader::gen_map_file(int* key, int* value, int size, const std::string&
     binaryIo.write((char*)key, size * sizeof(key[0]));
     binaryIo.write((char*)value, size * sizeof(value[0]));
     binaryIo.close();
+}
 
+
+void DataLoader::gen_map_file(unsigned int* key, int* value, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char*)key, size * sizeof(key[0]));
+    binaryIo.write((char*)value, size * sizeof(value[0]));
+    binaryIo.close();
+}
+
+void DataLoader::gen_block_size_file(int* key, int* value, int* value2, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char*)key, size * sizeof(key[0]));
+    binaryIo.write((char*)value, size * sizeof(value[0]));
+    binaryIo.write((char*)value2, size * sizeof(value[0]));
+    binaryIo.close();
+}
+
+void DataLoader::load_block_size_data(int* key, int* value, int* value2, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::in| std::ios::binary);
+    binaryIo.read((char*)key, size * sizeof(int));
+    binaryIo.read((char*)value, size * sizeof(int));
+    binaryIo.read((char*)value2, size * sizeof(int));
+    binaryIo.close();
 }
 
 void DataLoader::load_map_data(int* key, int* value, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::in| std::ios::binary);
+    binaryIo.read((char*)key, size * sizeof(int));
+    binaryIo.read((char*)value, size * sizeof(int));
+    binaryIo.close();
+
+}
+
+void DataLoader::load_map_data(unsigned int* key, int* value, int size, const std::string& path) {
 
     std::fstream binaryIo;
     binaryIo.open(path, std::ios::in| std::ios::binary);

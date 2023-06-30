@@ -4,6 +4,7 @@
 #include "prefix.h"
 #include "disjoint_set_union.h"
 
+#include <queue>
 #include <vector>
 
 class Schedule

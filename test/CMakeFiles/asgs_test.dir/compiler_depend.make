@@ -44,7 +44,6 @@ test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: test/asgs_testing.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
   /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
-  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/c++/9/bits/ios_base.h \
   /usr/include/c++/9/ext/atomicity.h \
   /usr/include/x86_64-linux-gnu/c++/9/bits/gthr.h \
@@ -138,11 +137,8 @@ test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: test/asgs_testing.cpp \
   /usr/include/x86_64-linux-gnu/bits/select.h \
   /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h \
-  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/alloca.h \
-  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
-  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
   /usr/include/c++/9/bits/std_abs.h \
   /usr/include/c++/9/cstdio \
   /usr/include/stdio.h \
@@ -152,8 +148,6 @@ test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: test/asgs_testing.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
   /usr/include/x86_64-linux-gnu/bits/sys_errlist.h \
-  /usr/include/x86_64-linux-gnu/bits/stdio.h \
-  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/c++/9/cerrno \
   /usr/include/errno.h \
   /usr/include/x86_64-linux-gnu/bits/errno.h \
@@ -238,8 +232,6 @@ test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: test/asgs_testing.cpp \
   /usr/include/c++/9/stdlib.h \
   /usr/include/string.h \
   /usr/include/strings.h \
-  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
-  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
   /usr/include/c++/9/iostream \
   /usr/include/x86_64-linux-gnu/sys/stat.h \
   /usr/include/x86_64-linux-gnu/bits/stat.h \
@@ -267,7 +259,6 @@ test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: test/asgs_testing.cpp \
   /usr/include/x86_64-linux-gnu/bits/confname.h \
   /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
   /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
-  /usr/include/x86_64-linux-gnu/bits/unistd.h \
   /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
   /usr/include/regex.h \
   /usr/include/c++/9/condition_variable \
@@ -343,6 +334,11 @@ test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: test/asgs_testing.cpp \
   include/pattern.h \
   include/prefix.h \
   include/disjoint_set_union.h \
+  /usr/include/c++/9/queue \
+  /usr/include/c++/9/deque \
+  /usr/include/c++/9/bits/stl_deque.h \
+  /usr/include/c++/9/bits/deque.tcc \
+  /usr/include/c++/9/bits/stl_queue.h \
   include/vertex_set.h \
   /usr/include/c++/9/algorithm \
   /usr/include/c++/9/pstl/glue_algorithm_defs.h \
@@ -396,7 +392,6 @@ test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o: test/gtest_main.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
   /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
-  /usr/include/x86_64-linux-gnu/bits/wchar2.h \
   /usr/include/c++/9/bits/ios_base.h \
   /usr/include/c++/9/ext/atomicity.h \
   /usr/include/x86_64-linux-gnu/c++/9/bits/gthr.h \
@@ -490,11 +485,8 @@ test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o: test/gtest_main.cpp \
   /usr/include/x86_64-linux-gnu/bits/select.h \
   /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h \
   /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h \
-  /usr/include/x86_64-linux-gnu/bits/select2.h \
   /usr/include/alloca.h \
-  /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
   /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
-  /usr/include/x86_64-linux-gnu/bits/stdlib.h \
   /usr/include/c++/9/bits/std_abs.h \
   /usr/include/c++/9/cstdio \
   /usr/include/stdio.h \
@@ -504,8 +496,6 @@ test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o: test/gtest_main.cpp \
   /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
   /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
   /usr/include/x86_64-linux-gnu/bits/sys_errlist.h \
-  /usr/include/x86_64-linux-gnu/bits/stdio.h \
-  /usr/include/x86_64-linux-gnu/bits/stdio2.h \
   /usr/include/c++/9/cerrno \
   /usr/include/errno.h \
   /usr/include/x86_64-linux-gnu/bits/errno.h \
@@ -590,8 +580,6 @@ test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o: test/gtest_main.cpp \
   /usr/include/c++/9/stdlib.h \
   /usr/include/string.h \
   /usr/include/strings.h \
-  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
-  /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
   /usr/include/c++/9/iostream \
   /usr/include/x86_64-linux-gnu/sys/stat.h \
   /usr/include/x86_64-linux-gnu/bits/stat.h \
@@ -619,7 +607,6 @@ test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o: test/gtest_main.cpp \
   /usr/include/x86_64-linux-gnu/bits/confname.h \
   /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
   /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
-  /usr/include/x86_64-linux-gnu/bits/unistd.h \
   /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
   /usr/include/regex.h \
   /usr/include/c++/9/condition_variable \
@@ -713,6 +700,12 @@ include/common.h:
 
 include/vertex_set.h:
 
+/usr/include/c++/9/bits/stl_deque.h:
+
+/usr/include/c++/9/deque:
+
+/usr/include/c++/9/queue:
+
 include/disjoint_set_union.h:
 
 include/graph.h:
@@ -730,6 +723,8 @@ include/dataloader.h:
 /usr/include/c++/9/iterator:
 
 /usr/local/include/gtest/internal/custom/gtest-printers.h:
+
+/usr/include/c++/9/cxxabi.h:
 
 /usr/local/include/gtest/internal/gtest-type-util.h:
 
@@ -805,21 +800,7 @@ include/pattern.h:
 
 /usr/include/regex.h:
 
-/usr/include/x86_64-linux-gnu/bits/unistd.h:
-
 /usr/include/x86_64-linux-gnu/bits/getopt_core.h:
-
-/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
-
-/usr/include/x86_64-linux-gnu/bits/confname.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
-
-/usr/include/unistd.h:
-
-/usr/include/c++/9/unordered_map:
-
-/usr/local/include/gtest/internal/custom/gtest-port.h:
 
 /usr/include/c++/9/ext/string_conversions.h:
 
@@ -881,6 +862,8 @@ include/pattern.h:
 
 /usr/include/c++/9/type_traits:
 
+/usr/include/c++/9/bits/move.h:
+
 /usr/include/c++/9/bits/stl_pair.h:
 
 /usr/include/c++/9/bits/quoted_string.h:
@@ -892,6 +875,8 @@ include/pattern.h:
 /usr/include/c++/9/bits/functexcept.h:
 
 /usr/include/c++/9/bits/locale_facets.h:
+
+/usr/include/x86_64-linux-gnu/bits/confname.h:
 
 /usr/include/c++/9/bits/stl_algobase.h:
 
@@ -924,6 +909,8 @@ include/pattern.h:
 /usr/include/c++/9/limits:
 
 /usr/include/c++/9/bits/stl_vector.h:
+
+/usr/include/x86_64-linux-gnu/bits/getopt_posix.h:
 
 /usr/include/c++/9/bits/locale_facets_nonio.h:
 
@@ -969,20 +956,6 @@ include/pattern.h:
 
 /usr/include/c++/9/bits/shared_ptr_atomic.h:
 
-/usr/local/include/gtest/internal/gtest-param-util.h:
-
-/usr/include/c++/9/cstdint:
-
-/usr/local/include/gtest/gtest-assertion-result.h:
-
-/usr/include/x86_64-linux-gnu/c++/9/bits/error_constants.h:
-
-/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
-
-/usr/include/c++/9/bits/postypes.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/error_t.h:
-
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
 
 /usr/include/c++/9/bits/basic_string.tcc:
@@ -1004,6 +977,8 @@ include/pattern.h:
 /usr/local/include/gtest/internal/gtest-filepath.h:
 
 /usr/include/x86_64-linux-gnu/bits/sched.h:
+
+/usr/include/c++/9/bits/deque.tcc:
 
 /usr/include/c++/9/bits/stl_uninitialized.h:
 
@@ -1027,11 +1002,9 @@ include/pattern.h:
 
 /usr/include/c++/9/iomanip:
 
+/usr/include/c++/9/bits/stl_queue.h:
+
 /usr/include/x86_64-linux-gnu/c++/9/bits/messages_members.h:
-
-/usr/include/c++/9/bits/move.h:
-
-/usr/include/x86_64-linux-gnu/bits/wchar2.h:
 
 /usr/include/c++/9/bits/locale_facets_nonio.tcc:
 
@@ -1041,17 +1014,17 @@ include/pattern.h:
 
 /usr/include/linux/types.h:
 
+/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
+
+/usr/include/c++/9/ext/atomicity.h:
+
 /usr/include/x86_64-linux-gnu/sys/wait.h:
 
 /usr/include/c++/9/bits/stl_iterator_base_funcs.h:
 
 /usr/include/x86_64-linux-gnu/bits/timesize.h:
 
-/usr/include/x86_64-linux-gnu/bits/environments.h:
-
-/usr/include/x86_64-linux-gnu/bits/wchar.h:
-
-/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
+/usr/include/c++/9/bits/stl_iterator_base_types.h:
 
 /usr/include/sched.h:
 
@@ -1065,9 +1038,19 @@ include/pattern.h:
 
 /usr/include/x86_64-linux-gnu/c++/9/bits/c++config.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/FILE.h:
+/usr/local/include/gtest/internal/gtest-param-util.h:
 
-/usr/include/c++/9/ext/atomicity.h:
+/usr/include/c++/9/cstdint:
+
+/usr/local/include/gtest/gtest-assertion-result.h:
+
+/usr/include/x86_64-linux-gnu/c++/9/bits/error_constants.h:
+
+/usr/include/x86_64-linux-gnu/bits/pthreadtypes.h:
+
+/usr/include/c++/9/bits/postypes.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/error_t.h:
 
 /usr/include/c++/9/backward/binders.h:
 
@@ -1129,12 +1112,6 @@ test/asgs_testing.cpp:
 
 /usr/include/c++/9/bits/ostream_insert.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h:
-
-/usr/include/c++/9/cxxabi.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdio2.h:
-
 /usr/include/c++/9/bits/refwrap.h:
 
 /usr/include/stdc-predef.h:
@@ -1144,10 +1121,6 @@ test/asgs_testing.cpp:
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
 
 /usr/include/c++/9/streambuf:
-
-/usr/local/include/gtest/internal/gtest-port-arch.h:
-
-/usr/include/c++/9/bits/memoryfwd.h:
 
 /usr/include/c++/9/cwchar:
 
@@ -1165,9 +1138,9 @@ test/asgs_testing.cpp:
 
 /usr/include/c++/9/bits/vector.tcc:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
-
 /usr/lib/gcc/x86_64-linux-gnu/9/include/stdint.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/9/include/stdarg.h:
 
@@ -1185,15 +1158,13 @@ test/asgs_testing.cpp:
 
 /usr/include/asm-generic/bitsperlong.h:
 
-/usr/include/x86_64-linux-gnu/bits/timex.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
 
 /usr/include/c++/9/iosfwd:
 
-/usr/include/x86_64-linux-gnu/bits/byteswap.h:
+/usr/include/x86_64-linux-gnu/bits/timex.h:
 
-/usr/include/x86_64-linux-gnu/bits/stdio.h:
+/usr/include/x86_64-linux-gnu/bits/byteswap.h:
 
 /usr/include/x86_64-linux-gnu/asm/types.h:
 
@@ -1206,8 +1177,6 @@ test/asgs_testing.cpp:
 /usr/include/c++/9/bits/range_access.h:
 
 /usr/include/x86_64-linux-gnu/sys/select.h:
-
-/usr/include/x86_64-linux-gnu/bits/select2.h:
 
 /usr/include/c++/9/bits/exception.h:
 
@@ -1242,10 +1211,6 @@ test/asgs_testing.cpp:
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
 /usr/include/linux/errno.h:
-
-/usr/include/c++/9/bits/stl_iterator_base_types.h:
-
-/usr/include/x86_64-linux-gnu/bits/strings_fortified.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
 
@@ -1333,10 +1298,6 @@ test/gtest_main.cpp:
 
 /usr/include/c++/9/bits/ostream.tcc:
 
-/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
-
-/usr/include/c++/9/bits/istream.tcc:
-
 /usr/include/c++/9/memory:
 
 /usr/include/c++/9/backward/auto_ptr.h:
@@ -1344,6 +1305,10 @@ test/gtest_main.cpp:
 /usr/include/c++/9/pstl/execution_defs.h:
 
 /usr/include/c++/9/set:
+
+/usr/include/ctype.h:
+
+/usr/include/c++/9/bits/stl_tree.h:
 
 /usr/include/string.h:
 
@@ -1367,12 +1332,6 @@ test/gtest_main.cpp:
 
 /usr/include/c++/9/stdlib.h:
 
-/usr/include/ctype.h:
-
-/usr/include/c++/9/bits/stl_tree.h:
-
-/usr/include/x86_64-linux-gnu/bits/string_fortified.h:
-
 /usr/include/c++/9/bits/cpp_type_traits.h:
 
 /usr/include/x86_64-linux-gnu/sys/stat.h:
@@ -1380,8 +1339,6 @@ test/gtest_main.cpp:
 /usr/include/x86_64-linux-gnu/bits/stat.h:
 
 /usr/include/c++/9/ext/concurrence.h:
-
-/usr/include/x86_64-linux-gnu/bits/stdlib.h:
 
 /usr/include/x86_64-linux-gnu/bits/statx.h:
 
@@ -1404,3 +1361,25 @@ test/gtest_main.cpp:
 /usr/include/x86_64-linux-gnu/asm/posix_types_64.h:
 
 /usr/include/asm-generic/posix_types.h:
+
+/usr/include/c++/9/bits/istream.tcc:
+
+/usr/include/x86_64-linux-gnu/bits/types/struct_statx.h:
+
+/usr/include/c++/9/unordered_map:
+
+/usr/local/include/gtest/internal/custom/gtest-port.h:
+
+/usr/include/c++/9/bits/memoryfwd.h:
+
+/usr/local/include/gtest/internal/gtest-port-arch.h:
+
+/usr/include/unistd.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix_opt.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/clockid_t.h:
+
+/usr/include/x86_64-linux-gnu/bits/environments.h:

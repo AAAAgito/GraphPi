@@ -147,16 +147,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "src/CMakeFiles/graph_mining.dir/DependInfo.cmake"
-  "src/CMakeFiles/run_general_tc.dir/DependInfo.cmake"
-  "src/CMakeFiles/run_mpi_trivial.dir/DependInfo.cmake"
-  "src/CMakeFiles/schedule_printer.dir/DependInfo.cmake"
-  "src/CMakeFiles/restricts_printer.dir/DependInfo.cmake"
   "test/CMakeFiles/asgs_test.dir/DependInfo.cmake"
-  "tianhe/CMakeFiles/baseline_test.dir/DependInfo.cmake"
-  "tianhe/CMakeFiles/in_exclusion_optimize_test.dir/DependInfo.cmake"
-  "tianhe/CMakeFiles/all_schedule_test.dir/DependInfo.cmake"
-  "tianhe/CMakeFiles/performance_test.dir/DependInfo.cmake"
-  "tianhe/CMakeFiles/schedules_test.dir/DependInfo.cmake"
-  "tianhe/CMakeFiles/code_generator.dir/DependInfo.cmake"
-  "tianhe/CMakeFiles/unfold_test.dir/DependInfo.cmake"
   )

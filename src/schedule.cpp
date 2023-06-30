@@ -329,39 +329,35 @@ int Schedule::get_max_degree() const{
 // Input: Current Schedule
 // Output: An array of which vtx should load K_v- hops
 void Schedule::gen_k_hop_matrix(){
-//    int k_table[size];
-//    k_table[0] = 0;
-//    for (int d = 1; d < size; d++) {
-//        int k_hop[size];
-//        int k=0;
-//        for (int i = 0; i <= size; i++){
-//            if (i <= d) k_hop[i] = 0;
-//            else k_hop[i] = size;
-//        }
-//        for (int depth = d+1; depth < size; depth ++) {
-//            for (int prefix_id = this->get_last(depth); prefix_id != -1; prefix_id = this->get_next(prefix_id))
-//            {
-//                // vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, &edge[l], (int)r - l, prefix_id, vertex, clique);
-//                if (prefix_id == d) {
-//                    k=1;
-//                    k_hop[depth]=1;
-//                    break;
-//                }
-//                k_hop[depth] = std::min(k_hop[depth],k_hop[prefix_id]+1);
-//            }
-//        }
-//        for (int depth = d+1; depth < size; depth++) {
-//            if (k_hop[depth] == size) continue;
-//            k = std::max(k,k_hop[depth]);
-//        }
-//        k_table[d]=k;
-//    }
-//    for (int i = 0; i < size; i++) {
-//        k_hop_matrix.push_back(k_table[i]);
-//    }
-    k_hop_matrix.resize(size);
-    for (int i = size-1; i>=0; i--) {
-
+    k_hop_matrix.clear();
+    int mapp[size][size];
+    for (int i = 0; i< size; i++){
+        for (int j =0; j< size; j++) {
+            if(i==j) mapp[i][j] =0;
+            else if (adj_mat[INDEX(i,j,size)]) mapp[i][j]=1;
+            else mapp[i][j] = size+1;
+        }
+    }
+    for(int i=0;i<size;i++)
+    {
+        for(int k=i;k<size;k++)
+        {
+            for(int j=0;j<size;j++)
+            {
+                if(mapp[i][k]+mapp[k][j]<mapp[i][j])
+                {
+                    mapp[i][j]=mapp[i][k]+mapp[k][j];
+                }
+            }
+        }
+    }
+    for (int i = 0; i < size; i++) {
+        int dis = 0;
+        for (int j = i; j<size; j++) {
+            dis = std::max(dis,mapp[i][j]);
+        }
+        if (dis == size+1) dis=0;
+        k_hop_matrix.push_back(dis);
     }
 }
 
@@ -1254,7 +1250,7 @@ void Schedule::print_schedule() const{
     for(int i = 0; i < size; ++i) {
         for(int j = 0; j < size; ++j)
             printf("%d", adj_mat[INDEX(i,j,size)]);
-        puts("");
+        printf("\n");
     }
 }
 

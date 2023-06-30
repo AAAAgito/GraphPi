@@ -55,6 +55,9 @@ Pattern::Pattern(PatternType type) {
     }
     if( type == PatternType::QG3) {
         size = 4;
+        // 0 - 2
+        // | \ |
+        // 3 - 1
         adj_mat = new int[size * size];
         memset(adj_mat, 0, size * size * sizeof(int));
         add_edge(0, 1);
@@ -76,6 +79,10 @@ Pattern::Pattern(PatternType type) {
         return;
     }
     if( type == PatternType::House) {
+        //   3
+        //  / \
+        // 0 - 1
+        // 2 - 4
         size = 5;
         adj_mat = new int[size * size];
         memset(adj_mat, 0, size * size * sizeof(int));
@@ -206,11 +213,12 @@ void Pattern::count_all_isomorphism(std::set< std::set<int> >& s) const
 
 void Pattern::print() const
 {
-    for (int i = 0; i < size; ++i)
-        for (int j = 0; j < size; ++j)
-            if (adj_mat[INDEX(i, j, size)] != 0)
-                printf("(%d,%d) ", i, j);
-    printf("\n");
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            printf("%d ", adj_mat[INDEX(i, j, size)]);
+        }
+        printf("\n");
+    }
 }
 
 bool Pattern::is_dag() const

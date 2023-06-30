@@ -130,58 +130,6 @@ graph_mining/fast:
 .PHONY : graph_mining/fast
 
 #=============================================================================
-# Target rules for targets named run_general_tc
-
-# Build rule for target.
-run_general_tc: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 run_general_tc
-.PHONY : run_general_tc
-
-# fast build rule for target.
-run_general_tc/fast:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_general_tc.dir/build.make src/CMakeFiles/run_general_tc.dir/build
-.PHONY : run_general_tc/fast
-
-#=============================================================================
-# Target rules for targets named run_mpi_trivial
-
-# Build rule for target.
-run_mpi_trivial: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 run_mpi_trivial
-.PHONY : run_mpi_trivial
-
-# fast build rule for target.
-run_mpi_trivial/fast:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/run_mpi_trivial.dir/build.make src/CMakeFiles/run_mpi_trivial.dir/build
-.PHONY : run_mpi_trivial/fast
-
-#=============================================================================
-# Target rules for targets named schedule_printer
-
-# Build rule for target.
-schedule_printer: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 schedule_printer
-.PHONY : schedule_printer
-
-# fast build rule for target.
-schedule_printer/fast:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/schedule_printer.dir/build.make src/CMakeFiles/schedule_printer.dir/build
-.PHONY : schedule_printer/fast
-
-#=============================================================================
-# Target rules for targets named restricts_printer
-
-# Build rule for target.
-restricts_printer: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 restricts_printer
-.PHONY : restricts_printer
-
-# fast build rule for target.
-restricts_printer/fast:
-	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/restricts_printer.dir/build.make src/CMakeFiles/restricts_printer.dir/build
-.PHONY : restricts_printer/fast
-
-#=============================================================================
 # Target rules for targets named asgs_test
 
 # Build rule for target.
@@ -194,97 +142,6 @@ asgs_test/fast:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/asgs_test.dir/build.make test/CMakeFiles/asgs_test.dir/build
 .PHONY : asgs_test/fast
 
-#=============================================================================
-# Target rules for targets named baseline_test
-
-# Build rule for target.
-baseline_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 baseline_test
-.PHONY : baseline_test
-
-# fast build rule for target.
-baseline_test/fast:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/baseline_test.dir/build.make tianhe/CMakeFiles/baseline_test.dir/build
-.PHONY : baseline_test/fast
-
-#=============================================================================
-# Target rules for targets named in_exclusion_optimize_test
-
-# Build rule for target.
-in_exclusion_optimize_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 in_exclusion_optimize_test
-.PHONY : in_exclusion_optimize_test
-
-# fast build rule for target.
-in_exclusion_optimize_test/fast:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/in_exclusion_optimize_test.dir/build.make tianhe/CMakeFiles/in_exclusion_optimize_test.dir/build
-.PHONY : in_exclusion_optimize_test/fast
-
-#=============================================================================
-# Target rules for targets named all_schedule_test
-
-# Build rule for target.
-all_schedule_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all_schedule_test
-.PHONY : all_schedule_test
-
-# fast build rule for target.
-all_schedule_test/fast:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/all_schedule_test.dir/build.make tianhe/CMakeFiles/all_schedule_test.dir/build
-.PHONY : all_schedule_test/fast
-
-#=============================================================================
-# Target rules for targets named performance_test
-
-# Build rule for target.
-performance_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 performance_test
-.PHONY : performance_test
-
-# fast build rule for target.
-performance_test/fast:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/performance_test.dir/build.make tianhe/CMakeFiles/performance_test.dir/build
-.PHONY : performance_test/fast
-
-#=============================================================================
-# Target rules for targets named schedules_test
-
-# Build rule for target.
-schedules_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 schedules_test
-.PHONY : schedules_test
-
-# fast build rule for target.
-schedules_test/fast:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/schedules_test.dir/build.make tianhe/CMakeFiles/schedules_test.dir/build
-.PHONY : schedules_test/fast
-
-#=============================================================================
-# Target rules for targets named code_generator
-
-# Build rule for target.
-code_generator: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 code_generator
-.PHONY : code_generator
-
-# fast build rule for target.
-code_generator/fast:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/code_generator.dir/build.make tianhe/CMakeFiles/code_generator.dir/build
-.PHONY : code_generator/fast
-
-#=============================================================================
-# Target rules for targets named unfold_test
-
-# Build rule for target.
-unfold_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 unfold_test
-.PHONY : unfold_test
-
-# fast build rule for target.
-unfold_test/fast:
-	$(MAKE) $(MAKESILENT) -f tianhe/CMakeFiles/unfold_test.dir/build.make tianhe/CMakeFiles/unfold_test.dir/build
-.PHONY : unfold_test/fast
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -293,19 +150,8 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... all_schedule_test"
 	@echo "... asgs_test"
-	@echo "... baseline_test"
-	@echo "... code_generator"
 	@echo "... graph_mining"
-	@echo "... in_exclusion_optimize_test"
-	@echo "... performance_test"
-	@echo "... restricts_printer"
-	@echo "... run_general_tc"
-	@echo "... run_mpi_trivial"
-	@echo "... schedule_printer"
-	@echo "... schedules_test"
-	@echo "... unfold_test"
 .PHONY : help
 
 

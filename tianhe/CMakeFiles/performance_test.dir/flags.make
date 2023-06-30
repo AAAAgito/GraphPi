@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/mnt/d/Github/GraphPi/include
 
-CXX_FLAGS =  -fopenmp  -O3 -Wall -fopenmp -std=gnu++17 -std=c++17
+CXX_FLAGS =  -fsanitize=address -fsanitize=undefined -fopenmp  -O0 -Wall -g -ggdb -fopenmp -std=gnu++17 -std=c++17
 

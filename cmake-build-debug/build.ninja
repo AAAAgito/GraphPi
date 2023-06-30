@@ -12,7 +12,7 @@
 
 # =============================================================================
 # Project: GraphMining
-# Configurations: RELEASE
+# Configurations: Debug
 # =============================================================================
 
 #############################################
@@ -24,7 +24,7 @@ ninja_required_version = 1.5
 #############################################
 # Set configuration variable for custom commands.
 
-CONFIGURATION = RELEASE
+CONFIGURATION = Debug
 # =============================================================================
 # Include auxiliary files.
 
@@ -45,7 +45,7 @@ cmake_ninja_workdir = /mnt/d/Github/GraphPi/cmake-build-debug/
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -56,7 +56,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -77,90 +77,90 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 build cmake_object_order_depends_target_graph_mining: phony || src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/TestClass.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/TestClass.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/TestClass.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/TestClass.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/TestClass.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/graph.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/graph.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/graph.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/graph.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/graph.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/dataloader.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/dataloader.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/dataloader.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/dataloader.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/dataloader.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/pattern.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/pattern.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/pattern.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/pattern.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/pattern.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/prefix.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/prefix.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/prefix.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/prefix.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/prefix.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/schedule.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/schedule.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/schedule.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/schedule.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/schedule.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/vertex_set.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/vertex_set.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/vertex_set.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/vertex_set.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/vertex_set.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/motif_generator.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/motif_generator.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/motif_generator.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/motif_generator.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/motif_generator.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/graphmpi.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/graphmpi.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/graphmpi.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/graphmpi.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/graphmpi.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/common.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/common.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/common.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/common.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/common.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
 
-build src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o: CXX_COMPILER__graph_mining_RELEASE /mnt/d/Github/GraphPi/src/disjoint_set_union.cpp || cmake_object_order_depends_target_graph_mining
+build src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o: CXX_COMPILER__graph_mining_Debug /mnt/d/Github/GraphPi/src/disjoint_set_union.cpp || cmake_object_order_depends_target_graph_mining
   DEFINES = -Dgraph_mining_EXPORTS
   DEP_FILE = src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fPIC -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   OBJECT_FILE_DIR = src/CMakeFiles/graph_mining.dir
@@ -173,8 +173,8 @@ build src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o: CXX_COMPILER__gr
 #############################################
 # Link the shared library libs/libgraph_mining.so
 
-build libs/libgraph_mining.so: CXX_SHARED_LIBRARY_LINKER__graph_mining_RELEASE src/CMakeFiles/graph_mining.dir/TestClass.cpp.o src/CMakeFiles/graph_mining.dir/graph.cpp.o src/CMakeFiles/graph_mining.dir/dataloader.cpp.o src/CMakeFiles/graph_mining.dir/pattern.cpp.o src/CMakeFiles/graph_mining.dir/prefix.cpp.o src/CMakeFiles/graph_mining.dir/schedule.cpp.o src/CMakeFiles/graph_mining.dir/vertex_set.cpp.o src/CMakeFiles/graph_mining.dir/motif_generator.cpp.o src/CMakeFiles/graph_mining.dir/graphmpi.cpp.o src/CMakeFiles/graph_mining.dir/common.cpp.o src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o
-  LANGUAGE_COMPILE_FLAGS = -fopenmp  -O3 -Wall -fopenmp
+build libs/libgraph_mining.so: CXX_SHARED_LIBRARY_LINKER__graph_mining_Debug src/CMakeFiles/graph_mining.dir/TestClass.cpp.o src/CMakeFiles/graph_mining.dir/graph.cpp.o src/CMakeFiles/graph_mining.dir/dataloader.cpp.o src/CMakeFiles/graph_mining.dir/pattern.cpp.o src/CMakeFiles/graph_mining.dir/prefix.cpp.o src/CMakeFiles/graph_mining.dir/schedule.cpp.o src/CMakeFiles/graph_mining.dir/vertex_set.cpp.o src/CMakeFiles/graph_mining.dir/motif_generator.cpp.o src/CMakeFiles/graph_mining.dir/graphmpi.cpp.o src/CMakeFiles/graph_mining.dir/common.cpp.o src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp
   OBJECT_DIR = src/CMakeFiles/graph_mining.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -183,144 +183,12 @@ build libs/libgraph_mining.so: CXX_SHARED_LIBRARY_LINKER__graph_mining_RELEASE s
   TARGET_FILE = libs/libgraph_mining.so
   TARGET_PDB = graph_mining.so.dbg
 
-# =============================================================================
-# Object build statements for EXECUTABLE target run_general_tc
-
-
-#############################################
-# Order-only phony target for run_general_tc
-
-build cmake_object_order_depends_target_run_general_tc: phony || cmake_object_order_depends_target_graph_mining
-
-build src/CMakeFiles/run_general_tc.dir/run_general_tc.cpp.o: CXX_COMPILER__run_general_tc_RELEASE /mnt/d/Github/GraphPi/src/run_general_tc.cpp || cmake_object_order_depends_target_run_general_tc
-  DEP_FILE = src/CMakeFiles/run_general_tc.dir/run_general_tc.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = src/CMakeFiles/run_general_tc.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/run_general_tc.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target run_general_tc
-
-
-#############################################
-# Link the executable bin/run_general_tc
-
-build bin/run_general_tc: CXX_EXECUTABLE_LINKER__run_general_tc_RELEASE src/CMakeFiles/run_general_tc.dir/run_general_tc.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = src/CMakeFiles/run_general_tc.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/run_general_tc
-  TARGET_PDB = run_general_tc.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target run_mpi_trivial
-
-
-#############################################
-# Order-only phony target for run_mpi_trivial
-
-build cmake_object_order_depends_target_run_mpi_trivial: phony || cmake_object_order_depends_target_graph_mining
-
-build src/CMakeFiles/run_mpi_trivial.dir/run_mpi_trivial.cpp.o: CXX_COMPILER__run_mpi_trivial_RELEASE /mnt/d/Github/GraphPi/src/run_mpi_trivial.cpp || cmake_object_order_depends_target_run_mpi_trivial
-  DEP_FILE = src/CMakeFiles/run_mpi_trivial.dir/run_mpi_trivial.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = src/CMakeFiles/run_mpi_trivial.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/run_mpi_trivial.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target run_mpi_trivial
-
-
-#############################################
-# Link the executable bin/run_mpi_trivial
-
-build bin/run_mpi_trivial: CXX_EXECUTABLE_LINKER__run_mpi_trivial_RELEASE src/CMakeFiles/run_mpi_trivial.dir/run_mpi_trivial.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = src/CMakeFiles/run_mpi_trivial.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/run_mpi_trivial
-  TARGET_PDB = run_mpi_trivial.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target schedule_printer
-
-
-#############################################
-# Order-only phony target for schedule_printer
-
-build cmake_object_order_depends_target_schedule_printer: phony || cmake_object_order_depends_target_graph_mining
-
-build src/CMakeFiles/schedule_printer.dir/schedule_printer.cpp.o: CXX_COMPILER__schedule_printer_RELEASE /mnt/d/Github/GraphPi/src/schedule_printer.cpp || cmake_object_order_depends_target_schedule_printer
-  DEP_FILE = src/CMakeFiles/schedule_printer.dir/schedule_printer.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = src/CMakeFiles/schedule_printer.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/schedule_printer.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target schedule_printer
-
-
-#############################################
-# Link the executable bin/schedule_printer
-
-build bin/schedule_printer: CXX_EXECUTABLE_LINKER__schedule_printer_RELEASE src/CMakeFiles/schedule_printer.dir/schedule_printer.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = src/CMakeFiles/schedule_printer.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/schedule_printer
-  TARGET_PDB = schedule_printer.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target restricts_printer
-
-
-#############################################
-# Order-only phony target for restricts_printer
-
-build cmake_object_order_depends_target_restricts_printer: phony || cmake_object_order_depends_target_graph_mining
-
-build src/CMakeFiles/restricts_printer.dir/restricts_printer.cpp.o: CXX_COMPILER__restricts_printer_RELEASE /mnt/d/Github/GraphPi/src/restricts_printer.cpp || cmake_object_order_depends_target_restricts_printer
-  DEP_FILE = src/CMakeFiles/restricts_printer.dir/restricts_printer.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = src/CMakeFiles/restricts_printer.dir
-  OBJECT_FILE_DIR = src/CMakeFiles/restricts_printer.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target restricts_printer
-
-
-#############################################
-# Link the executable bin/restricts_printer
-
-build bin/restricts_printer: CXX_EXECUTABLE_LINKER__restricts_printer_RELEASE src/CMakeFiles/restricts_printer.dir/restricts_printer.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = src/CMakeFiles/restricts_printer.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/restricts_printer
-  TARGET_PDB = restricts_printer.dbg
-
 
 #############################################
 # Utility command for edit_cache
 
 build src/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/src && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/src && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -331,7 +199,7 @@ build src/edit_cache: phony src/CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build src/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/src && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/src && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -352,16 +220,16 @@ build src/rebuild_cache: phony src/CMakeFiles/rebuild_cache.util
 
 build cmake_object_order_depends_target_asgs_test: phony || cmake_object_order_depends_target_graph_mining
 
-build test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o: CXX_COMPILER__asgs_test_RELEASE /mnt/d/Github/GraphPi/test/gtest_main.cpp || cmake_object_order_depends_target_asgs_test
+build test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o: CXX_COMPILER__asgs_test_Debug /mnt/d/Github/GraphPi/test/gtest_main.cpp || cmake_object_order_depends_target_asgs_test
   DEP_FILE = test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = test/CMakeFiles/asgs_test.dir
   OBJECT_FILE_DIR = test/CMakeFiles/asgs_test.dir
 
-build test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: CXX_COMPILER__asgs_test_RELEASE /mnt/d/Github/GraphPi/test/asgs_testing.cpp || cmake_object_order_depends_target_asgs_test
+build test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: CXX_COMPILER__asgs_test_Debug /mnt/d/Github/GraphPi/test/asgs_testing.cpp || cmake_object_order_depends_target_asgs_test
   DEP_FILE = test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
   INCLUDES = -I/mnt/d/Github/GraphPi/include
   OBJECT_DIR = test/CMakeFiles/asgs_test.dir
   OBJECT_FILE_DIR = test/CMakeFiles/asgs_test.dir
@@ -374,11 +242,11 @@ build test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o: CXX_COMPILER__asgs_test_
 #############################################
 # Link the executable bin/asgs_test
 
-build bin/asgs_test test/asgs_test[1]_tests.cmake | ${cmake_ninja_workdir}test/asgs_test[1]_tests.cmake: CXX_EXECUTABLE_LINKER__asgs_test_RELEASE test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o | /usr/local/lib/libgtest.a libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
+build bin/asgs_test test/asgs_test[1]_tests.cmake | ${cmake_ninja_workdir}test/asgs_test[1]_tests.cmake: CXX_EXECUTABLE_LINKER__asgs_test_Debug test/CMakeFiles/asgs_test.dir/gtest_main.cpp.o test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o | /usr/local/lib/libgtest.a libs/libgraph_mining.so || libs/libgraph_mining.so
+  FLAGS = -fopenmp  -O0 -Wall -g -ggdb -fopenmp
   LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  /usr/local/lib/libgtest.a  libs/libgraph_mining.so  -lpthread  -lgomp
   OBJECT_DIR = test/CMakeFiles/asgs_test.dir
-  POST_BUILD = cd /mnt/d/Github/GraphPi/cmake-build-debug/test && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake -D TEST_TARGET=asgs_test -D TEST_EXECUTABLE=/mnt/d/Github/GraphPi/cmake-build-debug/bin/asgs_test -D TEST_EXECUTOR= -D TEST_WORKING_DIR=/mnt/d/Github/GraphPi/cmake-build-debug/test -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D TEST_FILTER= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=asgs_test_TESTS -D CTEST_FILE=/mnt/d/Github/GraphPi/cmake-build-debug/test/asgs_test[1]_tests.cmake -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_XML_OUTPUT_DIR= -P /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/GoogleTestAddTests.cmake
+  POST_BUILD = cd /mnt/d/Github/GraphPi/cmake-build-debug/test && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake -D TEST_TARGET=asgs_test -D TEST_EXECUTABLE=/mnt/d/Github/GraphPi/cmake-build-debug/bin/asgs_test -D TEST_EXECUTOR= -D TEST_WORKING_DIR=/mnt/d/Github/GraphPi/cmake-build-debug/test -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D TEST_FILTER= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=asgs_test_TESTS -D CTEST_FILE=/mnt/d/Github/GraphPi/cmake-build-debug/test/asgs_test[1]_tests.cmake -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_XML_OUTPUT_DIR= -P /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/GoogleTestAddTests.cmake
   PRE_LINK = :
   RESTAT = 1
   TARGET_FILE = bin/asgs_test
@@ -389,7 +257,7 @@ build bin/asgs_test test/asgs_test[1]_tests.cmake | ${cmake_ninja_workdir}test/a
 # Utility command for edit_cache
 
 build test/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/test && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/test && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -400,7 +268,7 @@ build test/edit_cache: phony test/CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build test/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/test && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/test && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -412,243 +280,12 @@ build test/rebuild_cache: phony test/CMakeFiles/rebuild_cache.util
 # /mnt/d/Github/GraphPi/CMakeLists.txt
 # =============================================================================
 
-# =============================================================================
-# Object build statements for EXECUTABLE target baseline_test
-
-
-#############################################
-# Order-only phony target for baseline_test
-
-build cmake_object_order_depends_target_baseline_test: phony || cmake_object_order_depends_target_graph_mining
-
-build tianhe/CMakeFiles/baseline_test.dir/baseline_test.cpp.o: CXX_COMPILER__baseline_test_RELEASE /mnt/d/Github/GraphPi/tianhe/baseline_test.cpp || cmake_object_order_depends_target_baseline_test
-  DEP_FILE = tianhe/CMakeFiles/baseline_test.dir/baseline_test.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = tianhe/CMakeFiles/baseline_test.dir
-  OBJECT_FILE_DIR = tianhe/CMakeFiles/baseline_test.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target baseline_test
-
-
-#############################################
-# Link the executable bin/baseline_test
-
-build bin/baseline_test: CXX_EXECUTABLE_LINKER__baseline_test_RELEASE tianhe/CMakeFiles/baseline_test.dir/baseline_test.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = tianhe/CMakeFiles/baseline_test.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/baseline_test
-  TARGET_PDB = baseline_test.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target in_exclusion_optimize_test
-
-
-#############################################
-# Order-only phony target for in_exclusion_optimize_test
-
-build cmake_object_order_depends_target_in_exclusion_optimize_test: phony || cmake_object_order_depends_target_graph_mining
-
-build tianhe/CMakeFiles/in_exclusion_optimize_test.dir/in_exclusion_optimize_test.cpp.o: CXX_COMPILER__in_exclusion_optimize_test_RELEASE /mnt/d/Github/GraphPi/tianhe/in_exclusion_optimize_test.cpp || cmake_object_order_depends_target_in_exclusion_optimize_test
-  DEP_FILE = tianhe/CMakeFiles/in_exclusion_optimize_test.dir/in_exclusion_optimize_test.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = tianhe/CMakeFiles/in_exclusion_optimize_test.dir
-  OBJECT_FILE_DIR = tianhe/CMakeFiles/in_exclusion_optimize_test.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target in_exclusion_optimize_test
-
-
-#############################################
-# Link the executable bin/in_exclusion_optimize_test
-
-build bin/in_exclusion_optimize_test: CXX_EXECUTABLE_LINKER__in_exclusion_optimize_test_RELEASE tianhe/CMakeFiles/in_exclusion_optimize_test.dir/in_exclusion_optimize_test.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = tianhe/CMakeFiles/in_exclusion_optimize_test.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/in_exclusion_optimize_test
-  TARGET_PDB = in_exclusion_optimize_test.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target all_schedule_test
-
-
-#############################################
-# Order-only phony target for all_schedule_test
-
-build cmake_object_order_depends_target_all_schedule_test: phony || cmake_object_order_depends_target_graph_mining
-
-build tianhe/CMakeFiles/all_schedule_test.dir/all_schedule_test.cpp.o: CXX_COMPILER__all_schedule_test_RELEASE /mnt/d/Github/GraphPi/tianhe/all_schedule_test.cpp || cmake_object_order_depends_target_all_schedule_test
-  DEP_FILE = tianhe/CMakeFiles/all_schedule_test.dir/all_schedule_test.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = tianhe/CMakeFiles/all_schedule_test.dir
-  OBJECT_FILE_DIR = tianhe/CMakeFiles/all_schedule_test.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target all_schedule_test
-
-
-#############################################
-# Link the executable bin/all_schedule_test
-
-build bin/all_schedule_test: CXX_EXECUTABLE_LINKER__all_schedule_test_RELEASE tianhe/CMakeFiles/all_schedule_test.dir/all_schedule_test.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = tianhe/CMakeFiles/all_schedule_test.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/all_schedule_test
-  TARGET_PDB = all_schedule_test.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target performance_test
-
-
-#############################################
-# Order-only phony target for performance_test
-
-build cmake_object_order_depends_target_performance_test: phony || cmake_object_order_depends_target_graph_mining
-
-build tianhe/CMakeFiles/performance_test.dir/performance_test.cpp.o: CXX_COMPILER__performance_test_RELEASE /mnt/d/Github/GraphPi/tianhe/performance_test.cpp || cmake_object_order_depends_target_performance_test
-  DEP_FILE = tianhe/CMakeFiles/performance_test.dir/performance_test.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = tianhe/CMakeFiles/performance_test.dir
-  OBJECT_FILE_DIR = tianhe/CMakeFiles/performance_test.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target performance_test
-
-
-#############################################
-# Link the executable bin/performance_test
-
-build bin/performance_test: CXX_EXECUTABLE_LINKER__performance_test_RELEASE tianhe/CMakeFiles/performance_test.dir/performance_test.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = tianhe/CMakeFiles/performance_test.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/performance_test
-  TARGET_PDB = performance_test.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target schedules_test
-
-
-#############################################
-# Order-only phony target for schedules_test
-
-build cmake_object_order_depends_target_schedules_test: phony || cmake_object_order_depends_target_graph_mining
-
-build tianhe/CMakeFiles/schedules_test.dir/schedules_test.cpp.o: CXX_COMPILER__schedules_test_RELEASE /mnt/d/Github/GraphPi/tianhe/schedules_test.cpp || cmake_object_order_depends_target_schedules_test
-  DEP_FILE = tianhe/CMakeFiles/schedules_test.dir/schedules_test.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = tianhe/CMakeFiles/schedules_test.dir
-  OBJECT_FILE_DIR = tianhe/CMakeFiles/schedules_test.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target schedules_test
-
-
-#############################################
-# Link the executable bin/schedules_test
-
-build bin/schedules_test: CXX_EXECUTABLE_LINKER__schedules_test_RELEASE tianhe/CMakeFiles/schedules_test.dir/schedules_test.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = tianhe/CMakeFiles/schedules_test.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/schedules_test
-  TARGET_PDB = schedules_test.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target code_generator
-
-
-#############################################
-# Order-only phony target for code_generator
-
-build cmake_object_order_depends_target_code_generator: phony || cmake_object_order_depends_target_graph_mining
-
-build tianhe/CMakeFiles/code_generator.dir/code_generator.cpp.o: CXX_COMPILER__code_generator_RELEASE /mnt/d/Github/GraphPi/tianhe/code_generator.cpp || cmake_object_order_depends_target_code_generator
-  DEP_FILE = tianhe/CMakeFiles/code_generator.dir/code_generator.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = tianhe/CMakeFiles/code_generator.dir
-  OBJECT_FILE_DIR = tianhe/CMakeFiles/code_generator.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target code_generator
-
-
-#############################################
-# Link the executable bin/code_generator
-
-build bin/code_generator: CXX_EXECUTABLE_LINKER__code_generator_RELEASE tianhe/CMakeFiles/code_generator.dir/code_generator.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = tianhe/CMakeFiles/code_generator.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/code_generator
-  TARGET_PDB = code_generator.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target unfold_test
-
-
-#############################################
-# Order-only phony target for unfold_test
-
-build cmake_object_order_depends_target_unfold_test: phony || cmake_object_order_depends_target_graph_mining
-
-build tianhe/CMakeFiles/unfold_test.dir/unfold_test.cpp.o: CXX_COMPILER__unfold_test_RELEASE /mnt/d/Github/GraphPi/tianhe/unfold_test.cpp || cmake_object_order_depends_target_unfold_test
-  DEP_FILE = tianhe/CMakeFiles/unfold_test.dir/unfold_test.cpp.o.d
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp -fdiagnostics-color=always -std=c++17 -std=gnu++17
-  INCLUDES = -I/mnt/d/Github/GraphPi/include
-  OBJECT_DIR = tianhe/CMakeFiles/unfold_test.dir
-  OBJECT_FILE_DIR = tianhe/CMakeFiles/unfold_test.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target unfold_test
-
-
-#############################################
-# Link the executable bin/unfold_test
-
-build bin/unfold_test: CXX_EXECUTABLE_LINKER__unfold_test_RELEASE tianhe/CMakeFiles/unfold_test.dir/unfold_test.cpp.o | libs/libgraph_mining.so || libs/libgraph_mining.so
-  FLAGS = -fopenmp  -O3 -Wall -fopenmp
-  LINK_LIBRARIES = -Wl,-rpath,/mnt/d/Github/GraphPi/cmake-build-debug/libs  libs/libgraph_mining.so
-  OBJECT_DIR = tianhe/CMakeFiles/unfold_test.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = bin/unfold_test
-  TARGET_PDB = unfold_test.dbg
-
 
 #############################################
 # Utility command for edit_cache
 
 build tianhe/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/tianhe && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/tianhe && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -659,7 +296,7 @@ build tianhe/edit_cache: phony tianhe/CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build tianhe/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/tianhe && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
+  COMMAND = cd /mnt/d/Github/GraphPi/cmake-build-debug/tianhe && /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/bin/cmake --regenerate-during-build -S/mnt/d/Github/GraphPi -B/mnt/d/Github/GraphPi/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -669,33 +306,11 @@ build tianhe/rebuild_cache: phony tianhe/CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build all_schedule_test: phony bin/all_schedule_test
-
 build asgs_test: phony bin/asgs_test
-
-build baseline_test: phony bin/baseline_test
-
-build code_generator: phony bin/code_generator
 
 build graph_mining: phony libs/libgraph_mining.so
 
-build in_exclusion_optimize_test: phony bin/in_exclusion_optimize_test
-
 build libgraph_mining.so: phony libs/libgraph_mining.so
-
-build performance_test: phony bin/performance_test
-
-build restricts_printer: phony bin/restricts_printer
-
-build run_general_tc: phony bin/run_general_tc
-
-build run_mpi_trivial: phony bin/run_mpi_trivial
-
-build schedule_printer: phony bin/schedule_printer
-
-build schedules_test: phony bin/schedules_test
-
-build unfold_test: phony bin/unfold_test
 
 # =============================================================================
 # Folder targets.
@@ -712,7 +327,7 @@ build all: phony src/all test/all tianhe/all
 #############################################
 # Folder: /mnt/d/Github/GraphPi/cmake-build-debug/src
 
-build src/all: phony libs/libgraph_mining.so bin/run_general_tc bin/run_mpi_trivial bin/schedule_printer bin/restricts_printer
+build src/all: phony libs/libgraph_mining.so
 
 # =============================================================================
 
@@ -726,7 +341,7 @@ build test/all: phony bin/asgs_test
 #############################################
 # Folder: /mnt/d/Github/GraphPi/cmake-build-debug/tianhe
 
-build tianhe/all: phony bin/baseline_test bin/in_exclusion_optimize_test bin/all_schedule_test bin/performance_test bin/schedules_test bin/code_generator bin/unfold_test
+build tianhe/all: phony
 
 # =============================================================================
 # Built-in targets
@@ -735,14 +350,14 @@ build tianhe/all: phony bin/baseline_test bin/in_exclusion_optimize_test bin/all
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCXXInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCommonLanguageInclude.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeFindDependencyMacro.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeGenericSystem.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeInitializeConfigs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeLanguageInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeParseImplicitLinkInfo.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInitialize.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckCSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckIncludeFile.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckLibraryExists.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindGTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindMPI.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindOpenMP.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageHandleStandardArgs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageMessage.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPkgConfig.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindThreads.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/GoogleTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Internal/CheckSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/UnixPaths.cmake /mnt/d/Github/GraphPi/CMakeLists.txt /mnt/d/Github/GraphPi/src/CMakeLists.txt /mnt/d/Github/GraphPi/test/CMakeLists.txt /mnt/d/Github/GraphPi/tianhe/CMakeLists.txt /usr/local/lib/cmake/GTest/GTestConfig.cmake /usr/local/lib/cmake/GTest/GTestConfigVersion.cmake /usr/local/lib/cmake/GTest/GTestTargets-noconfig.cmake /usr/local/lib/cmake/GTest/GTestTargets.cmake CMakeCache.txt CMakeFiles/3.25.2/CMakeCCompiler.cmake CMakeFiles/3.25.2/CMakeCXXCompiler.cmake CMakeFiles/3.25.2/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCXXInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCommonLanguageInclude.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeFindDependencyMacro.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeGenericSystem.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeInitializeConfigs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeLanguageInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeParseImplicitLinkInfo.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInitialize.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckCSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckIncludeFile.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckLibraryExists.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindGTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindMPI.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindOpenMP.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageHandleStandardArgs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageMessage.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPkgConfig.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindThreads.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/GoogleTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Internal/CheckSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/UnixPaths.cmake /mnt/d/Github/GraphPi/CMakeLists.txt /mnt/d/Github/GraphPi/src/CMakeLists.txt /mnt/d/Github/GraphPi/test/CMakeLists.txt /mnt/d/Github/GraphPi/tianhe/CMakeLists.txt /usr/local/lib/cmake/GTest/GTestConfig.cmake /usr/local/lib/cmake/GTest/GTestConfigVersion.cmake /usr/local/lib/cmake/GTest/GTestTargets-noconfig.cmake /usr/local/lib/cmake/GTest/GTestTargets.cmake CMakeCache.txt CMakeFiles/3.25.2/CMakeCCompiler.cmake CMakeFiles/3.25.2/CMakeCXXCompiler.cmake CMakeFiles/3.25.2/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCXXInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCommonLanguageInclude.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeFindDependencyMacro.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeGenericSystem.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeInitializeConfigs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeLanguageInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeParseImplicitLinkInfo.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInitialize.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckCSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckIncludeFile.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckLibraryExists.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindGTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindMPI.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindOpenMP.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageHandleStandardArgs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageMessage.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPkgConfig.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindThreads.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/GoogleTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Internal/CheckSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/0fc4707d65ca8_CLion-232.6095.18/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/UnixPaths.cmake /mnt/d/Github/GraphPi/CMakeLists.txt /mnt/d/Github/GraphPi/src/CMakeLists.txt /mnt/d/Github/GraphPi/test/CMakeLists.txt /mnt/d/Github/GraphPi/tianhe/CMakeLists.txt /usr/local/lib/cmake/GTest/GTestConfig.cmake /usr/local/lib/cmake/GTest/GTestConfigVersion.cmake /usr/local/lib/cmake/GTest/GTestTargets-noconfig.cmake /usr/local/lib/cmake/GTest/GTestTargets.cmake CMakeCache.txt CMakeFiles/3.25.2/CMakeCCompiler.cmake CMakeFiles/3.25.2/CMakeCXXCompiler.cmake CMakeFiles/3.25.2/CMakeSystem.cmake: phony
+build /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCXXInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeCommonLanguageInclude.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeFindDependencyMacro.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeGenericSystem.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeInitializeConfigs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeLanguageInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeParseImplicitLinkInfo.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInformation.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CMakeSystemSpecificInitialize.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckCSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckIncludeFile.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/CheckLibraryExists.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Compiler/GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindGTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindMPI.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindOpenMP.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageHandleStandardArgs.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPackageMessage.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindPkgConfig.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/FindThreads.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/GoogleTest.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Internal/CheckSourceCompiles.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-C.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU-CXX.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux-GNU.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/Linux.cmake /home/yanglaoyuan/.cache/JetBrains/RemoteDev/dist/4b7a75ae573e5_CLion-2023.1.4/bin/cmake/linux/x64/share/cmake-3.25/Modules/Platform/UnixPaths.cmake /mnt/d/Github/GraphPi/CMakeLists.txt /mnt/d/Github/GraphPi/src/CMakeLists.txt /mnt/d/Github/GraphPi/test/CMakeLists.txt /mnt/d/Github/GraphPi/tianhe/CMakeLists.txt /usr/local/lib/cmake/GTest/GTestConfig.cmake /usr/local/lib/cmake/GTest/GTestConfigVersion.cmake /usr/local/lib/cmake/GTest/GTestTargets-noconfig.cmake /usr/local/lib/cmake/GTest/GTestTargets.cmake CMakeCache.txt CMakeFiles/3.25.2/CMakeCCompiler.cmake CMakeFiles/3.25.2/CMakeCXXCompiler.cmake CMakeFiles/3.25.2/CMakeSystem.cmake: phony
 
 
 #############################################
