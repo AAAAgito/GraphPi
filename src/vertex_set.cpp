@@ -4,7 +4,7 @@
 int VertexSet::max_intersection_size = -1;
 
 VertexSet::VertexSet()
-:data(nullptr), size(0), allocate(false)
+        :data(nullptr), size(0), allocate(false)
 {}
 
 void VertexSet::init()
@@ -38,6 +38,10 @@ void VertexSet::init(int input_size, int* input_data)
 {
     if (allocate == true && data != nullptr)
         delete[] data;
+//    if (allocate && data!= nullptr) {
+//        for (int i = 0; i < input_size; i++) data[i] = input_data[i];
+//        size = input_size;
+//    }
     size = input_size;
     data = input_data;
     allocate = false;

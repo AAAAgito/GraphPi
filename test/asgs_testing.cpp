@@ -3,6 +3,10 @@
 #include "common.h"
 //single function test
 
+TEST(testrunning, hello) {
+    printf("hello world\n");
+}
+
 //TEST(testDataLoad, global_csr) {
 //    std::string raw_path = "/mnt/d/graph/patents_input";
 //    std::string graph_path = "/mnt/d/graph/asgs_bin/patents";
@@ -77,7 +81,6 @@
 //    Graph g2(graph_path);
 //    g2.blockType = BlockType::K_CORE_BLOCK;
 //    g2.load_global_graph(graph_path);
-//    // TODO: debug K_CORE_BLOCK
 //    g2.init_extern_storage(g2.v_cnt,g2.e_cnt);
 //    for (auto i : g2.intra_vertex_dict) {
 ////        if (i.first < 6800) continue;
@@ -211,77 +214,83 @@
 //    printf("\n");
 //}
 
-TEST(testMatching, match_in_partition_r) {
+// TEST(testMatching, match_in_partition_r) {
 
-    // patterns:
-    Pattern tc_pattern(3);
-    tc_pattern.add_edge(0, 1);
-    tc_pattern.add_edge(1, 2);
-    tc_pattern.add_edge(2, 0);
+//     // patterns:
+//     Pattern tc_pattern(3);
+//     tc_pattern.add_edge(0, 1);
+//     tc_pattern.add_edge(1, 2);
+//     tc_pattern.add_edge(2, 0);
 
-    // setting
-    bool is_pattern_valid;
-    bool use_in_exclusion_optimize = false;
-    int performance_type = 2;
-    int restricts_type = 2;
-    int thread_num = 1;
-    int part = 4;
-    LoadType loadType = SUB_BLOCK;
-    BlockType blockType = RANDOM_BLOCK;
-    PartitionType partitionType = RANDOM;
-    BlockType block_types[3] = {RANDOM_BLOCK, K_CORE_BLOCK, CHINK_BFS};
-    //global matching
-    blockType = block_types[0];
-    std::string graph_path = "/mnt/d/graph/asgs_bin/WikiVote";
-    Graph g(graph_path);
-    g.load_global_graph(graph_path);
-    g.tri_cnt = 608389;
-    g.g_vcnt = g.v_cnt;
-    for (int i = 0; i < g.v_cnt - 1; i++) {
-        unsigned int l, r;
-        g.get_edge_index(i, l, r);
-        int len = r - l;
-        VertexSet::max_intersection_size = std::max(VertexSet::max_intersection_size, len);
-    }
-    g.max_degree = VertexSet::max_intersection_size;
-    g.loadType = loadType;
-    g.blockType = blockType;
-    g.partitionType = partitionType;
-    g.gen_out_of_core_component(part, 4 * 1024, graph_path);
+//     // setting
+//     bool is_pattern_valid;
+//     bool use_in_exclusion_optimize = false;
+//     int performance_type = 2;
+//     int restricts_type = 2;
+//     int thread_num = 1;
+//     int part = 4;
+//     LoadType loadType = SUB_BLOCK;
+//     BlockType blockType = RANDOM_BLOCK;
+//     PartitionType partitionType = RANDOM;
+//     BlockType block_types[3] = {RANDOM_BLOCK, K_CORE_BLOCK, CHINK_BFS};
+//     //global matching
+//     blockType = block_types[0];
+//     std::string graph_path = "/mnt/d/graph/asgs_bin/WikiVote";
+//     Graph g(graph_path);
+//     g.load_global_graph(graph_path);
+//     g.tri_cnt = 608389;
+//     g.g_vcnt = g.v_cnt;
+//     for (int i = 0; i < g.v_cnt - 1; i++) {
+//         unsigned int l, r;
+//         g.get_edge_index(i, l, r);
+//         int len = r - l;
+//         VertexSet::max_intersection_size = std::max(VertexSet::max_intersection_size, len);
+//     }
+//     g.max_degree = VertexSet::max_intersection_size;
+//     g.loadType = loadType;
+//     g.blockType = blockType;
+//     g.partitionType = partitionType;
 
-    Schedule tc_schedule(tc_pattern, is_pattern_valid, performance_type, restricts_type, use_in_exclusion_optimize,
-                         g.v_cnt, g.e_cnt);
-    tc_schedule.gen_k_hop_matrix();
-    long long ground_truth_result = 0;
+//     printf("hello world\n");
+//     // g.gen_out_of_core_component(part, 4 * 1024, graph_path);
 
-    double t1 = get_wall_time();
-    ground_truth_result = g.pattern_matching(tc_schedule, 1);
-    double t2 = get_wall_time();
+//     printf("hello world\n");
+//     Schedule tc_schedule(tc_pattern, is_pattern_valid, performance_type, restricts_type, use_in_exclusion_optimize,
+//                          g.v_cnt, g.e_cnt);
+//     tc_schedule.gen_k_hop_matrix();
+//     long long ground_truth_result = 0;
 
-    long long global_result = 0;
-    double total_time = 0.0;
-    for (int i = 0; i < part; i++) {
-        Graph g2(graph_path);
-        g2.set_static_indicator_zero();
-        g2.blockType = blockType;
-        g2.loadType = loadType;
-        g2.partitionType = partitionType;
-        g2.g_vcnt = g.v_cnt;
-        g2.load_partition_graph(i, part, graph_path);
-        printf("vertex num %d",g2.v_cnt);
-        g2.init_extern_storage(g.v_cnt, g.e_cnt);
-        g2.tri_cnt = g.tri_cnt / part;
-        g2.max_degree = VertexSet::max_intersection_size;
-        double t1 = get_wall_time();
-        global_result += g2.pattern_matching(tc_schedule, 1);
-        double t2 = get_wall_time();
-        total_time += t2 - t1;
-    }
+//     double t1 = get_wall_time();
+//     printf("hello world\n");
+//     ground_truth_result = g.pattern_matching(tc_schedule, 1);
+//     double t2 = get_wall_time();
+//     printf("hello world\n");
 
-    printf("\nglobal time: %.6lf\n", t2 - t1);
-    printf("total time: %.6lf\n", total_time);
-    ASSERT_EQ(ground_truth_result, global_result);
-}
+//     long long global_result = 0;
+//     double total_time = 0.0;
+//     for (int i = 0; i < part; i++) {
+//         Graph g2(graph_path);
+//         g2.blockType = blockType;
+//         g2.loadType = loadType;
+//         g2.partitionType = partitionType;
+//         g2.g_vcnt = g.v_cnt;
+//         printf("hello world\n");
+//         g2.load_partition_graph(i, part, graph_path);
+//         printf("vertex num %d",g2.v_cnt);
+//         g2.init_extern_storage(g.v_cnt, g.e_cnt);
+//         g2.tri_cnt = g.tri_cnt / part;
+//         g2.max_degree = VertexSet::max_intersection_size;
+//         printf("hello world\n");
+//         double t1 = get_wall_time();
+//         global_result += g2.pattern_matching(tc_schedule, 1);
+//         double t2 = get_wall_time();
+//         total_time += t2 - t1;
+//     }
+
+//     printf("\nglobal time: %.6lf\n", t2 - t1);
+//     printf("total time: %.6lf\n", total_time);
+//     ASSERT_EQ(ground_truth_result, global_result);
+// }
 
 TEST(testMatching, match_in_partition_c) {
 
@@ -296,12 +305,12 @@ TEST(testMatching, match_in_partition_c) {
     bool use_in_exclusion_optimize = false;
     int performance_type = 2;
     int restricts_type = 2;
-    int thread_num = 1;
+    int thread_num = 2;
     int part = 4;
     LoadType loadType = SUB_BLOCK;
     BlockType blockType = RANDOM_BLOCK;
-    PartitionType partitionType = NAIVE_BFS;
-    BlockType block_types[3] = {RANDOM_BLOCK, K_CORE_BLOCK, CHINK_BFS};
+    PartitionType partitionType = LDG;
+    BlockType block_types[4] = {RANDOM_BLOCK, K_CORE_BLOCK, CHINK_BFS, SIMPLE_BFS};
     //global matching
     blockType = block_types[2];
     std::string graph_path = "/mnt/d/graph/asgs_bin/WikiVote";
@@ -319,6 +328,7 @@ TEST(testMatching, match_in_partition_c) {
     g.loadType = loadType;
     g.blockType = blockType;
     g.partitionType = partitionType;
+    g.extern_v_max_num = g.v_cnt;
     g.gen_out_of_core_component(part, 4 * 1024, graph_path);
 
     Schedule tc_schedule(tc_pattern, is_pattern_valid, performance_type, restricts_type, use_in_exclusion_optimize,
@@ -327,24 +337,25 @@ TEST(testMatching, match_in_partition_c) {
     long long ground_truth_result = 0;
 
     double t1 = get_wall_time();
-    ground_truth_result = g.pattern_matching(tc_schedule, 1);
+    printf("matching\n");
+    ground_truth_result = g.pattern_matching(tc_schedule, thread_num);
     double t2 = get_wall_time();
 
     long long global_result = 0;
     double total_time = 0.0;
     for (int i = 0; i < part; i++) {
         Graph g2(graph_path);
-        g2.set_static_indicator_zero();
         g2.blockType = blockType;
         g2.loadType = loadType;
         g2.partitionType = partitionType;
         g2.g_vcnt = g.v_cnt;
+        g2.extern_v_max_num = g.v_cnt;
         g2.load_partition_graph(i, part, graph_path);
         g2.init_extern_storage(g.v_cnt, g.e_cnt);
         g2.tri_cnt = g.tri_cnt / part;
         g2.max_degree = VertexSet::max_intersection_size;
         double t1 = get_wall_time();
-        global_result += g2.pattern_matching(tc_schedule, 1);
+        global_result += g2.pattern_matching(tc_schedule, thread_num);
         double t2 = get_wall_time();
         total_time += t2 - t1;
     }

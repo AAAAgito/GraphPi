@@ -11,14 +11,14 @@ enum PartitionType {
     METIS,
     RANDOM,
     NAIVE_BFS,
-    CORE_PARTITION
+    LDG
 };
 
 enum BlockType {
     RANDOM_BLOCK,
     K_CORE_BLOCK,
     CHINK_BFS,
-    LAST
+    SIMPLE_BFS
 };
 
 enum LoadType {
@@ -38,7 +38,14 @@ struct VertexTable {
 struct block_length {
     int v_len = 0;
     int e_len = 0;
-    int read_times = 0;
+    block_length(int i, int ii) {
+        v_len = i;
+        e_len = ii;
+    }
+    block_length() {
+        v_len = 0;
+        e_len = 0;
+    }
 };
 
 struct path{
@@ -67,10 +74,13 @@ struct vertex_degree{
     int d = 0;
 };
 
+
+
 static int io_num = 0;
 static double file_time = 0.0;
+static double extern_init_time = 0.0;
+static double loading_manage_time = 0.0;
 static double blocking_manage_time = 0.0;
-static double extern_set_copy_time = 0.0;
 static double external_time = 0.0;
 static double load_extern_time = 0.0;
 static int load_num = 0;
@@ -82,13 +92,14 @@ public:
     unsigned int e_cnt; // number of edge
     long long tri_cnt{}; // number of triangle
     double max_running_time = 60 * 60 * 24; // second
+    bool all_loaded = false;
 
     int *edge; // edges
     unsigned int *vertex; // v_i's neighbor is in edge[ vertex[i], vertex[i+1]-1]
     unsigned int external_space =1; // how much can be load from inter-partition edges
     unsigned int external_used =0;
-    float extern_upper_thresold = 0.9;
-    float extern_lower_thresold = 0.3;
+    float extern_upper_thresold = 2;
+    float extern_lower_thresold = 0.01;
     int *inter_edge; // store inter partition edges
     unsigned int *inter_vertex;
     int inter_vtx_num = 0;
@@ -107,11 +118,12 @@ public:
 
     std::vector<path*> candidate_bin;
     std::vector<path*> ready_bin;
-    std::vector<loader> load_list;
+    std::map<int,std::vector<loader>> load_list;
+    std::vector<loader> init_load_list;
 
 
 
-    Graph(std:: string path = "/mnt/d/graph/") {
+    Graph(std:: string path = "/home/yanglaoyuan/AsyncSubGraphStorage/docker_graphPi/bin/") {
         v_cnt = 0;
         e_cnt = 0;
         g_vcnt = 0;
@@ -130,13 +142,20 @@ public:
 
     }
 
+    VertexTable v_state_getter(int v);
+
+    void v_state_setter(int v);
+
+    int inter_vertex_dict_getter(int v);
+
+    void inter_vertex_dict_setter(int v);
 
     int intersection_size(int v1,int v2);
     int intersection_size_clique(int v1,int v2);
 
     //single thread triangle counting
     long long triangle_counting();
-    
+
     //multi thread triangle counting
     long long triangle_counting_mt(int thread_count);
 
@@ -152,7 +171,6 @@ public:
     //general pattern matching algorithm with multi thread ans multi process
     long long pattern_matching_mpi(const Schedule& schedule, int thread_count, bool clique = false);
 
-    // TODO: in csr, vertex should be sort, adj list also
     void to_partition_csr(int num, std::vector<int> &side_vertex, std::map<int,int> &part_map, const std::string& path);
 
     void init_extern_storage(int v_num, int e_num);
@@ -168,22 +186,20 @@ public:
     void load_global_graph(const std::string &path);
 
     int max_degree{};
-    void load_extern_data(int file_id, const std::vector<loader>& load_vertex);
+    void load_extern_data(int file_id, const std::vector<loader>& load_vertex, std::vector<int> &loaded_vertex);
 
     void get_edge_index(int v, unsigned int& l, unsigned int& r) const;
 
     void get_extern_edge_index(int v, unsigned int& l, unsigned int& r) const;
 
-    void set_static_indicator_zero() {
-
-        io_num = 0;
-        file_time = 0.0;
-        blocking_manage_time = 0.0;
-        extern_set_copy_time = 0.0;
-        external_time = 0.0;
-        load_extern_time = 0.0;
-        load_num = 0;
+    bool scatter_loading_thread (int thread_num, int id, int to_load_num) {
+//        printf("\n%d %d %d\n",thread_num,to_load_num,extern_v_max_num);
+        if (to_load_num < extern_v_max_num*extern_lower_thresold) {
+            return false;
+        }
+        return id == 0;
     }
+
 
 private:
     friend Graphmpi;
@@ -197,7 +213,7 @@ private:
     // manage loading order of vertex, and batch load vertices in same file
     void loading_manage();
 
-    void load_list_append(const loader &l);
+    void load_list_append(const loader &l, std::vector<int> &loaded_vertex);
 
     // tracking memory use of extern vertex, drop all if larger than thresold
     void extern_drop_manage();
