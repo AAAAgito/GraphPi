@@ -37,3 +37,14 @@
 136	2569	1688283327246613800	bin/asgs_test	54e1780dd83d1f2b
 136	2569	1688283327246613800	test/asgs_test[1]_tests.cmake	54e1780dd83d1f2b
 136	2569	1688283327246613800	/mnt/d/Github/GraphPi/cmake-build-debug/test/asgs_test[1]_tests.cmake	54e1780dd83d1f2b
+170	908	1688549891349595000	src/CMakeFiles/graph_mining.dir/vertex_set.cpp.o	80119ac8d4a8ff05
+180	1045	1688549891483790300	src/CMakeFiles/graph_mining.dir/common.cpp.o	5d3970dbd186071b
+175	1175	1688549891586027900	src/CMakeFiles/graph_mining.dir/graphmpi.cpp.o	33a76c7c3199eb3b
+163	1425	1688549891862247300	src/CMakeFiles/graph_mining.dir/dataloader.cpp.o	85e662c1f95cd9cc
+166	1784	1688549892223908100	src/CMakeFiles/graph_mining.dir/schedule.cpp.o	6cdd9bd0884cb1c1
+187	1846	1688549892287526100	test/CMakeFiles/asgs_test.dir/asgs_testing.cpp.o	36d4b0657a6fc8fd
+158	2359	1688549892793828800	src/CMakeFiles/graph_mining.dir/graph.cpp.o	5c1a05ced214391d
+2369	9676	1688549900053874400	libs/libgraph_mining.so	12efa30728d22cdd
+9682	12759	1688549903204303200	bin/asgs_test	54e1780dd83d1f2b
+9682	12759	1688549903204303200	test/asgs_test[1]_tests.cmake	54e1780dd83d1f2b
+9682	12759	1688549903204303200	/mnt/d/Github/GraphPi/cmake-build-debug/test/asgs_test[1]_tests.cmake	54e1780dd83d1f2b

@@ -22,8 +22,7 @@ enum BlockType {
 };
 
 enum LoadType {
-    SUB_BLOCK,
-    ALL_BLOCK
+    SUB_BLOCK
 };
 
 class Graphmpi;
@@ -98,7 +97,7 @@ public:
     unsigned int *vertex; // v_i's neighbor is in edge[ vertex[i], vertex[i+1]-1]
     unsigned int external_space =1; // how much can be load from inter-partition edges
     unsigned int external_used =0;
-    float extern_upper_thresold = 2;
+    float extern_upper_thresold = 0.4;
     float extern_lower_thresold = 0.01;
     int *inter_edge; // store inter partition edges
     unsigned int *inter_vertex;
@@ -141,14 +140,6 @@ public:
         delete[] inter_edge;
 
     }
-
-    VertexTable v_state_getter(int v);
-
-    void v_state_setter(int v);
-
-    int inter_vertex_dict_getter(int v);
-
-    void inter_vertex_dict_setter(int v);
 
     int intersection_size(int v1,int v2);
     int intersection_size_clique(int v1,int v2);
@@ -197,6 +188,7 @@ public:
         if (to_load_num < extern_v_max_num*extern_lower_thresold) {
             return false;
         }
+//        return id <= thread_num * to_load_num / extern_v_max_num;
         return id == 0;
     }
 

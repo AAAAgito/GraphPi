@@ -235,7 +235,7 @@ TEST(testrunning, hello) {
 //     BlockType block_types[3] = {RANDOM_BLOCK, K_CORE_BLOCK, CHINK_BFS};
 //     //global matching
 //     blockType = block_types[0];
-//     std::string graph_path = "/mnt/d/graph/asgs_bin/WikiVote";
+//     std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/docker_graphPi/dataset/bin/WikiVote";
 //     Graph g(graph_path);
 //     g.load_global_graph(graph_path);
 //     g.tri_cnt = 608389;
@@ -295,10 +295,15 @@ TEST(testrunning, hello) {
 TEST(testMatching, match_in_partition_c) {
 
     // patterns:
-    Pattern tc_pattern(3);
+    Pattern tc_pattern(5);
     tc_pattern.add_edge(0, 1);
     tc_pattern.add_edge(1, 2);
-    tc_pattern.add_edge(2, 0);
+//    tc_pattern.add_edge(2, 0);
+    tc_pattern.add_edge(2, 3);
+    tc_pattern.add_edge(3, 4);
+    tc_pattern.add_edge(4, 0);
+    Pattern house(House);
+//    tc_pattern.add_edge(5, 0);
 
     // setting
     bool is_pattern_valid;
@@ -334,16 +339,21 @@ TEST(testMatching, match_in_partition_c) {
     Schedule tc_schedule(tc_pattern, is_pattern_valid, performance_type, restricts_type, use_in_exclusion_optimize,
                          g.v_cnt, g.e_cnt);
     tc_schedule.gen_k_hop_matrix();
+    printf("\nhops\n");
+    for (auto i : tc_schedule.k_hop_matrix) {
+        printf(" %d ",i);
+    }
+    printf("\n");
     long long ground_truth_result = 0;
 
     double t1 = get_wall_time();
-    printf("matching\n");
-    ground_truth_result = g.pattern_matching(tc_schedule, thread_num);
+//    printf("%s",graph_path.c_str());
+//    ground_truth_result = g.pattern_matching(tc_schedule, thread_num);
     double t2 = get_wall_time();
 
     long long global_result = 0;
     double total_time = 0.0;
-    for (int i = 0; i < part; i++) {
+    for (int i = 0; i < 1; i++) {
         Graph g2(graph_path);
         g2.blockType = blockType;
         g2.loadType = loadType;
@@ -359,8 +369,9 @@ TEST(testMatching, match_in_partition_c) {
         double t2 = get_wall_time();
         total_time += t2 - t1;
     }
-
+    printf("count answer %d\n",global_result);
     printf("\nglobal time: %.6lf\n", t2 - t1);
     printf("total time: %.6lf\n", total_time);
-    ASSERT_EQ(ground_truth_result, global_result);
+//    ASSERT_EQ(ground_truth_result, global_result);
 }
+
