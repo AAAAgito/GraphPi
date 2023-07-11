@@ -6,6 +6,8 @@
 #include <vector>
 #include <assert.h>
 #include <string>
+#include <omp.h>
+#include <memory>
 
 enum PartitionType {
     METIS,
@@ -73,16 +75,68 @@ struct vertex_degree{
     int d = 0;
 };
 
+struct cell {
+    int v;
+    cell *prev;
+    cell *next;
+};
 
+class Priority_List {
+public:
+    cell head;
+    cell tail;
+    int size;
 
-static int io_num = 0;
-static double file_time = 0.0;
-static double extern_init_time = 0.0;
-static double loading_manage_time = 0.0;
-static double blocking_manage_time = 0.0;
-static double external_time = 0.0;
-static double load_extern_time = 0.0;
-static int load_num = 0;
+    void init_list() {
+        head = cell{-1,NULL,NULL};
+        tail = cell{-1,NULL,NULL};
+        size = 0;
+    }
+    void insert_head(cell * &record, int v) {
+//        assert(record==NULL);
+        if (tail.prev == NULL) {
+            tail.prev = record;
+            record->next = &tail;
+        }
+        if (head.next == NULL) {
+            head.next = record;
+            record->prev = &head;
+        }
+        else {
+            record->next = head.next;
+            record->prev = &head;
+            head.next->prev = record;
+            head.next = record;
+        }
+        size +=1;
+    }
+    int delete_record(cell *&record) {
+        int v = record->v;
+        record->prev->next = record->next;
+        record->next->prev = record->prev;
+        size -=1;
+        return v;
+    }
+    void move_head(cell *&record) {
+        record->prev->next = record->next;
+        record->next->prev = record->prev;
+
+        record->next = head.next;
+        record->prev = &head;
+        head.next->prev = record;
+        head.next = record;
+    }
+};
+
+static omp_lock_t load_list_write_lock;
+static omp_lock_t load_list_append_lock;
+static omp_lock_t init_load_list_append_lock;
+static omp_lock_t extern_ve_loading_lock;
+static omp_lock_t ready_bin_lock;
+static omp_lock_t candidate_bin_lock;
+static omp_lock_t v_state_lock;
+static omp_lock_t v_state_khop_lock;
+
 
 class Graph {
 public:
@@ -97,7 +151,7 @@ public:
     unsigned int *vertex; // v_i's neighbor is in edge[ vertex[i], vertex[i+1]-1]
     unsigned int external_space =1; // how much can be load from inter-partition edges
     unsigned int external_used =0;
-    float extern_upper_thresold = 0.4;
+    float extern_upper_thresold = 0.1;
     float extern_lower_thresold = 0.01;
     int *inter_edge; // store inter partition edges
     unsigned int *inter_vertex;
@@ -120,7 +174,20 @@ public:
     std::map<int,std::vector<loader>> load_list;
     std::vector<loader> init_load_list;
 
+    std::map<int,std::shared_ptr<int[]>> physicals_load;
+    std::vector<cell*> physicals_priority;
+    std::map<int,int> physicals_length;
 
+    Priority_List L;
+
+    int io_num = 0;
+    double file_time = 0.0;
+    double extern_init_time = 0.0;
+    double loading_manage_time = 0.0;
+    double blocking_manage_time = 0.0;
+    double external_time = 0.0;
+    double load_extern_time = 0.0;
+    int load_num = 0;
 
     Graph(std:: string path = "/home/yanglaoyuan/AsyncSubGraphStorage/docker_graphPi/bin/") {
         v_cnt = 0;
@@ -156,6 +223,8 @@ public:
     //general pattern matching algorithm with multi thread
     long long pattern_matching(const Schedule& schedule, int thread_count, bool clique = false);
 
+    long long pattern_matching_asyn(const Schedule& schedule, int thread_count, bool clique = false);
+
     //this function will be defined at code generation
 //    long long unfold_pattern_matching(const Schedule& schedule, int thread_count, bool clique = false);
 
@@ -180,6 +249,62 @@ public:
     void load_extern_data(int file_id, const std::vector<loader>& load_vertex, std::vector<int> &loaded_vertex);
 
     void get_edge_index(int v, unsigned int& l, unsigned int& r) const;
+
+    void load_physical_edge_index(int v, bool next_hop);
+
+    void load_physical_edge_index(std::vector<int> &v);
+
+    void get_physical_edge_index(int v, std::shared_ptr<int[]> &ptr, int& size, bool next_hop) {
+        ptr = physicals_load[v];
+        cell *pri_p = physicals_priority[v];
+        if (ptr == NULL) {
+            printf("do if\n");
+            assert(pri_p==NULL);
+            cell *p=L.tail.prev;
+            // also O(1) delete tail's vertex and its adj_list
+            if (L.size > 1) assert(L.tail.prev != NULL);
+
+            while (L.size > g_vcnt*extern_upper_thresold && p != NULL) {
+
+                if (L.size > 1) assert(L.tail.prev->prev != NULL);
+                if (physicals_load[p->v].use_count() <= 1) {
+                    int del_v = L.delete_record(p);
+                    p = p->prev;
+                    delete physicals_priority[del_v];
+                    physicals_priority[del_v] = NULL;
+                    physicals_load[del_v] = NULL;
+                    physicals_load.erase(del_v);
+                }
+                else {
+                    p= p->prev;
+                }
+            }
+            load_physical_edge_index(v, next_hop);
+        }
+        // O(1) time, switch/ create cell of vertex to head
+        else {
+            L.move_head(physicals_priority[v]);
+        }
+
+        ptr = physicals_load[v];
+        size = physicals_length[v];
+
+        if (L.size > 1) {
+            assert(L.tail.prev != NULL);
+        }
+    }
+
+    void drop_physical_edge_index(int v) {
+        if (physicals_load[v] == NULL) {
+            return;
+        }
+        int cnt = physicals_load[v].use_count();
+        if (cnt <= 1 && physicals_load.size() >= g_vcnt*extern_upper_thresold) {
+            physicals_load[v] = NULL;
+            physicals_load.erase(v);
+        }
+    }
+
 
     void get_extern_edge_index(int v, unsigned int& l, unsigned int& r) const;
 
@@ -222,5 +347,6 @@ private:
 
     //this function will be defined at code generation
 //    void unfold_pattern_matching_aggressive_func(const Schedule& schedule, VertexSet* vertex_set, VertexSet& subtraction_set, VertexSet& tmp_set, long long& local_ans, int depth);
+
 
 };

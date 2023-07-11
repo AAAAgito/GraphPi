@@ -295,13 +295,13 @@ TEST(testrunning, hello) {
 TEST(testMatching, match_in_partition_c) {
 
     // patterns:
-    Pattern tc_pattern(5);
+    Pattern tc_pattern(4);
     tc_pattern.add_edge(0, 1);
     tc_pattern.add_edge(1, 2);
 //    tc_pattern.add_edge(2, 0);
     tc_pattern.add_edge(2, 3);
-    tc_pattern.add_edge(3, 4);
-    tc_pattern.add_edge(4, 0);
+//    tc_pattern.add_edge(3, 4);
+    tc_pattern.add_edge(3, 0);
     Pattern house(House);
 //    tc_pattern.add_edge(5, 0);
 
@@ -310,7 +310,7 @@ TEST(testMatching, match_in_partition_c) {
     bool use_in_exclusion_optimize = false;
     int performance_type = 2;
     int restricts_type = 2;
-    int thread_num = 2;
+    int thread_num = 1;
     int part = 4;
     LoadType loadType = SUB_BLOCK;
     BlockType blockType = RANDOM_BLOCK;
@@ -348,12 +348,12 @@ TEST(testMatching, match_in_partition_c) {
 
     double t1 = get_wall_time();
 //    printf("%s",graph_path.c_str());
-//    ground_truth_result = g.pattern_matching(tc_schedule, thread_num);
+    ground_truth_result = g.pattern_matching(tc_schedule, thread_num);
     double t2 = get_wall_time();
 
     long long global_result = 0;
     double total_time = 0.0;
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < part; i++) {
         Graph g2(graph_path);
         g2.blockType = blockType;
         g2.loadType = loadType;
@@ -369,7 +369,7 @@ TEST(testMatching, match_in_partition_c) {
         double t2 = get_wall_time();
         total_time += t2 - t1;
     }
-    printf("count answer %d\n",global_result);
+    printf("count answer %d\n",ground_truth_result);
     printf("\nglobal time: %.6lf\n", t2 - t1);
     printf("total time: %.6lf\n", total_time);
 //    ASSERT_EQ(ground_truth_result, global_result);

@@ -250,6 +250,54 @@ graph.cpp.s:
 	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/graph.cpp.s
 .PHONY : graph.cpp.s
 
+graph_extern.o: graph_extern.cpp.o
+.PHONY : graph_extern.o
+
+# target to build an object file
+graph_extern.cpp.o:
+	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/graph_extern.cpp.o
+.PHONY : graph_extern.cpp.o
+
+graph_extern.i: graph_extern.cpp.i
+.PHONY : graph_extern.i
+
+# target to preprocess a source file
+graph_extern.cpp.i:
+	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/graph_extern.cpp.i
+.PHONY : graph_extern.cpp.i
+
+graph_extern.s: graph_extern.cpp.s
+.PHONY : graph_extern.s
+
+# target to generate assembly for a file
+graph_extern.cpp.s:
+	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/graph_extern.cpp.s
+.PHONY : graph_extern.cpp.s
+
+graph_genenerate.o: graph_genenerate.cpp.o
+.PHONY : graph_genenerate.o
+
+# target to build an object file
+graph_genenerate.cpp.o:
+	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o
+.PHONY : graph_genenerate.cpp.o
+
+graph_genenerate.i: graph_genenerate.cpp.i
+.PHONY : graph_genenerate.i
+
+# target to preprocess a source file
+graph_genenerate.cpp.i:
+	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.i
+.PHONY : graph_genenerate.cpp.i
+
+graph_genenerate.s: graph_genenerate.cpp.s
+.PHONY : graph_genenerate.s
+
+# target to generate assembly for a file
+graph_genenerate.cpp.s:
+	cd /mnt/d/Github/GraphPi && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/graph_mining.dir/build.make src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.s
+.PHONY : graph_genenerate.cpp.s
+
 graphmpi.o: graphmpi.cpp.o
 .PHONY : graphmpi.o
 
@@ -418,6 +466,12 @@ help:
 	@echo "... graph.o"
 	@echo "... graph.i"
 	@echo "... graph.s"
+	@echo "... graph_extern.o"
+	@echo "... graph_extern.i"
+	@echo "... graph_extern.s"
+	@echo "... graph_genenerate.o"
+	@echo "... graph_genenerate.i"
+	@echo "... graph_genenerate.s"
 	@echo "... graphmpi.o"
 	@echo "... graphmpi.i"
 	@echo "... graphmpi.s"

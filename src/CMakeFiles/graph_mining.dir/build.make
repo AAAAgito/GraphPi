@@ -223,6 +223,34 @@ src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.s"
 	cd /mnt/d/Github/GraphPi/src && mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/d/Github/GraphPi/src/disjoint_set_union.cpp -o CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.s
 
+src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o: src/CMakeFiles/graph_mining.dir/flags.make
+src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o: src/graph_genenerate.cpp
+src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o: src/CMakeFiles/graph_mining.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o"
+	cd /mnt/d/Github/GraphPi/src && mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o -MF CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o.d -o CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o -c /mnt/d/Github/GraphPi/src/graph_genenerate.cpp
+
+src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/graph_mining.dir/graph_genenerate.cpp.i"
+	cd /mnt/d/Github/GraphPi/src && mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/d/Github/GraphPi/src/graph_genenerate.cpp > CMakeFiles/graph_mining.dir/graph_genenerate.cpp.i
+
+src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/graph_mining.dir/graph_genenerate.cpp.s"
+	cd /mnt/d/Github/GraphPi/src && mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/d/Github/GraphPi/src/graph_genenerate.cpp -o CMakeFiles/graph_mining.dir/graph_genenerate.cpp.s
+
+src/CMakeFiles/graph_mining.dir/graph_extern.cpp.o: src/CMakeFiles/graph_mining.dir/flags.make
+src/CMakeFiles/graph_mining.dir/graph_extern.cpp.o: src/graph_extern.cpp
+src/CMakeFiles/graph_mining.dir/graph_extern.cpp.o: src/CMakeFiles/graph_mining.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object src/CMakeFiles/graph_mining.dir/graph_extern.cpp.o"
+	cd /mnt/d/Github/GraphPi/src && mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT src/CMakeFiles/graph_mining.dir/graph_extern.cpp.o -MF CMakeFiles/graph_mining.dir/graph_extern.cpp.o.d -o CMakeFiles/graph_mining.dir/graph_extern.cpp.o -c /mnt/d/Github/GraphPi/src/graph_extern.cpp
+
+src/CMakeFiles/graph_mining.dir/graph_extern.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/graph_mining.dir/graph_extern.cpp.i"
+	cd /mnt/d/Github/GraphPi/src && mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/d/Github/GraphPi/src/graph_extern.cpp > CMakeFiles/graph_mining.dir/graph_extern.cpp.i
+
+src/CMakeFiles/graph_mining.dir/graph_extern.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/graph_mining.dir/graph_extern.cpp.s"
+	cd /mnt/d/Github/GraphPi/src && mpicxx $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/d/Github/GraphPi/src/graph_extern.cpp -o CMakeFiles/graph_mining.dir/graph_extern.cpp.s
+
 # Object files for target graph_mining
 graph_mining_OBJECTS = \
 "CMakeFiles/graph_mining.dir/TestClass.cpp.o" \
@@ -235,7 +263,9 @@ graph_mining_OBJECTS = \
 "CMakeFiles/graph_mining.dir/motif_generator.cpp.o" \
 "CMakeFiles/graph_mining.dir/graphmpi.cpp.o" \
 "CMakeFiles/graph_mining.dir/common.cpp.o" \
-"CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o"
+"CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o" \
+"CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o" \
+"CMakeFiles/graph_mining.dir/graph_extern.cpp.o"
 
 # External object files for target graph_mining
 graph_mining_EXTERNAL_OBJECTS =
@@ -251,9 +281,11 @@ libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/motif_generator.cpp.o
 libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/graphmpi.cpp.o
 libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/common.cpp.o
 libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/disjoint_set_union.cpp.o
+libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/graph_genenerate.cpp.o
+libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/graph_extern.cpp.o
 libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/build.make
 libs/libgraph_mining.so: src/CMakeFiles/graph_mining.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX shared library ../libs/libgraph_mining.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/d/Github/GraphPi/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX shared library ../libs/libgraph_mining.so"
 	cd /mnt/d/Github/GraphPi/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/graph_mining.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
