@@ -20,15 +20,15 @@
 
 
 void Graph::init_extern_storage(int v_num, int e_num) {
-    inter_edge = new int[e_num];
-    inter_vertex = new unsigned int[v_num];
     extern_e_max_num = e_num;
     extern_v_max_num = v_num;
+    physicals_length.resize(g_vcnt);
+    physicals_load.resize(g_vcnt);
 }
 
 void Graph::gen_out_of_core_component(int part_num, int block_size, const std::string &path, int k_core) {
     std::vector<int> side_vtx;
-    std::map<int,int> part_map;
+    std::vector<int> part_map;
     for (auto i: v_state_map) {
         unsigned int l,r;
         get_edge_index(i.first,l,r);
@@ -213,7 +213,7 @@ void Graph::load_partition_graph(int pid, int num, const std::string &path) {
     delete[] fvalue;
 }
 
-void Graph::to_block_csr(int block_size, std::vector<int> &side_vertex, std::map<int,int> &part_map, int part_num, const std::string& path, int k_core) {
+void Graph::to_block_csr(int block_size, std::vector<int> &side_vertex, std::vector<int> &part_map, int part_num, const std::string& path, int k_core) {
     int len = sizeof (char) * block_size / sizeof (int);
     if (blockType == BlockType::RANDOM_BLOCK) {
         std::vector<int> vid, edges, map_k, map_v;
@@ -245,6 +245,7 @@ void Graph::to_block_csr(int block_size, std::vector<int> &side_vertex, std::map
         std::string block_map_path = path + std::string("_fr");
         DataLoader::gen_map_file(map_k.data(),map_v.data(),map_v.size(),block_map_path);
         // dump each block
+        printf("dump eack block\n");
         for (int block_id = 0; block_id < file_len.size(); block_id++) {
             int vtx_cursor = 0;
             vid.clear();
@@ -276,41 +277,56 @@ void Graph::to_block_csr(int block_size, std::vector<int> &side_vertex, std::map
         DataLoader::gen_block_size_file(key.data(),vl.data(),el.data(),key.size(),block_size_path);
     }
     if (blockType == BlockType::K_CORE_BLOCK) {
-        std::map<int,int> degree;
-        std::map<int,int> revert_dict;
-        for (auto i : intra_vertex_dict) {
-            revert_dict[i.second] = i.first;
-        }
+
         int block_id = 0;
+        std::vector<int> degree;
+        degree.resize(v_cnt);
         std::vector<int> block_vid, vid, file_id;
         int local_block_size = 0;
         std::vector<int> to_insert_block;
-        for (int i = 0; i < v_cnt; i++) {
-            unsigned int l,r;
-            get_edge_index(i,l,r);
-            degree[i] = r-l;
-        }
-        for (int core = 1; core <= k_core; core++) {
-            bool keep_lop = true;
-            while (keep_lop) {
-                keep_lop = false;
-                std::vector<int> local_remove;
-                for (auto i: degree) {
-                    if (i.second < core) {
-                        for (int j = vertex[i.first]; j < vertex[i.first + 1]; j++) {
-                            if (degree.find(edge[j]) != degree.end()) degree[edge[j]] -= 1;
-                        }
-                        to_insert_block.push_back(i.first);
-                        local_remove.push_back(i.first);
-                    }
+        for (int part=0; part < part_num; part++) {
+            for (int i = 0; i < v_cnt; i++) {
+                if (part_map[i] != part) {
+                    degree[i] = -1;
                 }
-                for (auto i : local_remove) degree.erase(i);
-                for (auto i : degree) keep_lop |= i.second < core;
+                else {
+                    unsigned int l, r;
+                    get_edge_index(i, l, r);
+                    int minus = 0;
+                    for (int j = l; j < r; j++)
+                        if (part_map[edge[j]] != part) minus += 1;
+                    degree[i] = r - l - minus;
+                }
             }
-            blocking_data_manage_k_core(len,block_id,local_block_size,block_vid,revert_dict,to_insert_block, path);
+            for (int core = 1; core <= k_core; core++) {
+                bool keep_lop = true;
+                while (keep_lop) {
+                    keep_lop = false;
+                    std::vector<int> local_remove;
+                    for (int i=0; i<v_cnt; i++) {
+                        if (degree[i] < core && degree[i]!=-1) {
+                            unsigned int l,r;
+                            get_edge_index(i,l,r);
+                            for (int j = l; j < r; j++) {
+                                if (part_map[edge[j]]!=part) continue;
+                                if (degree[edge[j]] != -1) degree[edge[j]] -= 1;
+                            }
+                            to_insert_block.push_back(i);
+                            local_remove.push_back(i);
+                        }
+                    }
+                    for (auto i: local_remove) degree[i]=-1;
+                    for (int i=0; i<v_cnt; i++) keep_lop |= degree[i] < core && degree[i]!=-1 && part_map[edge[i]]==part;
+                }
+                blocking_data_manage_k_core(len, block_id, local_block_size, block_vid,  to_insert_block,
+                                            path);
+            }
+            for (int i=0; i<v_cnt; i++)
+                if (degree[i]!=-1)
+                    to_insert_block.push_back(i);
+            blocking_data_manage_k_core(len, block_id, local_block_size, block_vid, to_insert_block, path);
         }
-        for (auto i : degree) to_insert_block.push_back(i.first);
-        blocking_data_manage_k_core(len,block_id,local_block_size,block_vid,revert_dict,to_insert_block, path);
+
 
         std::string block_map_path = path + std::string("_fk");
         std::vector<int> fkey,fvalue;
@@ -587,55 +603,69 @@ void Graph::to_block_csr(int block_size, std::vector<int> &side_vertex, std::map
 
     if (blockType == BlockType::SIMPLE_BFS) {
         int block_id = 0;
-        bool choose[v_cnt];
-        for (int i = 0; i < v_cnt; i++) choose[i] = false;
         for (int part = 0; part < part_num; part++) {
+            std::vector<int> part_bfs_list;
+            bool *choose = new bool[v_cnt];
+            int intra_num = 0;
+            for (int i = 0; i < v_cnt; i++) {
+                choose[i] = part_map[i] != part;
+                if (!choose[i]) intra_num++;
+            }
             std::queue<int> q;
-            std::vector<int> block_vid;
-            int block_vsize = 0;
-            for (auto v : v_state_map) {
-                if (part_map[v.first] != part || choose[v.first]) continue;
-                q.push(v.first);
-                choose[v.first] = true;
+            for (int i=0; i<v_cnt; i++) {
+                if (q.empty()) {
+                    if (choose[i]) continue;
+                    q.push(i);
+                    part_bfs_list.push_back(i);
+                    choose[i] = true;
+                }
                 while (!q.empty()) {
-                    if (block_vsize > len) {
-                        block_vsize = 0;
-                        std::sort(block_vid.begin(), block_vid.end());
-
-                        std::vector<int> edges;
-                        std::vector<unsigned int> vtx_offset;
-                        unsigned int cursor = 0;
-                        for (auto j : block_vid) {
-                            vtx_offset.push_back(cursor);
-                            unsigned int l,r;
-                            get_edge_index(j,l,r);
-                            for (int k = l; k < r; k++) edges.push_back(edge[k]);
-                            cursor += r-l;
-                            v_state_map[j].file_id = block_id;
-                        }
-
-                        std::string block_csr_path = path + std::string("_blocks/") + std::to_string(block_id) + std::string("_bs");
-                        DataLoader::gen_block_file(block_vid.data(),vtx_offset.data(),edges.data(),block_vid.size(),edges.size(),block_csr_path);
-                        block_lengths[block_id] = block_length{(int)block_vid.size(),(int)edges.size()};
-                        block_vid.clear();
-                        block_id+=1;
-                        continue;
-                    }
-                    int vtx = q.front();
+                    int v = q.front();
                     q.pop();
-                    block_vid.push_back(vtx);
                     unsigned int l,r;
-                    get_edge_index(vtx,l,r);
-                    for (int i = l; i < r; i++) {
-                        if (choose[edge[i]] || part_map[edge[i]] != part_map[vtx]) continue;
-                        q.push(edge[i]);
-                        choose[vtx] = true;
-                        block_vsize += 2+r-l;
+                    get_edge_index(v,l,r);
+                    for (int j =l;j<r;j++) {
+                        if (choose[edge[j]]) continue;
+                        q.push(edge[j]);
+                        choose[edge[j]] = true;
+                        part_bfs_list.push_back(edge[j]);
                     }
                 }
             }
+            assert(intra_num==part_bfs_list.size());
+            std::vector<int> block_vid;
+            int block_vsize = 0;
+            for (auto v : part_bfs_list) {
+                unsigned int l,r;
+                get_edge_index(v,l,r);
+                int qlen = 2+r-l;
+                if (block_vsize + qlen > len && !block_vid.empty()) {
+                    std::sort(block_vid.begin(), block_vid.end());
 
-            block_vsize = 0;
+                    std::vector<int> edges;
+                    std::vector<unsigned int> vtx_offset;
+                    unsigned int cursor = 0;
+                    for (auto j : block_vid) {
+                        vtx_offset.push_back(cursor);
+                        unsigned int l,r;
+                        get_edge_index(j,l,r);
+                        for (int k = l; k < r; k++) edges.push_back(edge[k]);
+                        cursor += r-l;
+                        v_state_map[j].file_id = block_id;
+                    }
+
+                    std::string block_csr_path = path + std::string("_blocks/") + std::to_string(block_id) + std::string("_bs");
+                    DataLoader::gen_block_file(block_vid.data(),vtx_offset.data(),edges.data(),block_vid.size(),edges.size(),block_csr_path);
+                    block_lengths[block_id] = block_length{(int)block_vid.size(),(int)edges.size()};
+                    block_vid.clear();
+                    block_vsize = 0;
+                    block_id+=1;
+
+                }
+                block_vid.push_back(v);
+                block_vsize += qlen;
+            }
+
             std::sort(block_vid.begin(), block_vid.end());
 
             std::vector<int> edges;
@@ -654,7 +684,9 @@ void Graph::to_block_csr(int block_size, std::vector<int> &side_vertex, std::map
             DataLoader::gen_block_file(block_vid.data(),vtx_offset.data(),edges.data(),block_vid.size(),edges.size(),block_csr_path);
             block_lengths[block_id] = block_length{(int)block_vid.size(),(int)edges.size()};
             block_vid.clear();
+            block_vsize = 0;
             block_id+=1;
+            delete[] choose;
         }
 
         std::string block_map_path = path + std::string("_fs");
@@ -676,83 +708,94 @@ void Graph::to_block_csr(int block_size, std::vector<int> &side_vertex, std::map
     }
 }
 
-void Graph::blocking_data_manage_k_core(int len, int &block_id, int &local_block_size, std::vector<int> &block_vid, const std::map<int, int> &revert_dict, std::vector<int> &to_insert_block, const std::string& path) {
+void Graph::blocking_data_manage_k_core(int len, int &block_id, int &local_block_size, std::vector<int> &block_vid, std::vector<int> &to_insert_block, const std::string& path) {
     std::queue<int> q;
-    while (!to_insert_block.empty() || !q.empty()) {
-        if (q.empty()) {
-            q.push(to_insert_block.back());
-            to_insert_block.pop_back();
+    bool *pick = new bool[v_cnt];
+    for (int i=0;i<v_cnt;i++) pick[i]=true;
+    for (auto i : to_insert_block) pick[i] = false;
+    to_insert_block.clear();
+
+    for (int v0 = 0; v0<v_cnt;v0++) {
+        if (!pick[v0]) {
+            q.push(v0);
+            pick[v0] = true;
         }
-        int q_len;
-        if (q.front() == v_cnt -1) q_len = e_cnt-vertex[q.front()];
-        else q_len = vertex[q.front()+1] - vertex[q.front()];
-        if (local_block_size + 2 + q_len > len && !block_vid.empty()) {
-            std::sort(block_vid.begin(), block_vid.end());
-            int cursor = 0;
-            std::vector<unsigned int> vtx_offset;
-            std::vector<int> edges;
-            vtx_offset.push_back(cursor);
-            for (int i=0; i< block_vid.size();i++) {
-                int elen;
-                if (intra_vertex_dict[block_vid[i]] == v_cnt-1) elen = e_cnt - vertex[intra_vertex_dict[block_vid[i]]];
-                else elen =vertex[intra_vertex_dict[block_vid[i]]+1] - vertex[intra_vertex_dict[block_vid[i]]];
-                cursor += elen;
-                for (int j = 0; j < elen; j++) edges.push_back(edge[j+vertex[intra_vertex_dict[block_vid[i]]]]);
-                // the last one do not need to record its ending index.
-                if (i< block_vid.size()-1)
+        while (!q.empty()) {
+            unsigned int l_front,r_front;
+            int v_front=q.front();
+            get_edge_index(v_front,l_front,r_front);
+            int q_len = r_front-l_front;
+
+            if (local_block_size + 2 + q_len > len && !block_vid.empty()) {
+                std::sort(block_vid.begin(), block_vid.end());
+                int cursor = 0;
+                std::vector<unsigned int> vtx_offset;
+                std::vector<int> edges;
+                for (auto i : block_vid) {
                     vtx_offset.push_back(cursor);
-            }
-            block_lengths[block_id] = block_length{(int) block_vid.size(),(int) edges.size()};
-            std::string block_csr_path = path + std::string("_blocks/") + std::to_string(block_id) + std::string("_bk");
-            DataLoader::gen_block_file(block_vid.data(),vtx_offset.data(),edges.data(),block_vid.size(),edges.size(),block_csr_path);
+                    unsigned int l,r;
+                    get_edge_index(i,l,r);
+                    cursor += r-l;
 
-            for (auto i : block_vid) {
-                v_state_map[i].file_id = block_id;
+                    for (int j = l; j < r; j++) edges.push_back(edge[j]);
+                }
+                block_lengths[block_id] = block_length{(int) block_vid.size(), (int) edges.size()};
+                std::string block_csr_path =
+                        path + std::string("_blocks/") + std::to_string(block_id) + std::string("_bk");
+                DataLoader::gen_block_file(block_vid.data(), vtx_offset.data(), edges.data(), block_vid.size(),
+                                           edges.size(), block_csr_path);
+                if (block_id==0) printf("import %d\n",block_vid.size());
+                for (auto i: block_vid) {
+                    v_state_map[i].file_id = block_id;
+                }
+
+                block_id += 1;
+                local_block_size = 0;
+                block_vid.clear();
             }
 
-            block_id+=1;
-            local_block_size = 0;
-            block_vid.clear();
-        }
-        int insert_v = q.front();
-        block_vid.push_back(revert_dict.at(insert_v));
-        local_block_size += 2+ q_len;
-        q.pop();
-        for (int j = 0; j < q_len; j++) {
-            int target_vtx_offset = intra_vertex_dict[vertex[insert_v]+j];
-            if (std::find(to_insert_block.begin(), to_insert_block.end(), target_vtx_offset)!= to_insert_block.end()) {
-                q.push(target_vtx_offset);
-                to_insert_block.erase(std::remove(to_insert_block.begin(),to_insert_block.end(), target_vtx_offset), to_insert_block.end());
-            }
-        }
-        if (q.empty() && to_insert_block.empty()) {
-            std::sort(block_vid.begin(), block_vid.end());
-            int cursor = 0;
-            std::vector<unsigned int> vtx_offset;
-            std::vector<int> edges;
-            vtx_offset.push_back(cursor);
-            for (int i=0; i< block_vid.size();i++) {
-                int elen;
-                if (intra_vertex_dict[block_vid[i]] == v_cnt-1) elen = e_cnt - vertex[intra_vertex_dict[block_vid[i]]];
-                else elen =vertex[intra_vertex_dict[block_vid[i]]+1] - vertex[intra_vertex_dict[block_vid[i]]];
-                cursor += elen;
-                for (int j = 0; j < elen; j++) edges.push_back(edge[j+vertex[intra_vertex_dict[block_vid[i]]]]);
-                // the last one do not need to record its ending index.
-                if (i< block_vid.size()-1)
-                    vtx_offset.push_back(cursor);
-            }
-            block_lengths[block_id] = block_length{(int) block_vid.size(),(int) edges.size()};
-            std::string block_csr_path = path + std::string("_blocks/") + std::to_string(block_id) + std::string("_bk");
-            DataLoader::gen_block_file(block_vid.data(),vtx_offset.data(),edges.data(),block_vid.size(),edges.size(),block_csr_path);
-            for (auto i : block_vid) {
-                v_state_map[i].file_id = block_id;
-            }
-            block_id+=1;
-            local_block_size = 0;
-            block_vid.clear();
-        }
 
+            block_vid.push_back(v_front);
+            local_block_size += 2 + q_len;
+            q.pop();
+
+            for (int j = l_front; j < r_front; j++) {
+                int neigh_v = edge[j];
+                if (!pick[neigh_v]) {
+                    q.push(neigh_v);
+                    pick[neigh_v] = true;
+                }
+            }
+        }
     }
+
+    if (!block_vid.empty()) {
+        std::sort(block_vid.begin(), block_vid.end());
+        int cursor = 0;
+        std::vector<unsigned int> vtx_offset;
+        std::vector<int> edges;
+        for (auto i : block_vid) {
+            vtx_offset.push_back(cursor);
+            unsigned int l,r;
+            get_edge_index(i,l,r);
+            cursor += r-l;
+
+            for (int j = l; j < r; j++) edges.push_back(edge[j]);
+        }
+        block_lengths[block_id] = block_length{(int) block_vid.size(), (int) edges.size()};
+        std::string block_csr_path =
+                path + std::string("_blocks/") + std::to_string(block_id) + std::string("_bk");
+        DataLoader::gen_block_file(block_vid.data(), vtx_offset.data(), edges.data(), block_vid.size(),
+                                   edges.size(), block_csr_path);
+
+        for (auto i: block_vid) {
+            v_state_map[i].file_id = block_id;
+        }
+        block_id += 1;
+        local_block_size = 0;
+        block_vid.clear();
+    }
+    delete[] pick;
 }
 
 int get_intersect_num(int *d1, int *d2, int l1, int l2) {
@@ -769,15 +812,16 @@ int get_intersect_num(int *d1, int *d2, int l1, int l2) {
     return cnt;
 }
 
-void Graph::to_partition_csr(int num, std::vector<int> &side_vertex, std::map<int,int> &part_map, const std::string& path) {
+void Graph::to_partition_csr(int num, std::vector<int> &side_vertex, std::vector<int> &part_map, const std::string& path) {
+    part_map.resize(v_cnt);
     if (partitionType == PartitionType::RANDOM) {
         for (int p = 0; p<num; p++) {
             int partial_vcnt;
             partial_vcnt = v_cnt /num;
             if (p < v_cnt % num) partial_vcnt += 1;
             auto *part_vertex = new unsigned int[partial_vcnt];
-            int mapk[partial_vcnt];
-            int mapv[partial_vcnt];
+            int *mapk = new int[partial_vcnt];
+            int *mapv = new int[partial_vcnt];
             unsigned int len;
             std::vector<int> adj_list;
             auto it = intra_vertex_dict.begin();
@@ -817,7 +861,8 @@ void Graph::to_partition_csr(int num, std::vector<int> &side_vertex, std::map<in
             std::string partition_path = path+ "_" + std::to_string(p)+ "_" + std::to_string(num)  + std::string("_pr");
             DataLoader::gen_partition_file(partial_vcnt, adj_list.size(), part_vertex, adj_list.data(), partition_path);
 
-
+            delete[] mapk;
+            delete[] mapv;
             delete[] part_vertex;
         }
     }
@@ -956,13 +1001,17 @@ void Graph::to_partition_csr(int num, std::vector<int> &side_vertex, std::map<in
     }
 
     if (partitionType == PartitionType::LDG) {
+
+        for (int i=0; i<v_cnt; i++) part_map[i] = -1;
         int capacity = e_cnt / num;
         std::vector<int> part_vertices[num];
         int p_size[num];
         for (int i = 0; i < num; i++) p_size[i] = 0;
-        int d[v_cnt],v[v_cnt];
+        int *d = new int[v_cnt];
+        int *v = new int[v_cnt];
         for (int i = 0; i < v_cnt; i++) {
             unsigned int l,r;
+//            printf("%d %d\n",i, intra_vertex_dict.empty());
             get_edge_index(i,l,r);
             d[i] = r-l;
             v[i] = i;
@@ -979,15 +1028,21 @@ void Graph::to_partition_csr(int num, std::vector<int> &side_vertex, std::map<in
                 }
             }
         }
+        int loading_progress = 0;
         for (int i = 0; i < v_cnt; i++) {
             int vtx= v[i];
             unsigned int l,r;
             get_edge_index(vtx,l,r);
-            double score = 0.0;
+            double score = -1.0 *v_cnt;
             int max = 0;
             for (int part = 0; part < num; part++) {
+                int intersect_num = 0;
                 double w_i = 1.0 - (double ) p_size[part] / capacity;
-                double new_score = w_i / (double )(r-l) * (double )get_intersect_num(edge+l,part_vertices[part].data(),r-l,part_vertices[part].size());
+                for (int j=l;j<r;j++) {
+                    if (part_map[edge[j]]==part) intersect_num++;
+                }
+//                double new_score = w_i / (double )(r-l) * (double )get_intersect_num(edge+l,part_vertices[part].data(),r-l,part_vertices[part].size());
+                double new_score = w_i / (double )(r-l) * (double )intersect_num;
                 if (score < new_score) {
                     score = new_score;
                     max = part;
@@ -1003,7 +1058,7 @@ void Graph::to_partition_csr(int num, std::vector<int> &side_vertex, std::map<in
             int cursor = 0;
             std::vector<int> adj_list, vertex_idx;
             std::vector<unsigned int> vtx_offset;
-            std::sort(part_vertex.begin(), part_vertex.end());
+//            std::sort(part_vertex.begin(), part_vertex.end());
             for (auto j: part_vertex) {
                 vertex_idx.push_back(vertex_idx.size());
                 vtx_offset.push_back(cursor);
@@ -1022,15 +1077,18 @@ void Graph::to_partition_csr(int num, std::vector<int> &side_vertex, std::map<in
                                            partition_path);
         }
 
-        for (auto v : intra_vertex_dict) {
-            unsigned int l,r;
-            get_edge_index(v.first,l,r);
-            for (int i = l; i < r; i++) {
-                if (part_map[edge[i]] != part_map[v.first]) {
-                    side_vertex.push_back(v.first);
-                    break;
-                }
-            }
-        }
+//        for (auto v : intra_vertex_dict) {
+//            unsigned int l,r;
+//            get_edge_index(v.first,l,r);
+//            for (int i = l; i < r; i++) {
+//                if (part_map[edge[i]] != part_map[v.first]) {
+//                    side_vertex.push_back(v.first);
+//                    break;
+//                }
+//            }
+//        }
+
+        delete[] d;
+        delete[] v;
     }
 }

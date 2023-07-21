@@ -23,12 +23,14 @@ public:
     static int unorderd_subtraction_size(const VertexSet& set0, const VertexSet& set1, int size_after_restrict = -1);
     void insert_ans_sort(int val);
     inline int get_size() const { return size;}
-    inline int get_data(int i) const { return data[i];}
+    inline int get_data(int i) const {
+        return data[i];
+    }
     inline const int* get_data_ptr() const { return data;}
     inline int* get_data_ptr() { return data;}
     inline void push_back(int val) {
         data[size++] = val;
-        assert(size < max_intersection_size);
+//        assert(size < max_intersection_size);
     }
     inline void pop_back() { --size;}
     inline int get_last() const { return data[size - 1];}

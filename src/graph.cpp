@@ -12,6 +12,7 @@
 #include <mpi.h>
 #include <atomic>
 #include <queue>
+#include <stack>
 #include <iostream>
 
 
@@ -119,6 +120,7 @@ void Graph::tc_mt(long long *global_ans) {
 
 void Graph::get_edge_index(int v, unsigned int& l, unsigned int& r) const
 {
+//    printf("get v %d\n",intra_vertex_dict.size());
     int vtx = intra_vertex_dict.at(v);
     l = vertex[vtx];
     if (vtx == v_cnt -1) r = e_cnt;
@@ -228,8 +230,11 @@ long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bo
     load_num = 0;
     io_num = 0;
     physicals_priority.resize(v_state_map.size());
+    lock_vertex.resize(v_state_map.size());
     for(auto i : v_state_map) physicals_priority[i.first] = NULL;
     L.init_list();
+    omp_init_lock(&priority_lock);
+    for (int i=0; i< v_state_map.size(); i++) omp_init_lock(&lock_vertex[i]);
     long long global_ans = 0;
 
 #pragma omp parallel num_threads(thread_count) reduction(+: global_ans)
@@ -241,12 +246,12 @@ long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bo
         long long local_ans = 0;
         // TODO : try different chunksize
 #pragma omp for schedule(dynamic) nowait
-        for (int vertex_id = 0; vertex_id < v_state_map.size(); vertex_id++)
+        for (int vertex_id = 0; vertex_id < bfs_order_queue.size(); vertex_id++)
         {
             unsigned int l,r;
-            int vtx = vertex_id;
-            if (!v_state_map[vtx].is_intra) continue;
-            printf("%d %d\n",vtx,omp_get_thread_num());
+            int vtx = bfs_order_queue[vertex_id];
+//            if (!v_state_map[vtx].is_intra) continue;
+//            printf("%d %d\n",vtx,omp_get_thread_num());
             get_edge_index(vtx,l,r);
             for (int prefix_id = schedule.get_last(0); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
             {
@@ -262,15 +267,17 @@ long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bo
         }
         global_ans += local_ans;
     }
-    printf("\n=====log for %d=====\n",blockType);
-    printf("\nio num: %d\n", io_num);
-    printf("extra vtx num: %d\n", load_num);
-    printf("      file read io: %.6lf\n", file_time*100);
-    printf("      blocking manage time %.6lf\n",blocking_manage_time*100);
-    printf("    load extern io: %.6lf\n", load_extern_time*100);
-    printf("  loading manage time %.6lf\n",loading_manage_time*100);
-    printf("  extern init time %.6lf\n",extern_init_time*100);
-    printf("total load: %.6lf\n", external_time*100);
+    omp_destroy_lock(&priority_lock);
+    for (int i=0; i< v_state_map.size(); i++) omp_destroy_lock(&lock_vertex[i]);
+//    printf("\n=====log for %d=====\n",blockType);
+//    printf("\nio num: %d\n", io_num);
+//    printf("extra vtx num: %d\n", load_num);
+//    printf("      file read io: %.6lf\n", file_time*100);
+//    printf("      blocking manage time %.6lf\n",blocking_manage_time*100);
+//    printf("    load extern io: %.6lf\n", load_extern_time*100);
+//    printf("  loading manage time %.6lf\n",loading_manage_time*100);
+//    printf("  extern init time %.6lf\n",extern_init_time*100);
+//    printf("total load: %.6lf\n", external_time*100);
     return global_ans / schedule.get_in_exclusion_optimize_redundancy();
 }
 
@@ -377,13 +384,11 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
         else {
             int adj_size = 0;
             std::shared_ptr<int[]> ptr;
-            bool next_hop = false;
-            if (schedule.k_hop_matrix[depth] > 1) next_hop = true;
-            get_physical_edge_index(load_v, ptr, adj_size, next_hop);
-            if (ptr==NULL) {
-                printf("is null\n");
-            }
-//            printf("%d %d\n",adj_size,ptr[0]);
+
+            double t1 = get_wall_time2();
+            get_physical_edge_index(load_v, ptr, adj_size);
+            double t2 = get_wall_time2();
+            if (omp_get_thread_num()==0) load_extern_time += t2-t1;
             bool is_zero = false;
             for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
             {
@@ -395,7 +400,6 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
             }
             if( is_zero ) {
                 ptr = NULL;
-//                drop_physical_edge_index(load_v);
                 continue;
             }
             //subtraction_set.insert_ans_sort(vertex);
@@ -404,7 +408,6 @@ void Graph::pattern_matching_aggressive_func(const Schedule& schedule, VertexSet
             subtraction_set.pop_back(); // @@@
 
             ptr = NULL;
-//            drop_physical_edge_index(load_v);
 
         }
     }
@@ -461,4 +464,49 @@ long long Graph::pattern_matching_mpi(const Schedule& schedule, int thread_count
         }
     }
     return global_ans;
+}
+
+void Graph::gen_bfs_query_order() {
+    bfs_order_queue.clear();
+    bool *picked = new bool[g_vcnt];
+    for (int i=0;i<g_vcnt;i++)
+        picked[i] = !v_state_map[i].is_intra;
+    std::queue<int> q;
+    for (int i=0; i<g_vcnt; i++) {
+        if (picked[i]) continue;
+        if (q.empty()) {
+            q.push(i);
+            bfs_order_queue.push_back(i);
+            picked[i] = true;
+        }
+        while (!q.empty()) {
+            int v = q.front();
+            q.pop();
+            unsigned int l,r;
+            get_edge_index(v,l,r);
+            std::vector<int> sort_bfs;
+            std::map<int,int> degree;
+            for (int j =l;j<r;j++) {
+                if (picked[edge[j]]) continue;
+                q.push(edge[j]);
+                picked[edge[j]] = true;
+                unsigned int s,e;
+                get_edge_index(edge[j],s,e);
+                degree[edge[j]] = e-s;
+                sort_bfs.push_back(edge[j]);
+            }
+            for (int l=0; l<sort_bfs.size();l++) {
+                for (int m=l+1;m<sort_bfs.size();m++) {
+                    if (degree[sort_bfs[l]] < degree[sort_bfs[m]])
+                    {
+                        std::swap(sort_bfs[l],sort_bfs[m]);
+                    }
+                }
+            }
+            for (auto a:sort_bfs)
+                bfs_order_queue.push_back(a);
+        }
+//        bfs_order_queue.push_back(i);
+    }
+    assert(bfs_order_queue.size()==v_cnt);
 }

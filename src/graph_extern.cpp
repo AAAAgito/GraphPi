@@ -541,7 +541,6 @@ long long Graph::pattern_matching_asyn(const Schedule& schedule, int thread_coun
                     extern_store_manage(schedule);
                 }
                 double t2 = get_wall_time();
-                external_time += t2-t1;
             }
         }
         double t1 = get_wall_time();
@@ -579,7 +578,6 @@ long long Graph::pattern_matching_asyn(const Schedule& schedule, int thread_coun
             }
         }
         double t2 = get_wall_time();
-        external_time += t2-t1;
 
         while (true) {
             omp_set_lock(&ready_bin_lock);
@@ -627,16 +625,12 @@ long long Graph::pattern_matching_asyn(const Schedule& schedule, int thread_coun
     printf("    load extern io: %.6lf\n", load_extern_time*100);
     printf("  loading manage time %.6lf\n",loading_manage_time*100);
     printf("  extern init time %.6lf\n",extern_init_time*100);
-    printf("total load: %.6lf\n", external_time*100);
     return global_ans / schedule.get_in_exclusion_optimize_redundancy();
 }
 
 
-
-
-void Graph::load_physical_edge_index(int v, bool next_hop) {
+void Graph::load_physical_edge_index(int v) {
     io_num+=1;
-
 
     //read file and get N(v)
     // fread, scanf, getline..
@@ -669,10 +663,15 @@ void Graph::load_physical_edge_index(int v, bool next_hop) {
     double t2 = get_wall_time();
 
     file_time += t2-t1;
+//    printf("\nfile: %.6lf",t2-t1);
     t1 = get_wall_time();
     if (loadType == SUB_BLOCK){
         int vid_cursor = 0;
-        while (vid[vid_cursor] != v) vid_cursor++;
+        while (vid[vid_cursor] != v) {
+            assert(vid[vid_cursor < v]);
+            vid_cursor++;
+        }
+        assert(vid[vid_cursor]==v);
         int l,r;
         l=vertex_offset[vid_cursor];
         if (vid_cursor==load_v_len-1) r=load_e_len;
@@ -684,41 +683,41 @@ void Graph::load_physical_edge_index(int v, bool next_hop) {
         assert(physicals_load[v] == NULL);
         assert(physicals_priority[v] == NULL);
         physicals_priority[v] = new cell{v,NULL,NULL};
-        L.insert_head(physicals_priority[v],v);
+        L.insert_head(physicals_priority[v]);
 
         physicals_length[v] = r-l;
         physicals_load[v] = ptr;
 
 
-        std::vector<int> local_v;
-        std::map<int,std::vector<int>> file_v;
 //        printf("loop out side\n");
         for (int i = l; i < r; i++) {
-            ptr[i - l] = edge[i];
-            if (physicals_load.find(adj_list[i])!=physicals_load.end()) {
+            ptr[i - l] = adj_list[i];
+        }
+        if (false) {
+            std::vector<int> local_v;
+            std::map<int,std::vector<int>> file_v;
+            for (int i=l; i<r;i++) {
+
                 if (v_state_map[adj_list[i]].is_intra) continue;
                 if (physicals_load[adj_list[i]] != NULL) {
                     assert(physicals_priority[adj_list[i]] != NULL);
                     continue;
                 }
-            }
-//            printf("==%d %d %d==\n",i,adj_list[i],physicals_priority[adj_list[i]]==NULL);
-            assert(physicals_priority[adj_list[i]]==NULL);
-            int fid = v_state_map[adj_list[i]].file_id;
-            if (fid == file_id) {
-                local_v.push_back(adj_list[i]);
-            } else {
-                if (file_v.find(fid)==file_v.end()) {
-                    std::vector<int> vec;
-                    vec.push_back(adj_list[i]);
-                    file_v[fid] = vec;
+                assert(physicals_priority[adj_list[i]]==NULL);
+                int fid = v_state_map[adj_list[i]].file_id;
+                if (fid == file_id) {
+                    local_v.push_back(adj_list[i]);
                 } else {
-                    file_v[fid].push_back(adj_list[i]);
+                    if (file_v.find(fid)==file_v.end()) {
+                        std::vector<int> vec;
+                        vec.push_back(adj_list[i]);
+                        file_v[fid] = vec;
+                    } else {
+                        file_v[fid].push_back(adj_list[i]);
+                    }
                 }
             }
-        }
-        std::sort(local_v.begin(), local_v.end());
-        if (next_hop) {
+            std::sort(local_v.begin(), local_v.end());
             int vid_cursor = 0;
             for (auto i : local_v) {
                 while (vid[vid_cursor] != i) {
@@ -738,15 +737,14 @@ void Graph::load_physical_edge_index(int v, bool next_hop) {
                 physicals_load[i] = ptr;
                 assert(physicals_priority[i] == NULL);
                 physicals_priority[i] = new cell{i,NULL,NULL};
-                L.insert_head(physicals_priority[i],i);
+                L.insert_head(physicals_priority[i]);
             }
             for (auto pair : file_v) {
                 load_physical_edge_index(pair.second);
             }
             for (int i = l; i < r; i ++) {
-                assert(physicals_load.find(adj_list[i])!= physicals_load.end());
+//                assert(physicals_load.find(adj_list[i])!= physicals_load.end());
                 assert(physicals_load[adj_list[i]] != NULL);
-//                printf("loaded %d %d\n",edge[i],physicals_load[edge[i]][0]);
             }
         }
     }
@@ -756,6 +754,233 @@ void Graph::load_physical_edge_index(int v, bool next_hop) {
 
     t2 = get_wall_time();
     blocking_manage_time += t2-t1;
+
+}
+
+void Graph::load_physical_edge_index(int &v, std::shared_ptr<int[]> &ptr, int &size) {
+    double t1 = get_wall_time();
+    io_num+=1;
+
+    //read file and get N(v)
+    // fread, scanf, getline..
+    int file_id = v_state_map[v].file_id;
+//    int *vid = nullptr;
+//    unsigned int *vertex_offset = nullptr;
+//    int *adj_list = nullptr;
+
+    std::string block_path;
+    if (blockType == BlockType::K_CORE_BLOCK) block_path = raw_data_path + "_blocks/" + std::to_string(file_id) + "_bk";
+    else if (blockType == BlockType::RANDOM_BLOCK) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_br");
+    else if (blockType == BlockType::CHINK_BFS) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bc");
+    else if (blockType == BlockType::SIMPLE_BFS) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bs");
+    auto lens = block_lengths[file_id];
+    int load_v_len=lens.v_len;
+    unsigned int load_e_len=lens.e_len;
+//    DataLoader::load_data_size(load_v_len,load_e_len,block_path);
+    int *vid = new int[load_v_len];
+    unsigned int *vertex_offset = new unsigned int[load_v_len];
+    int *adj_list = new int[load_e_len];
+    int* data = new int[2*load_v_len+load_e_len];
+
+    // io reading
+    DataLoader::load_block_data_aggregate(data,2*load_v_len+load_e_len,block_path);
+    memcpy(vid,data,load_v_len*sizeof(int));
+    memcpy(vertex_offset,data+load_v_len,load_v_len*sizeof(int));
+    memcpy(adj_list,data+2*load_v_len,load_e_len* sizeof(int));
+//    DataLoader::load_block_data(vid,vertex_offset,adj_list, load_v_len, load_e_len, block_path);
+    delete[] data;
+//    double t2 = get_wall_time();
+
+//    file_time += t2-t1;
+//    t1 = get_wall_time();
+    int vid_cursor = 0;
+    while (vid[vid_cursor] != v) {
+        assert(vid_cursor < load_v_len);
+        assert(vid[vid_cursor] < v);
+        vid_cursor++;
+    }
+//    assert(vid[vid_cursor]==v);
+    int l,r;
+    l=vertex_offset[vid_cursor];
+    if (vid_cursor==load_v_len-1) r=load_e_len;
+    else r= vertex_offset[vid_cursor+1];
+//    assert(r-l >0);
+
+    std::shared_ptr<int[]> p(new int[r-l]());
+//    auto shared = std::make_shared<int[]>(r-l);
+
+    size = r-l;
+    for (int i = l; i < r; i++) {
+        p[i - l] = adj_list[i];
+    }
+
+    ptr.swap(p);
+    delete[] vid;
+    delete[] vertex_offset;
+    delete[] adj_list;
+
+    double t2 = get_wall_time();
+    if (omp_get_thread_num()==0)
+        blocking_manage_time += t2-t1;
+}
+
+void Graph::load_physical_edge_index(int &vtx, std::vector<int> &vs, std::shared_ptr<int[]> &Ptr, std::vector<std::shared_ptr<int[]>> &ptrs, int &size, std::vector<int> &lengths) {
+
+    double t1 = get_wall_time();
+    io_num+=1;
+
+    //read file and get N(v)
+    // fread, scanf, getline..
+    int file_id = v_state_map[vtx].file_id;
+
+    std::string block_path;
+    if (blockType == BlockType::K_CORE_BLOCK) block_path = raw_data_path + "_blocks/" + std::to_string(file_id) + "_bk";
+    else if (blockType == BlockType::RANDOM_BLOCK) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_br");
+    else if (blockType == BlockType::CHINK_BFS) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bc");
+    else if (blockType == BlockType::SIMPLE_BFS) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bs");
+    auto lens = block_lengths[file_id];
+    int load_v_len=lens.v_len;
+    unsigned int load_e_len=lens.e_len;
+//    DataLoader::load_data_size(load_v_len,load_e_len,block_path);
+    int *vid = new int[load_v_len];
+    unsigned int *vertex_offset = new unsigned int[load_v_len];
+    int *adj_list = new int[load_e_len];
+    int* data = new int[2*load_v_len+load_e_len];
+
+    // io reading
+    DataLoader::load_block_data_aggregate(data,2*load_v_len+load_e_len,block_path);
+    memcpy(vid,data,load_v_len*sizeof(int));
+    memcpy(vertex_offset,data+load_v_len,load_v_len*sizeof(int));
+    memcpy(adj_list,data+2*load_v_len,load_e_len* sizeof(int));
+//    DataLoader::load_block_data(vid,vertex_offset,adj_list, load_v_len, load_e_len, block_path);
+    delete[] data;
+    assert(vertex_offset[0]==0);
+    int vid_cursor = 0;
+    while (vid[vid_cursor] != vtx) {
+//        assert(vid[vid_cursor < v]);
+        if (vid_cursor >= load_v_len)
+            printf("%d %d\n",vtx,file_id);
+        assert(vid_cursor < load_v_len);
+        if (vid[vid_cursor] >= vtx)
+            printf("%d %d\n",vtx,file_id);
+        assert(vid[vid_cursor] < vtx);
+        vid_cursor++;
+    }
+//    assert(vid[vid_cursor]==v);
+    int l,r;
+    l=vertex_offset[vid_cursor];
+    if (vid_cursor==load_v_len-1) r=load_e_len;
+    else r= vertex_offset[vid_cursor+1];
+//    assert(r-l >0);
+
+    std::shared_ptr<int[]> p(new int[r-l]());
+//    auto shared = std::make_shared<int[]>(r-l);
+
+    size = r-l;
+    for (int i = l; i < r; i++) {
+        p[i - l] = adj_list[i];
+    }
+
+    Ptr.swap(p);
+    int up_bound = std::min(load_v_len,vid_cursor+20);
+    for (int idx = vid_cursor+1; idx < up_bound; idx++) {
+
+        int l,r;
+        l=vertex_offset[vid_cursor];
+        if (vid_cursor==load_v_len-1) r=load_e_len;
+        else r= vertex_offset[vid_cursor+1];
+//    assert(r-l >0);
+
+        std::shared_ptr<int[]> p(new int[r-l]());
+        for (int i = l; i < r; i++) {
+            p[i - l] = adj_list[i];
+        }
+        vs.push_back(vid[idx]);
+        ptrs.push_back(p);
+        lengths.push_back(r-l);
+    }
+
+    delete[] vid;
+    delete[] vertex_offset;
+    delete[] adj_list;
+
+    double t2 = get_wall_time();
+    if (omp_get_thread_num()==0)
+        blocking_manage_time += t2-t1;
+}
+
+void Graph::load_physical_all_edge_index(int vtx) {
+    io_num+=1;
+
+    //read file and get N(v)
+    // fread, scanf, getline..
+    int file_id = v_state_map[vtx].file_id;
+    int *vid = nullptr;
+    unsigned int *vertex_offset = nullptr;
+    int *adj_list = nullptr;
+
+    std::string block_path;
+    if (blockType == BlockType::K_CORE_BLOCK) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bk");
+    else if (blockType == BlockType::RANDOM_BLOCK) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_br");
+    else if (blockType == BlockType::CHINK_BFS) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bc");
+    else if (blockType == BlockType::SIMPLE_BFS) block_path = raw_data_path + std::string("_blocks/") + std::to_string(file_id) + std::string("_bs");
+    int load_v_len=block_lengths[file_id].v_len;
+    unsigned int load_e_len=block_lengths[file_id].e_len;
+//    DataLoader::load_data_size(load_v_len,load_e_len,block_path);
+    vid = new int[load_v_len];
+    vertex_offset = new unsigned int[load_v_len];
+    adj_list = new int[load_e_len];
+    int* data = new int[2*load_v_len+load_e_len];
+
+    double t1 = get_wall_time();
+    // io reading
+    DataLoader::load_block_data_aggregate(data,2*load_v_len+load_e_len,block_path);
+    memcpy(vid,data,load_v_len*sizeof(int));
+    memcpy(vertex_offset,data+load_v_len,load_v_len*sizeof(int));
+    memcpy(adj_list,data+2*load_v_len,load_e_len* sizeof(int));
+//    DataLoader::load_block_data(vid,vertex_offset,adj_list, load_v_len, load_e_len, block_path);
+    delete[] data;
+    double t2 = get_wall_time();
+
+    file_time += t2-t1;
+    double blockings_time = 0;
+    for (int vid_cursor = 0; vid_cursor < load_v_len; vid_cursor++) {
+        t1 = get_wall_time();
+        int v = vid[vid_cursor];
+        if (physicals_priority[v] != NULL || physicals_load[v] != NULL) {
+
+//            assert(physicals_load[v] != NULL);
+//            assert(physicals_priority[v] != NULL);
+            continue;
+        }
+        int l, r;
+        l = vertex_offset[vid_cursor];
+        if (vid_cursor == load_v_len - 1) r = load_e_len;
+        else r = vertex_offset[vid_cursor + 1];
+//        assert(r - l > 0);
+        std::shared_ptr<int[]> ptr(new int[r - l]());
+//        assert(physicals_load[v] == NULL);
+//        assert(physicals_priority[v] == NULL);
+        physicals_priority[v] = new cell{v, NULL, NULL};
+        if (v==vtx)
+            L.insert_head(physicals_priority[v]);
+        else
+            L.insert_tail(physicals_priority[v]);
+        physicals_length[v] = r - l;
+        physicals_load[v] = ptr;
+
+        for (int i = l; i < r; i++) {
+            ptr[i - l] = adj_list[i];
+        }
+        t2 = get_wall_time();
+        blockings_time += t2-t1;
+    }
+
+    delete[] vid;
+    delete[] vertex_offset;
+    delete[] adj_list;
+
+    blocking_manage_time += blockings_time;
 
 }
 
@@ -800,37 +1025,37 @@ void Graph::load_physical_edge_index(std::vector<int> &v) {
 
     file_time += t2-t1;
     t1 = get_wall_time();
-    if (loadType == SUB_BLOCK){
-        for (auto vtx : v) {
-            int vid_cursor = 0;
-            while (vid[vid_cursor] != vtx) vid_cursor++;
-            int l, r;
-            l = vertex_offset[vid_cursor];
-            if (vid_cursor == load_v_len - 1) r = load_e_len;
-            else r = vertex_offset[vid_cursor + 1];
-            std::shared_ptr<int[]> ptr(new int[r - l]());
+
+    for (auto vtx : v) {
+        int vid_cursor = 0;
+        while (vid[vid_cursor] != vtx) vid_cursor++;
+        int l, r;
+        l = vertex_offset[vid_cursor];
+        if (vid_cursor == load_v_len - 1) r = load_e_len;
+        else r = vertex_offset[vid_cursor + 1];
+        std::shared_ptr<int[]> ptr(new int[r - l]());
 //            int *ptr = new int[r-l];
-            physicals_length[vtx] = r - l;
-            assert(physicals_load[vtx] == NULL);
-            physicals_load[vtx] = ptr;
+        physicals_length[vtx] = r - l;
+        assert(physicals_load[vtx] == NULL);
+        physicals_load[vtx] = ptr;
 
 
 //            printf("--%d %d--\n",vtx,physicals_priority[vtx]==NULL);
-            assert(physicals_priority[vtx] == NULL);
-            physicals_priority[vtx] = new cell{vtx,NULL,NULL};
-            L.insert_head(physicals_priority[vtx],vtx);
+        assert(physicals_priority[vtx] == NULL);
+        physicals_priority[vtx] = new cell{vtx,NULL,NULL};
+        L.insert_head(physicals_priority[vtx]);
 
-            std::map<int, std::vector<int>> file_v;
-            for (int i = l; i < r; i++) {
-                ptr[i - l] = adj_list[i];
-            }
+        std::map<int, std::vector<int>> file_v;
+        for (int i = l; i < r; i++) {
+            ptr[i - l] = adj_list[i];
         }
     }
+
     delete[] vid;
     delete[] vertex_offset;
     delete[] adj_list;
 
     t2 = get_wall_time();
-    blocking_manage_time += t2-t1;
+//    blocking_manage_time += t2-t1;
 
 }
