@@ -45,6 +45,10 @@ public:
 
     static void load_data_size(int &v_cnt, unsigned int &e_cnt, const std::string& path);
 
+    static void gen_order_file(int* v, int size, const std::string& path);
+
+    static void load_order_data(int* v, int size, const std::string& path);
+
     static void gen_map_file(int* key, int* value, int size, const std::string& path);
 
     static void gen_map_file(unsigned int* key, int* value, int size, const std::string& path);
@@ -62,6 +66,7 @@ public:
     static void load_block_data(int* vid, unsigned int* vertex, int* edge, int &v_len, unsigned int &e_len, const std::string& path);
 
     static void load_block_data_aggregate(int *data, int size, const std::string& path);
+    static void load_block_data_aggregate2(int *data, int size, const std::string& path);
 
 private:
     static bool cmp_pair(std::pair<int,int>a, std::pair<int,int>b);

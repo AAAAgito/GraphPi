@@ -4,6 +4,8 @@
 #include "../include/common.h"
 #include <cstdlib>
 #include <cstring>
+#include <fcntl.h>
+#include <unistd.h>
 
 bool DataLoader::load_data(Graph* &g, DataType type, const char* path, int oriented_type) {
     if(type == Patents || type == Orkut || type == complete8 || type == LiveJournal || type == MiCo || type == CiteSeer || type == Wiki_Vote) {
@@ -216,8 +218,9 @@ bool DataLoader::load_complete(Graph* &g, int clique_size) {
             ++degree[x];
             ++degree[y];
         }
+    g->v_state_map.resize(g->v_cnt);
     for (int i = 0; i< g->v_cnt; i++) {
-        g->v_state_map[i] = {true, false,0,0,0};
+        g->v_state_map[i] = {true, 0};
         g->intra_vertex_dict[i] = i;
     }
     std::sort(degree, degree + g->v_cnt);
@@ -344,6 +347,22 @@ void DataLoader::load_block_data_aggregate(int *data, int size, const std::strin
     binaryIo.open(path, std::ios::binary);
     binaryIo.read((char*)data, size * sizeof(int));
     binaryIo.close();
+    
+}
+void DataLoader::load_block_data_aggregate2(int *data, int size, const std::string& path) {
+    int fd = open(path.c_str(), O_RDWR);
+    int ret = read(fd, data, sizeof(int)* size);
+    close(fd);
+}
+
+
+void DataLoader::gen_order_file(int* v, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char*)v, size * sizeof(v[0]));
+    binaryIo.close();
 }
 
 void DataLoader::gen_map_file(int* key, int* value, int size, const std::string& path) {
@@ -386,6 +405,16 @@ void DataLoader::load_block_size_data(int* key, int* value, int* value2, int siz
     binaryIo.read((char*)value, size * sizeof(int));
     binaryIo.read((char*)value2, size * sizeof(int));
     binaryIo.close();
+}
+
+
+void DataLoader::load_order_data(int* v, int size, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::in| std::ios::binary);
+    binaryIo.read((char*)v, size * sizeof(int));
+    binaryIo.close();
+
 }
 
 void DataLoader::load_map_data(int* key, int* value, int size, const std::string& path) {

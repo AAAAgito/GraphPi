@@ -3,66 +3,82 @@
 #include "common.h"
 //single function test
 
-TEST(testrunning, hello) {
-    printf("hello world\n");
-    std::cout << __cplusplus << std::endl;
-    double total_time = 0;
-    std::shared_ptr<int[]> p;
+// TEST(testrunning, hello) {
+//     printf("hello world\n");
+//     std::cout << __cplusplus << std::endl;
+//     double total_time = 0;
+//     int *data = new int[1000];
+//     for (int i=0; i < 4236951; i++) {
+//     std::string path("/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/patents_blocks/bk_");
+//     path += std::to_string((i*73)%30000);
+//     double t1= get_wall_time();
+//         DataLoader::load_block_data_aggregate(data,1000,path);
+//     double t2= get_wall_time();
+//     total_time+=t2-t1;
+//     }
+//     printf("time %.6lf\n",total_time);
+//     delete[] data;
+// }
+
+TEST(test_counting, triangle) {
+    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/friendster";
+    Graph g(graph_path);
+    Graph g2(graph_path);
     double t1= get_wall_time();
-    std::shared_ptr<int[]> ptr(new int[100]());
-    for (int i=0; i < 200*10000; i++) {
-        p=ptr;
-        p=NULL;
+    g.load_global_graph(graph_path);
+    g2.e_cnt = g.e_cnt;
+    g2.v_cnt = g.v_cnt;
+    g2.g_ecnt = g.e_cnt;
+    g2.g_vcnt = g.v_cnt;
+    g2.memory_map(graph_path);
+    for (int i=0;i<g.v_cnt;i++) {
+        unsigned int l1,l2,r1,r2;
+        g.get_edge_index(i,l1,r1);
+        g2.get_mmp_edge_index(i,l2,r2);
+        ASSERT_EQ(l1,l2);
+        ASSERT_EQ(r1,r2);
+        for (unsigned int j=l1;j<r1;j++) {
+            ASSERT_EQ(g.edge[j],g2.mmp_edge[j]);
+        }
+        // printf("%d pass\n",i);
     }
     double t2= get_wall_time();
     printf("time %.6lf\n",t2-t1);
-     t1= get_wall_time();
-    for (int i=0; i < 1800000; i++) {
-        int *ptr = new int[100];
-        delete[] ptr;
-    }
-     t2= get_wall_time();
-    printf("time %.6lf\n",t2-t1);
-//    int a = 700;
-//    double t1= get_wall_time();
-//    auto shared = std::make_shared<int[]>(1000);
-//    for (int i=0; i<a;i++) {
-//        printf("%d ",i);
-//        shared[i] = i;
-//    }
+    long long ans =0;
+    printf("loaded %dv %llde\n",g.v_cnt,g.e_cnt);
 }
 
-//TEST(testDataLoad, global_csr) {
-//    std::string raw_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/patents_input";
-//    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/patents";
-//    Graph *g;
-//    DataLoader D;
-//    double t1 = get_wall_time();
-//    D.load_data(g,DataType::Patents,raw_path.c_str());
-//    double t2 = get_wall_time();
-//    printf("raw load time %.6lf\n", t2-t1);
-//    g->to_global_csr(graph_path);
-//    Graph g2;
-//    t1 = get_wall_time();
-//    g2.load_global_graph(graph_path);
-//    t2 = get_wall_time();
-//    printf("csr binary load time %.6lf\n", t2-t1);
-//    EXPECT_EQ(g2.v_cnt,g->v_cnt);
-//    EXPECT_EQ(g2.e_cnt,g->e_cnt);
-//    printf("intra size %d\n",g2.intra_vertex_dict.size());
-//    EXPECT_EQ(g2.intra_vertex_dict.size(),g->intra_vertex_dict.size());
-//    for (int v = 0; v < g->v_cnt; v++) {
-//        unsigned int l1,r1;
-//        unsigned int l2,r2;
-//        g->get_edge_index(v,l1,r1);
-//        g2.get_edge_index(v,l2,r2);
-//        ASSERT_EQ(l1,l2);
-//        ASSERT_EQ(r1,r2);
-//        for (int i=l1 ; i<r1; i++) {
-//            ASSERT_EQ(g->edge[i],g2.edge[i]);
-//        }
-//    }
-//}
+// TEST(testDataLoad, global_csr) {
+//     std::string raw_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/friendster_input";
+//     std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/friendster";
+//     Graph *g;
+//     DataLoader D;
+//     double t1 = get_wall_time();
+//     D.load_data(g,DataType::Patents,raw_path.c_str());
+//     double t2 = get_wall_time();
+//     printf("raw load time %.6lf\n", t2-t1);
+//     g->to_global_csr(graph_path);
+//     Graph g2;
+//     t1 = get_wall_time();
+//     g2.load_global_graph(graph_path);
+//     t2 = get_wall_time();
+//     printf("csr binary load time %.6lf\n", t2-t1);
+//     EXPECT_EQ(g2.v_cnt,g->v_cnt);
+//     EXPECT_EQ(g2.e_cnt,g->e_cnt);
+//     printf("intra size %d\n",g2.intra_vertex_dict.size());
+//     EXPECT_EQ(g2.intra_vertex_dict.size(),g->intra_vertex_dict.size());
+//     for (int v = 0; v < g->v_cnt; v++) {
+//         unsigned int l1,r1;
+//         unsigned int l2,r2;
+//         g->get_edge_index(v,l1,r1);
+//         g2.get_edge_index(v,l2,r2);
+//         ASSERT_EQ(l1,l2);
+//         ASSERT_EQ(r1,r2);
+//         for (int i=l1 ; i<r1; i++) {
+//             ASSERT_EQ(g->edge[i],g2.edge[i]);
+//         }
+//     }
+// }
 
 
 //TEST(testDataLoad, sorted_csr) {
@@ -298,7 +314,7 @@ TEST(testrunning, hello) {
 //     LoadType loadType = SUB_BLOCK;
 //     BlockType blockType = RANDOM_BLOCK;
 //     PartitionType partitionType = RANDOM;
-//     BlockType block_types[3] = {RANDOM_BLOCK, K_CORE_BLOCK, CHINK_BFS};
+//     BlockType block_types[3] = {RANDOM_BLOCK, K_CORE_BLOCK, CHAIN};
 //     //global matching
 //     blockType = block_types[0];
 //     std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/docker_graphPi/dataset/bin/WikiVote";
@@ -358,6 +374,58 @@ TEST(testrunning, hello) {
 //     ASSERT_EQ(ground_truth_result, global_result);
 // }
 
+//TEST(test_paging, paging_dump) {
+//    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/twitter";
+//    Graph g(graph_path);
+//    g.load_global_graph(graph_path);
+//    for (int i = 0; i < g.v_cnt - 1; i++) {
+//        unsigned int l, r;
+//        g.get_edge_index(i, l, r);
+//        int len = r - l;
+//        VertexSet::max_intersection_size = std::max(VertexSet::max_intersection_size, len);
+//    }
+//
+//    Pattern tc(3);
+//    tc.add_edge(0, 1);
+//    tc.add_edge(1, 2);
+//    tc.add_edge(2, 0);
+//    bool is_pattern_valid;
+//    bool use_in_exclusion_optimize = false;
+//    int performance_type = 2;
+//    int restricts_type = 2;
+//    int thread_num = 1;
+//    Schedule tc_schedule(tc, is_pattern_valid, performance_type, restricts_type, use_in_exclusion_optimize,
+//                         g.v_cnt, g.e_cnt);
+//    g.g_vcnt = g.v_cnt;
+//    g.load_order(true);
+//    double t1 =get_wall_time();
+//    int truth = g.pattern_matching(tc_schedule, thread_num);
+//    double t2 =get_wall_time();
+//    int psize = 3*1024*1024;
+//    int p = g.to_partition_csr(psize);
+//    printf("v %d\n",g.g_vcnt);
+//    printf("truth count %d %.6lf\n",truth,t2-t1);
+//    int global_result=0;
+//    double time_extern = 0;
+//    int core = 0;
+//    printf("part %d\n",p);
+//    for (int n = 0;n<p;n++) {
+//        printf("n %d\n",n);
+//        Graph g2(graph_path);
+//        g2.g_vcnt = g.v_cnt;
+//        g2.partitionType = PAGE;
+//        g2.load_partition_graph(n,psize,graph_path);
+//        g2.load_order(n,psize);
+//        core+= g2.bfs_order_queue.size();
+//        t1 =get_wall_time();
+//        global_result += g2.pattern_matching(tc_schedule, thread_num);
+//        t2 =get_wall_time();
+//        time_extern += t2-t1;
+//    }
+//    printf("c %d\n",core);
+//    printf("global count %d %.6lf\n",global_result,time_extern);
+//}
+
 TEST(testMatching, match_in_partition_c) {
 
     // patterns:
@@ -378,17 +446,16 @@ TEST(testMatching, match_in_partition_c) {
     int restricts_type = 2;
     int thread_num = 16;
     int part = 4;
-    LoadType loadType = ALL_BLOCK;
+    LoadType loadType = SUB_BLOCK;
     BlockType blockType;
     PartitionType partitionType = LDG;
-    BlockType block_types[4] = {RANDOM_BLOCK, K_CORE_BLOCK, CHINK_BFS, SIMPLE_BFS};
+    BlockType block_types[4] = {RANDOM_BLOCK, K_CORE_BLOCK, CHAIN, SIMPLE_BFS};
     //global matching
     blockType = block_types[1];
-    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/patents";
+    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/friendster";
     Graph g(graph_path);
     g.load_global_graph(graph_path);
-    printf("%d\n",g.v_cnt);
-    g.tri_cnt = 608389;
+    printf("v num %d\n",g.v_cnt);
     g.g_vcnt = g.v_cnt;
     for (int i = 0; i < g.v_cnt - 1; i++) {
         unsigned int l, r;
@@ -397,12 +464,10 @@ TEST(testMatching, match_in_partition_c) {
         VertexSet::max_intersection_size = std::max(VertexSet::max_intersection_size, len);
     }
     g.max_degree = VertexSet::max_intersection_size;
-    g.loadType = loadType;
-    g.blockType = blockType;
-    g.partitionType = partitionType;
-    g.extern_v_max_num = g.v_cnt;
-    g.gen_bfs_query_order();
-    g.gen_out_of_core_component(part, 4 * 1024, graph_path);
+    // g.loadType = loadType;
+    // g.blockType = blockType;
+    // g.partitionType = partitionType;
+    // g.gen_out_of_core_component(part, 4 * 1024, graph_path);
 
     Schedule tc_schedule(tc_pattern, is_pattern_valid, performance_type, restricts_type, use_in_exclusion_optimize,
                          g.v_cnt, g.e_cnt);
@@ -412,98 +477,126 @@ TEST(testMatching, match_in_partition_c) {
         printf(" %d ",i);
     }
     printf("\n");
-    long long ground_truth_result = 0;
+    unsigned long long ground_truth_result = 0;
+    unsigned long long oc_result = 0;
 
     double t1 = get_wall_time();
     ground_truth_result = g.pattern_matching(tc_schedule, thread_num);
     double t2 = get_wall_time();
     printf("\nglobal time: %.6lf\n", t2 - t1);
+    printf("count answer %lld\n",ground_truth_result);
+    Graph g2(graph_path);
+    g2.g_ecnt=g.e_cnt;
+    g2.g_vcnt=g.v_cnt;
+    g2.e_cnt=g.e_cnt;
+    g2.v_cnt=g.v_cnt;
+    int fd = g.memory_map(graph_path);
+    t1 = get_wall_time();
+    oc_result = g.pattern_matching_oc(tc_schedule, thread_num);
+    t2 = get_wall_time();
+    printf("out of core time: %.6lf\n", t2 - t1);
 
-    long long global_result = 0;
-    double total_time = 0.0;
-    int query_num = 0;
-    int io_num = 0;
-    double lock_time = 0;
-    double file_time = 0;
-    double blocking_manage = 0;
-    double load_extern_time = 0;
-    double priority_list_time = 0;
-    for (int i = 0; i < part; i++) {
-        Graph g2(graph_path);
-        g2.blockType = blockType;
-        g2.loadType = loadType;
-        g2.partitionType = partitionType;
-        g2.g_vcnt = g.v_cnt;
-        g2.extern_v_max_num = g.v_cnt;
-        g2.load_partition_graph(i, part, graph_path);
-        g2.init_extern_storage(g.v_cnt, g.e_cnt);
-        g2.tri_cnt = g.tri_cnt / part;
-        g2.max_degree = VertexSet::max_intersection_size;
-        g2.gen_bfs_query_order();
-        double t1 = get_wall_time();
-        global_result += g2.pattern_matching(tc_schedule, thread_num);
-        double t2 = get_wall_time();
-        total_time += t2 - t1;
-        io_num += g2.io_num;
-        lock_time += g2.lock_time;
-        file_time += g2.file_time;
-        blocking_manage += g2.blocking_manage_time;
-        load_extern_time += g2.load_extern_time;
-        priority_list_time += g2.priority_list_time;
-        query_num += g2.query_num;
-    }
-    printf("\nquery num all %d\n",query_num);
-    printf("\nio num all %d\n",io_num);
-    printf("partition file all: %.6lf\n", file_time);
-    printf("partition lock all: %.6lf\n", lock_time);
-    printf("partition time all: %.6lf\n", total_time);
-    printf("blocking all: %.6lf\n", blocking_manage);
-    printf("io time all: %.6lf\n", load_extern_time);
-    printf("priority time all: %.6lf\n", priority_list_time);
+    // g.intra_vertex_dict.clear();
+    printf("oc count %lld\n",oc_result);
 
-    global_result = 0;
-    loadType = SUB_BLOCK;
-    total_time = 0.0;
-    io_num = 0;
-    blocking_manage = 0;
-    file_time = 0;
-    load_extern_time = 0;
-    priority_list_time = 0;
+    g.free_map(fd);
 
-    lock_time = 0;
-    for (int i = 0; i < part; i++) {
-        Graph g2(graph_path);
-        g2.blockType = blockType;
-        g2.loadType = loadType;
-        g2.partitionType = partitionType;
-        g2.g_vcnt = g.v_cnt;
-        g2.extern_v_max_num = g.v_cnt;
-        g2.load_partition_graph(i, part, graph_path);
-        g2.init_extern_storage(g.v_cnt, g.e_cnt);
-        g2.tri_cnt = g.tri_cnt / part;
-        g2.max_degree = VertexSet::max_intersection_size;
-        g2.gen_bfs_query_order();
-        double t1 = get_wall_time();
-        global_result += g2.pattern_matching(tc_schedule, thread_num);
-        double t2 = get_wall_time();
-        total_time += t2 - t1;
-        io_num += g2.io_num;
-        lock_time += g2.lock_time;
-        file_time += g2.file_time;
-        blocking_manage += g2.blocking_manage_time;
-        load_extern_time += g2.load_extern_time;
-        priority_list_time += g2.priority_list_time;
-    }
+//     long long global_result = 0;
+//     double total_time = 0.0;
+//     int query_num = 0;
+//     int io_num = 0;
+//     double lock_time = 0;
+//     double file_time = 0;
+//     double blocking_manage = 0;
+//     double load_extern_time = 0;
+//     double priority_list_time = 0;
+//     for (int i = 0; i < part; i++) {
+//         Graph g2(graph_path);
+//         g2.blockType = blockType;
+//         g2.loadType = loadType;
+//         g2.partitionType = partitionType;
+//         g2.g_vcnt = g.v_cnt;
+//         g2.g_ecnt = g.e_cnt;
+//         g2.load_partition_graph(i, part, graph_path);
+//         g2.init_extern_storage(g.v_cnt, g.e_cnt);
+//         g2.max_degree = VertexSet::max_intersection_size;
+//         g2.memory_map(graph_path);
+//         for (int i=0;i<g.v_cnt;i++) {
+//             unsigned int l1,l2,r1,r2;
+//             g.get_edge_index(i,l1,r1);
+//             g2.get_mmp_edge_index(i,l2,r2);
+//             ASSERT_EQ(l1,l2);
+//             ASSERT_EQ(r1,r2);
+//             for (int j=l1;j<r1;j++) {
+//                 ASSERT_EQ(g.edge[j],g2.mmp_edge[j]);
+//             }
+//             // printf("%d pass\n",i);
+//         }
+// //        g2.load_order();
+//         double t1 = get_wall_time();
+//         global_result += g2.pattern_matching(tc_schedule, thread_num);
+//         double t2 = get_wall_time();
+//         total_time += t2 - t1;
+//         io_num += g2.io_num;
+//         lock_time += g2.lock_time;
+//         file_time += g2.file_time;
+//         blocking_manage += g2.blocking_manage_time;
+//         load_extern_time += g2.load_extern_time;
+//         priority_list_time += g2.priority_list_time;
+//         query_num += g2.query_num;
+//     }
+//     printf("global count %d\n",global_result);
+//     printf("\nquery num all %d\n",query_num);
+//     printf("\nio num all %d\n",io_num);
+//     printf("partition file all: %.6lf\n", file_time);
+//     printf("partition lock all: %.6lf\n", lock_time);
+//     printf("partition time all: %.6lf\n", total_time);
+//     printf("blocking all: %.6lf\n", blocking_manage);
+//     printf("io time all: %.6lf\n", load_extern_time);
+//     printf("priority time all: %.6lf\n", priority_list_time);
 
-    printf("\nio num sub %d\n",io_num);
-    printf("partition file sub: %.6lf\n", file_time);
-    printf("partition lock sub: %.6lf\n", lock_time);
-    printf("partition time sub: %.6lf\n", total_time);
-    printf("blocking sub: %.6lf\n", blocking_manage);
-    printf("io time sub: %.6lf\n", load_extern_time);
-    printf("priority time sub: %.6lf\n", priority_list_time);
+//     global_result = 0;
+//     loadType = SUB_BLOCK;
+//     total_time = 0.0;
+//     io_num = 0;
+//     blocking_manage = 0;
+//     file_time = 0;
+//     load_extern_time = 0;
+//     priority_list_time = 0;
 
-    printf("\ncount answer %d\n",ground_truth_result);
-    ASSERT_EQ(ground_truth_result, global_result);
+//     lock_time = 0;
+//     for (int i = 0; i < part; i++) {
+//         Graph g2(graph_path);
+//         g2.blockType = blockType;
+//         g2.loadType = loadType;
+//         g2.partitionType = partitionType;
+//         g2.g_vcnt = g.v_cnt;
+//         g2.g_ecnt = g.e_cnt;
+//         g2.load_partition_graph(i, part, graph_path);
+//         g2.init_extern_storage(g.v_cnt, g.e_cnt);
+//         g2.max_degree = VertexSet::max_intersection_size;
+//         g2.memory_map(graph_path);
+// //        g2.load_order();
+//         double t1 = get_wall_time();
+//         global_result += g2.pattern_matching(tc_schedule, thread_num);
+//         double t2 = get_wall_time();
+//         total_time += t2 - t1;
+//         io_num += g2.io_num;
+//         lock_time += g2.lock_time;
+//         file_time += g2.file_time;
+//         blocking_manage += g2.blocking_manage_time;
+//         load_extern_time += g2.load_extern_time;
+//         priority_list_time += g2.priority_list_time;
+//     }
+
+//     printf("\nio num sub %d\n",io_num);
+//     printf("partition file sub: %.6lf\n", file_time);
+//     printf("partition lock sub: %.6lf\n", lock_time);
+//     printf("partition time sub: %.6lf\n", total_time);
+//     printf("blocking sub: %.6lf\n", blocking_manage);
+//     printf("io time sub: %.6lf\n", load_extern_time);
+//     printf("priority time sub: %.6lf\n", priority_list_time);
+
+//     printf("\ncount answer %d\n",ground_truth_result);
+//     ASSERT_EQ(ground_truth_result, global_result);
 }
-
