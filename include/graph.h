@@ -54,6 +54,20 @@ struct block_length {
     }
 };
 
+struct patch_data
+{
+    std::vector<int> insertion;
+    std::vector<int> deletion;
+};
+
+struct pair
+{
+    int e1;
+    int e2;
+};
+
+
+
 struct cell {
     int v;
     cell *prev;
@@ -268,6 +282,9 @@ class Graph {
 public:
     int v_cnt; // number of vertex
     int g_vcnt;
+    int extra_v_cnt;
+    int insert_cnt;
+    int delete_cnt;
     unsigned int e_cnt; // number of edge
     unsigned int g_ecnt;
     long long tri_cnt{}; // number of triangle
@@ -287,7 +304,13 @@ public:
     std:: string raw_data_path;
     std::string file_path;
 
+    int *bitmap;
+    int INT_BITS = sizeof(int);
+    int SHIFT = 5;
+    int MASK = 0x1f;
+
     std::unordered_map<int, int> intra_vertex_dict; // map v_id to index of vertex in vertex array
+    std::vector<patch_data> patch_v;
     std::vector<VertexTable> v_state_map;
     std::map<int, block_length> block_lengths;
     std::vector<block_length> file_len;
@@ -325,7 +348,6 @@ public:
     ~Graph() {
         delete[] edge;
         delete[] vertex;
-
     }
 
     int memory_map(const std::string &path) {
@@ -333,15 +355,43 @@ public:
         mem = static_cast<int*>(mmap(NULL, (g_vcnt+g_ecnt)*sizeof(int), PROT_READ, MAP_SHARED ,fd,0));
         mmp_vertex = (unsigned int *)mem+2;
         mmp_edge = mem+2+g_vcnt;
+        extra_v_cnt = g_vcnt;
+        // bitmap = new int[g_vcnt/INT_BITS];
         return fd;
     }
 
+    void insert_edge(int v1, int v2) {
+        patch_v[v1].insertion.push_back(v2);
+        patch_v[v2].insertion.push_back(v1);
+    }
+
+    void delete_edge(int v1, int v2) {
+        patch_v[v1].deletion.push_back(v2);
+        patch_v[v2].deletion.push_back(v1);
+    }
+
+    void update(std::vector<pair> &u, std::vector<pair> &d);
+
+    void dump_v();
+
+    void refine_graph();
     
     void free_map(int &fd) {
-        printf("close file\n");
         munmap(mem, (g_vcnt+g_ecnt)*sizeof(int));
         close(fd);
-        printf("close done\n");
+        // delete[] bitmap;
+    }
+
+    void set(int *p, int i) {
+        p[i >> SHIFT] |= 1 << (i & MASK);
+    }
+    //获取第i位
+    int test(int *p, int i) {
+        return p[i >> SHIFT] & (1 << (i & MASK));
+    }
+    //清除第i位
+    int clear(int *p, int i) {
+        return p[i >> SHIFT] & ~(1 << (i & MASK));
     }
 
     int intersection_size(int v1,int v2);

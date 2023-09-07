@@ -62,6 +62,8 @@ public:
     static void load_block_size_data(int* key, int* value, int* value2, int size, const std::string& path);
 
     static void gen_block_file(int* vid, unsigned int* vertex, int* edge, int v_len, unsigned int e_len, const std::string& path);
+    
+    static void gen_block_file_aggregate(int* v, int len, const std::string& path);
 
     static void load_block_data(int* vid, unsigned int* vertex, int* edge, int &v_len, unsigned int &e_len, const std::string& path);
 

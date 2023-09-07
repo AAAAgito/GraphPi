@@ -297,6 +297,12 @@ void Graph::pattern_matching_aggressive_func_oc(const Schedule& schedule, Vertex
 
         unsigned int l, r;
         get_mmp_edge_index(load_v, l, r);
+        // int minus=0;
+        // for (int k = r;k>l;k--) {
+        //     if (mmp_edge[k-1]!=-1) break;
+        //     minus++;
+        // }
+        
         bool is_zero = false;
         for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
         {

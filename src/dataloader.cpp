@@ -332,6 +332,15 @@ void DataLoader::gen_block_file(int* vid, unsigned int *vertex, int *edge, int v
     binaryIo.close();
 }
 
+void DataLoader::gen_block_file_aggregate(int* v, int len, const std::string& path) {
+
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+
+    binaryIo.write((char*)v, len * sizeof(v[0]));
+    binaryIo.close();
+}
 
 void DataLoader::load_block_data(int *vid, unsigned int *vertex, int *edge, int &v_len, unsigned int &e_len, const std::string& path) {
     std::fstream binaryIo;
@@ -342,10 +351,11 @@ void DataLoader::load_block_data(int *vid, unsigned int *vertex, int *edge, int 
     binaryIo.close();
 }
 
-void DataLoader::load_block_data_aggregate(int *data, int size, const std::string& path) {
+void DataLoader::load_block_data_aggregate(int *data, int size2, const std::string& path) {
     std::ifstream binaryIo;
     binaryIo.open(path, std::ios::binary);
-    binaryIo.read((char*)data, size * sizeof(int));
+    std::fstream::pos_type size = binaryIo.tellg();
+    binaryIo.read((char*)data, size);
     binaryIo.close();
     
 }
