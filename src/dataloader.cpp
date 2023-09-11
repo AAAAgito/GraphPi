@@ -6,15 +6,13 @@
 #include <cstring>
 #include <fcntl.h>
 #include <unistd.h>
+#include <random>
 
 bool DataLoader::load_data(Graph* &g, DataType type, const char* path, int oriented_type) {
     if(type == Patents || type == Orkut || type == complete8 || type == LiveJournal || type == MiCo || type == CiteSeer || type == Wiki_Vote) {
         return general_load_data(g, type, path, oriented_type);
     }
 
-    if( type == Twitter) {
-        return twitter_load_data(g, type, path, oriented_type);
-    }
     printf("invalid DataType!\n");
     return false;
 }
@@ -92,6 +90,7 @@ bool DataLoader::general_load_data(Graph *&g, DataType type, const char* path, i
         //}
     }
 
+
     // oriented_type == 0 do nothing
     //               == 1 high degree first
     //               == 2 low degree first
@@ -164,32 +163,7 @@ bool DataLoader::general_load_data(Graph *&g, DataType type, const char* path, i
     return true;
 }
 
-bool DataLoader::twitter_load_data(Graph *&g, DataType type, const char* path, int oriented_type) {
-    if (freopen(path, "r", stdin) == NULL)
-    {
-        printf("File not found. %s\n", path);
-        return false;
-    }
-    printf("Load begin in %s\n",path);
-    g = new Graph();
-    g->tri_cnt = Twitter_tri_cnt;
-    unsigned int* buffer = new unsigned int[41652230u + 2936729768u + 10u];
-    FILE* file = fopen(path, "r");
-    fread(buffer, sizeof(unsigned int), 41652230u + 2936729768u + 4, file);
-    g->v_cnt = buffer[0];
-    g->e_cnt = buffer[1];
-    int mx_degree = buffer[2];
-    VertexSet::max_intersection_size = std::max( VertexSet::max_intersection_size, mx_degree);
-    g->max_degree = mx_degree;
-    g->edge = new int [g->e_cnt];
-    g->vertex = new unsigned int [g->v_cnt + 1];
-    for(int i = 0; i < g->v_cnt + 1; ++i)
-        g->vertex[i] = buffer[ 3 + i];
-    for(unsigned int i = 0; i < g->e_cnt; ++i)
-        g->edge[i] = buffer[4 + g->v_cnt + i];
-    delete[] buffer;
-    return true;
-}
+
 
 bool DataLoader::load_complete(Graph* &g, int clique_size) {
     g = new Graph();
@@ -218,11 +192,6 @@ bool DataLoader::load_complete(Graph* &g, int clique_size) {
             ++degree[x];
             ++degree[y];
         }
-    g->v_state_map.resize(g->v_cnt);
-    for (int i = 0; i< g->v_cnt; i++) {
-        g->v_state_map[i] = {true, 0};
-        g->intra_vertex_dict[i] = i;
-    }
     std::sort(degree, degree + g->v_cnt);
 
     // The max size of intersections is the second largest degree.
@@ -292,11 +261,10 @@ void DataLoader::gen_partition_file(int v_cnt, unsigned int e_cnt, unsigned int 
     std::fstream binaryIo;
     binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
     binaryIo.seekp(0);
-    binaryIo.write((char *)&v_cnt, sizeof(int));
-    binaryIo.write((char *)&e_cnt, sizeof(int));
 
     binaryIo.write((char*)v, v_cnt * sizeof(v[0]));
     binaryIo.write((char*)e, e_cnt * sizeof(e[0]));
+    binaryIo.close();
 
 }
 
@@ -304,8 +272,6 @@ void DataLoader::load_partition_data(int &v_cnt, unsigned int &e_cnt, unsigned i
     std::fstream binaryIo;
 
     binaryIo.open(path, std::ios::in | std::ios::binary);
-    binaryIo.read(reinterpret_cast<char *>(&v_cnt), sizeof(int)); // read the number of elements
-    binaryIo.read(reinterpret_cast<char *>(&e_cnt), sizeof(int));
     binaryIo.read((char *)v, v_cnt * sizeof(int));
     binaryIo.read((char *)e, e_cnt * sizeof(int));
     binaryIo.close();
@@ -320,129 +286,34 @@ void DataLoader::load_data_size(int &v_cnt, unsigned int &e_cnt, const std::stri
     binaryIo.close();
 }
 
-void DataLoader::gen_block_file(int* vid, unsigned int *vertex, int *edge, int v_len, unsigned int e_len, const std::string& path) {
-
+void DataLoader::gen_data_size(int &v_cnt, unsigned int &e_cnt, const std::string& path) {
     std::fstream binaryIo;
     binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
     binaryIo.seekp(0);
-
-    binaryIo.write((char*)vid, v_len * sizeof(vid[0]));
-    binaryIo.write((char*)vertex, v_len * sizeof(vertex[0]));
-    binaryIo.write((char*)edge, e_len * sizeof(edge[0]));
+    binaryIo.write((char *)&v_cnt, sizeof(int));
+    binaryIo.write((char *)&e_cnt, sizeof(int));
     binaryIo.close();
 }
 
-void DataLoader::gen_block_file_aggregate(int* v, int len, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
-    binaryIo.seekp(0);
-
-    binaryIo.write((char*)v, len * sizeof(v[0]));
-    binaryIo.close();
-}
-
-void DataLoader::load_block_data(int *vid, unsigned int *vertex, int *edge, int &v_len, unsigned int &e_len, const std::string& path) {
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::in | std::ios::binary);
-    binaryIo.read((char*)vid, v_len * sizeof(int));
-    binaryIo.read((char*)vertex, v_len * sizeof(unsigned int));
-    binaryIo.read((char*)edge, e_len * sizeof(int));
-    binaryIo.close();
-}
-
-void DataLoader::load_block_data_aggregate(int *data, int size2, const std::string& path) {
+int DataLoader::load_data_aggregate(std::vector<int> &data, const std::string& path) {
     std::ifstream binaryIo;
     binaryIo.open(path, std::ios::binary);
-    std::fstream::pos_type size = binaryIo.tellg();
-    binaryIo.read((char*)data, size);
+    binaryIo.seekg(0, std::ios_base::end);
+
+	std::streampos size = binaryIo.tellg()/sizeof(int);
+
+	binaryIo.seekg(0, std::ios_base::beg);
+    data.resize(size);
+    binaryIo.read((char*)data.data(), size*sizeof(int));
     binaryIo.close();
-    
-}
-void DataLoader::load_block_data_aggregate2(int *data, int size, const std::string& path) {
-    int fd = open(path.c_str(), O_RDWR);
-    int ret = read(fd, data, sizeof(int)* size);
-    close(fd);
+    return size;
 }
 
 
-void DataLoader::gen_order_file(int* v, int size, const std::string& path) {
+void DataLoader::gen_data_file(int *v,int size,const std::string& path) {
 
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
-    binaryIo.seekp(0);
+    std::ofstream binaryIo(path.c_str(), std::ios::binary);
+
     binaryIo.write((char*)v, size * sizeof(v[0]));
     binaryIo.close();
-}
-
-void DataLoader::gen_map_file(int* key, int* value, int size, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
-    binaryIo.seekp(0);
-    binaryIo.write((char*)key, size * sizeof(key[0]));
-    binaryIo.write((char*)value, size * sizeof(value[0]));
-    binaryIo.close();
-}
-
-
-void DataLoader::gen_map_file(unsigned int* key, int* value, int size, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
-    binaryIo.seekp(0);
-    binaryIo.write((char*)key, size * sizeof(key[0]));
-    binaryIo.write((char*)value, size * sizeof(value[0]));
-    binaryIo.close();
-}
-
-void DataLoader::gen_block_size_file(int* key, int* value, int* value2, int size, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
-    binaryIo.seekp(0);
-    binaryIo.write((char*)key, size * sizeof(key[0]));
-    binaryIo.write((char*)value, size * sizeof(value[0]));
-    binaryIo.write((char*)value2, size * sizeof(value[0]));
-    binaryIo.close();
-}
-
-void DataLoader::load_block_size_data(int* key, int* value, int* value2, int size, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::in| std::ios::binary);
-    binaryIo.read((char*)key, size * sizeof(int));
-    binaryIo.read((char*)value, size * sizeof(int));
-    binaryIo.read((char*)value2, size * sizeof(int));
-    binaryIo.close();
-}
-
-
-void DataLoader::load_order_data(int* v, int size, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::in| std::ios::binary);
-    binaryIo.read((char*)v, size * sizeof(int));
-    binaryIo.close();
-
-}
-
-void DataLoader::load_map_data(int* key, int* value, int size, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::in| std::ios::binary);
-    binaryIo.read((char*)key, size * sizeof(int));
-    binaryIo.read((char*)value, size * sizeof(int));
-    binaryIo.close();
-
-}
-
-void DataLoader::load_map_data(unsigned int* key, int* value, int size, const std::string& path) {
-
-    std::fstream binaryIo;
-    binaryIo.open(path, std::ios::in| std::ios::binary);
-    binaryIo.read((char*)key, size * sizeof(int));
-    binaryIo.read((char*)value, size * sizeof(int));
-    binaryIo.close();
-
 }
