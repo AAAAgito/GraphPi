@@ -23,7 +23,7 @@ bool DataLoader::general_load_data(Graph *&g, DataType type, const char* path, i
         printf("File not found. %s\n", path);
         return false;
     }
-    printf("Load begin in %s\n",path);
+    // printf("Load begin in %s\n",path);
     g = new Graph();
 
     //load triangle counting information
@@ -71,7 +71,7 @@ bool DataLoader::general_load_data(Graph *&g, DataType type, const char* path, i
     tmp_e = 0;
     while(scanf("%d%d",&x,&y)!=EOF) {
         if(x == y) {
-            printf("find self circle\n");
+            // printf("find self circle\n");
             g->e_cnt -=2;
             continue;
             //return false;
@@ -151,7 +151,7 @@ bool DataLoader::general_load_data(Graph *&g, DataType type, const char* path, i
         g->edge[i] = e[i].second;
     }
     delete[] e;
-    printf("Success! There are %d nodes and %u edges.\n",g->v_cnt,g->e_cnt);
+    // printf("Success! There are %d nodes and %u edges.\n",g->v_cnt,g->e_cnt);
     fflush(stdout);
     g->vertex[g->v_cnt] = g->e_cnt;
     for(int i = g->v_cnt - 1; i >= 0; --i)
@@ -316,4 +316,25 @@ void DataLoader::gen_data_file(int *v,int size,const std::string& path) {
 
     binaryIo.write((char*)v, size * sizeof(v[0]));
     binaryIo.close();
+}
+
+int DataLoader::open_mmp_r(const std::string& path, size_t size_int, int *ptr) {
+    int fd = open(path.c_str(), O_RDWR);
+    lseek (fd, size_int*sizeof(int)-1, SEEK_SET);
+    write (fd, "", 1);
+    ptr = (int *)mmap(NULL, size_int*sizeof(int), PROT_READ, MAP_SHARED, fd, 0);
+    return fd;
+}
+
+int DataLoader::open_mmp_w(const std::string& path, size_t size_int, int *ptr) {
+    int fd = open(path.c_str(), O_RDWR| O_CREAT,0777);
+    lseek (fd, size_int*sizeof(int)-1, SEEK_SET);
+    write (fd, "", 1);
+    ptr = (int *)mmap(NULL, size_int*sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    return fd;
+}
+
+void DataLoader::close_mmp(int fd, int size, int *ptr) {
+    munmap(ptr, size*sizeof(int));
+    close(fd);
 }

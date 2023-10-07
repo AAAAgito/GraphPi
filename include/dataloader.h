@@ -51,9 +51,11 @@ public:
 
     static void gen_data_file(int *v,int size,const std::string& path);
 
-    void insertion_generator();
+    static int open_mmp_r(const std::string& path, size_t size, int *ptr);
 
-    void deletion_generator();
+    static int open_mmp_w(const std::string& path, size_t size, int *ptr);
+
+    static void close_mmp(int fd, int size, int *ptr);
 
 private:
     static bool cmp_pair(std::pair<int,int>a, std::pair<int,int>b);

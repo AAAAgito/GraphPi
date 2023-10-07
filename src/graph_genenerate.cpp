@@ -15,6 +15,7 @@
 #include <atomic>
 #include <queue>
 #include <iostream>
+#include <random>
 
 void Graph::to_global_csr(const std::string &path) {
     std::vector<int> vid, edges, v_order;
@@ -35,6 +36,7 @@ void Graph::to_global_csr(const std::string &path) {
     }
     DataLoader::gen_partition_file(v_cnt,e_cnt,vtx_offset.data(),edges.data(),path);
     std::string graph_size(path);
+    // printf("%d %d %s\n",v_cnt,e_cnt,path.c_str());
     graph_size.append(".size");
     DataLoader::gen_data_size(v_cnt,e_cnt,graph_size);
 }
@@ -48,4 +50,51 @@ void Graph::load_global_graph(const std::string &path) {
     DataLoader::load_partition_data(v_cnt,e_cnt,vertex,edge,path);
     g_vcnt = v_cnt;
     g_ecnt = e_cnt;
+}
+
+void Graph::generate_patch_request(double ins_rate, double del_rate, int split) {
+    std::vector<int> ins,del;
+    generate_request(ins_rate,del_rate,ins,del);
+    printf("total %d\n",ins.size());
+    for (int i=0;i<split;i++){
+        std::vector<int> sub_ins(ins.begin()+ins.size()*i/split,ins.begin()+ins.size()*(i+1)/split);
+        std::vector<int> sub_del(del.begin()+del.size()*i/split,del.begin()+del.size()*(i+1)/split);
+        printf("%d %d\n",i,sub_ins.size());
+        update(sub_ins,sub_del);
+        dump_coarse(i);
+    }
+}
+
+void Graph::generate_request(double ins_rate, double del_rate, std::vector<int> &ins, std::vector<int> &del) {
+    int FLOAT_MIN = 0;
+    int FLOAT_MAX = 1;
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_real_distribution<float> distr(FLOAT_MIN, FLOAT_MAX);
+    ins.clear();
+    del.clear();
+    for (int i=0; i<g_vcnt; i++) {
+        // printf("%d %d\n",i,g_vcnt);
+        unsigned int l,r;
+        get_mmp_edge_index(i,l,r);
+        for (unsigned int j=l;j<r;j++){
+            if (mmp_edge[j]<i) continue;
+            float r = distr(eng);
+            if (r < ins_rate){
+                ins.push_back(i);
+                ins.push_back(mmp_edge[j]);
+            }
+            else if (r>=ins_rate && r<ins_rate+del_rate) {
+                del.push_back(i);
+                del.push_back(mmp_edge[j]);
+            }
+        }
+    }
+    std::string ip(raw_data_path);
+    ip.append("_insert.edge");
+    DataLoader::gen_data_file(ins.data(),ins.size(),ip);
+    
+    std::string dp(raw_data_path);
+    dp.append("_delete.edge");
+    DataLoader::gen_data_file(del.data(),del.size(),dp);
 }

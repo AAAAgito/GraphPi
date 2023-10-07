@@ -12,10 +12,19 @@ common.cpp
 disjoint_set_union.cpp
         graph_genenerate.cpp graph_extern.cpp)
 
-ADD_LIBRARY(graph_mining SHARED ${GraphMiningSrc}) 
+ADD_LIBRARY(graph_mining SHARED ${GraphMiningSrc})
 
-#ADD_EXECUTABLE(in_exclusion_performance_test in_exclusion_performance_test.cpp)
-#TARGET_LINK_LIBRARIES(in_exclusion_performance_test graph_mining)
+
+
+ADD_EXECUTABLE(export_graph export_graph.cpp)
+TARGET_LINK_LIBRARIES(export_graph graph_mining)
+
+
+ADD_EXECUTABLE(graph_client graph_client.cpp)
+TARGET_LINK_LIBRARIES(graph_client graph_mining)
+
+ADD_EXECUTABLE(generate_update generate_update.cpp)
+TARGET_LINK_LIBRARIES(generate_update graph_mining)
 
 #ADD_EXECUTABLE(run_general_tc run_general_tc.cpp)
 #TARGET_LINK_LIBRARIES(run_general_tc graph_mining)
