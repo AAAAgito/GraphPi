@@ -55,13 +55,34 @@ void Graph::load_global_graph(const std::string &path) {
 void Graph::generate_patch_request(double ins_rate, double del_rate, int split) {
     std::vector<int> ins,del;
     generate_request(ins_rate,del_rate,ins,del);
-    printf("total %d\n",ins.size());
+    // printf("total %d %d\n",ins.size(),del.size());
     for (int i=0;i<split;i++){
         std::vector<int> sub_ins(ins.begin()+ins.size()*i/split,ins.begin()+ins.size()*(i+1)/split);
         std::vector<int> sub_del(del.begin()+del.size()*i/split,del.begin()+del.size()*(i+1)/split);
         printf("%d %d\n",i,sub_ins.size());
         update(sub_ins,sub_del);
         dump_coarse(i);
+    }
+    if (split==0) {
+        printf("============================\n");
+        std::vector<int> emp;
+        update(emp,ins);
+        double t1 = get_wall_time2();
+        dump_v(0);
+        double t2 = get_wall_time2();
+        printf("PRE-DUMP %.6lf\n", t2 - t1);
+        t1 = get_wall_time2();
+        refine_graph();
+        t2 = get_wall_time2();
+        printf("PRE-REFINE %.6lf\n", t2 - t1);
+        free_map(g_fd);
+        memory_map();
+        update(ins,del);
+        t1 = get_wall_time2();
+        dump_v(0);
+        t2 = get_wall_time2();
+        printf("FORMAL-DUMP %.6lf\n", t2 - t1);
+        printf("============================\n");
     }
 }
 

@@ -8,13 +8,12 @@
 #endif
 
 enum PatternType {
-    Rectangle,
-    QG3,
-    Pentagon,
-    House,
-    Hourglass,
-    Cycle_6_Tri,
-    Clique_7_Minus
+    Empty,
+    P1,
+    P2,
+    P3,
+    P4,
+    P5,
 };
 
 

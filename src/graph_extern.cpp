@@ -36,9 +36,38 @@ int Graph::memory_map() {
     return fd;
 }
 
+int Graph::memory_lmap() {
+    
+    std::string graph_size(raw_data_path);
+    graph_size.append(".size");
+    printf("size path: %s\n",graph_size.c_str());
+    DataLoader::load_data_size(g_vcnt,lg_ecnt,graph_size);
+    printf("large graph size %d %lld\n",g_vcnt,lg_ecnt);
+    
+    int fd = open(raw_data_path.c_str(),O_RDWR);
+    mem = (int *)(mmap(NULL, g_vcnt*sizeof(size_t)+lg_ecnt*sizeof(int), PROT_READ, MAP_SHARED ,fd,0));
+    mmp_l_vertex = (size_t *)mem;
+    mmp_edge = (int *)(mmp_l_vertex+g_vcnt);
+    extra_v_cnt = g_vcnt;
+    if (bitmap!=NULL) delete[] bitmap;
+    // bitmap = new bool[g_vcnt];
+    // memset(bitmap,0,g_vcnt);
+    g_fd = fd;
+    return fd;
+}
+
 void Graph::free_map(int &fd) {
     release_patch_ptr();
     munmap(mem, (g_vcnt+g_ecnt)*sizeof(int));
+    close(fd);
+    if (bitmap!=NULL)
+        delete[] bitmap;
+    bitmap=NULL;
+    return;
+}
+
+void Graph::free_lmap(int &fd) {
+    munmap(mem, g_vcnt*sizeof(size_t)+lg_ecnt*sizeof(int));
     close(fd);
     if (bitmap!=NULL)
         delete[] bitmap;
@@ -135,6 +164,12 @@ void Graph::dump_v(int offset) {
     // pi.append(std::to_string(offset));
     std::string pd(patch_delete_path);
     // pd.append(std::to_string(offset));
+    std::string psize(raw_data_path);
+    psize+="_patch.size";
+    // printf("dump size %s\n",psize.c_str());
+    // printf("pi %s\n",pi.c_str());
+    // printf("pd %s\n",pd.c_str());
+    DataLoader::gen_data_size(ins,del,psize);
 
     
     int insFile = open(pi.c_str(), O_RDWR| O_CREAT,0777);
@@ -171,7 +206,7 @@ void Graph::dump_v(int offset) {
     
     munmap(delBuffer, (delete_cnt+extra_v_cnt)*sizeof(int));
     close(delFile);
-    init_patch_ptr();
+    // init_patch_ptr();
     return;
 }
 
@@ -266,9 +301,9 @@ void Graph::update_patch(const std::string& piu, const std::string& pdu, int upd
     if (!patch_read_open) {
         std::string pi(patch_insert_path);
         std::string pd(patch_delete_path);
-        printf("%s\n",piu.c_str());
-        printf("%s\n",pi.c_str());
-        printf("%d\n",piu==pi);
+        // printf("%s\n",piu.c_str());
+        // printf("%s\n",pi.c_str());
+        // printf("%d\n",piu==pi);
         if (piu==pi && pdu==pd) {
             
             int piuFile = open(piu.c_str(), O_RDWR);
@@ -280,7 +315,6 @@ void Graph::update_patch(const std::string& piu, const std::string& pdu, int upd
             insert_cnt = update_ins;
             delete_cnt = update_del;
             backup_ecnt = g_ecnt + insert_cnt - delete_cnt;
-            printf("backup count %d\n",backup_ecnt);
             back_fd=init_backup_ptr(extra_v_cnt, backup_ecnt);
             int ioff=0, doff=0;
             for (int i=0;i<extra_v_cnt;i++) {
@@ -601,7 +635,7 @@ void Graph::bandaid(int *p, int v, int& size) {
 }
 
 // fsync dump on computing
-void Graph::refine_graph() {
+void Graph::refine_graph(bool preprocess) {
     // patch_vi.clear();
     // patch_vd.clear();
     // set backup graph path
@@ -612,9 +646,10 @@ void Graph::refine_graph() {
     std::string pi(patch_insert_path);
     std::string pd(patch_delete_path);
     std::string p_back(backup_data_path);
+    if (preprocess) p_back=raw_data_path+"_preprocess";
 
-    printf("used path %s\n",pi.c_str());
-    printf("used path %s\n",pd.c_str());
+    // printf("used path %s\n",pi.c_str());
+    // printf("used path %s\n",pd.c_str());
 
     std::string graph_size(p_back);
     graph_size.append(".size");
@@ -642,6 +677,7 @@ void Graph::refine_graph() {
         adj_idx[i] = poi;
         unsigned int l,r;
         get_mmp_edge_index(i,l,r);
+        assert(l<=r);
         // TODO: calculate degree of each vertex;
         int degree=r-l;
         if (i<extra_v_cnt-1) degree += idx_iinfo[i+1]-idx_iinfo[i];
@@ -681,13 +717,17 @@ void Graph::refine_graph() {
             rd = delete_cnt;
             ri = insert_cnt;
         }
-        assert(rd-ld==patch_vd[i].size());
-        assert(ri-li==patch_vi[i].size());
+        // assert(rd-ld==patch_vd[i].size());
+        // assert(ri-li==patch_vi[i].size());
         while (fill_cur < fill_end || ld < rd)
         {
             if (ld < rd) {
                 assert(l<r);
+                if (delete_content[ld]<mmp_edge[l]) {
+                    printf("%d %d %d %d\n",delete_content[ld],mmp_edge[l],i,l);
+                }
                 assert(delete_content[ld]>=mmp_edge[l]);
+                
                 if (delete_content[ld]==mmp_edge[l])
                 {
                     ld++;
@@ -723,31 +763,12 @@ void Graph::refine_graph() {
     close(idx_dfd);
     munmap(g_ptr,gsize*sizeof(int));
     close(gfd);
-    raw_data_path.swap(backup_data_path);
-    patch_delete_path.swap(patch_delete_path_backup);
-    patch_insert_path.swap(patch_insert_path_backup);
+    if (!preprocess) {
+        raw_data_path.swap(backup_data_path);
+        patch_delete_path.swap(patch_delete_path_backup);
+        patch_insert_path.swap(patch_insert_path_backup);
+    }
     patch_vi.clear();
     patch_vd.clear();
 }
 
-void Graph::wait_refine() {
-    double a=0;
-    while (a<1.0)
-    {
-        a = refine_progress();
-        printf("%f\n",a);
-    }
-    close_backup_ptr(back_fd,backup_ecnt,extra_v_cnt);
-
-    free_map(g_fd);
-    raw_data_path.swap(backup_data_path);
-    g_vcnt = extra_v_cnt;
-    g_ecnt = backup_ecnt;
-    memory_map();
-}
-
-double Graph::refine_progress() {
-    int a=0;
-    for (int i=0; i<extra_v_cnt; i++) a+=bitmap[i];
-    return (double)a/extra_v_cnt;
-}

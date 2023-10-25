@@ -26,6 +26,12 @@ TARGET_LINK_LIBRARIES(graph_client graph_mining)
 ADD_EXECUTABLE(generate_update generate_update.cpp)
 TARGET_LINK_LIBRARIES(generate_update graph_mining)
 
+ADD_EXECUTABLE(export_large_graph export_large_graph.cpp)
+TARGET_LINK_LIBRARIES(export_large_graph graph_mining)
+
+ADD_EXECUTABLE(merge merge.cpp)
+TARGET_LINK_LIBRARIES(merge graph_mining)
+
 #ADD_EXECUTABLE(run_general_tc run_general_tc.cpp)
 #TARGET_LINK_LIBRARIES(run_general_tc graph_mining)
 

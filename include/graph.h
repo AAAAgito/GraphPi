@@ -48,6 +48,7 @@ public:
     int delete_cnt;
     unsigned int e_cnt; // number of edge
     unsigned int g_ecnt;
+    size_t lg_ecnt;
     long long tri_cnt{}; // number of triangle
 
     int *edge; // edges
@@ -56,6 +57,7 @@ public:
     int *mem;
     int *mmp_edge;
     unsigned int *mmp_vertex;
+    size_t *mmp_l_vertex;
     // with length of extra_v_cnt
     unsigned int *mmp_patch_vertex;
     // with length of insert_cnt
@@ -105,9 +107,21 @@ public:
         delete[] vertex;
     }
 
+    size_t intersection_size_clique(int v1,int v2);
+    
+    size_t intersection_size_clique(int v1,int v2, int v3);
+
+    long long triangle_counting_mt(int thread_count);
+
+    void tc_mt(long long *global_ans);
+
     int memory_map();
+    
+    int memory_lmap();
 
     void free_map(int &fd);
+    
+    void free_lmap(int &fd);
 
     void insert_edge(int v1, int v2);
 
@@ -123,7 +137,7 @@ public:
 
     void release_patch_ptr();
 
-    void refine_graph();
+    void refine_graph(bool preprocess = false);
 
     //general pattern matching algorithm with multi thread
     long long pattern_matching(const Schedule& schedule, int thread_count, bool clique = false);
@@ -137,6 +151,8 @@ public:
     void load_global_graph(const std::string &path);
 
     void get_edge_index(int v, unsigned int& l, unsigned int& r) const;
+
+    void get_large_mmp_edge_index(int v, size_t& l, size_t& r) const;
     
     void get_mmp_edge_index(int v, unsigned int& l, unsigned int& r) const;
     
@@ -171,10 +187,6 @@ public:
     int test(int *p, int i) {return p[i >> SHIFT] & (1 << (i & MASK));}
     
     int clear(int *p, int i) {return p[i >> SHIFT] & ~(1 << (i & MASK));}
-
-    double refine_progress();
-    
-    void wait_refine();
 
 private:
     friend Graphmpi;

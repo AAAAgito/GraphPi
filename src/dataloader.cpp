@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <random>
+#include <iostream>
 
 bool DataLoader::load_data(Graph* &g, DataType type, const char* path, int oriented_type) {
     if(type == Patents || type == Orkut || type == complete8 || type == LiveJournal || type == MiCo || type == CiteSeer || type == Wiki_Vote) {
@@ -286,12 +287,46 @@ void DataLoader::load_data_size(int &v_cnt, unsigned int &e_cnt, const std::stri
     binaryIo.close();
 }
 
+void DataLoader::load_data_size(int &v_cnt, size_t &e_cnt, const std::string& path) {
+    std::fstream binaryIo;
+
+    binaryIo.open(path, std::ios::in | std::ios::binary);
+    binaryIo.read(reinterpret_cast<char *>(&v_cnt), sizeof(int)); // read the number of elements
+    binaryIo.read(reinterpret_cast<char *>(&e_cnt), sizeof(size_t));
+    binaryIo.close();
+}
+
+void DataLoader::load_data_size(int &v_cnt, int &e_cnt, const std::string& path) {
+    std::fstream binaryIo;
+
+    binaryIo.open(path, std::ios::in | std::ios::binary);
+    binaryIo.read(reinterpret_cast<char *>(&v_cnt), sizeof(int)); // read the number of elements
+    binaryIo.read(reinterpret_cast<char *>(&e_cnt), sizeof(int));
+    binaryIo.close();
+}
+
 void DataLoader::gen_data_size(int &v_cnt, unsigned int &e_cnt, const std::string& path) {
     std::fstream binaryIo;
     binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
     binaryIo.seekp(0);
     binaryIo.write((char *)&v_cnt, sizeof(int));
     binaryIo.write((char *)&e_cnt, sizeof(int));
+    binaryIo.close();
+}
+void DataLoader::gen_data_size(int &v_cnt, int &e_cnt, const std::string& path) {
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char *)&v_cnt, sizeof(int));
+    binaryIo.write((char *)&e_cnt, sizeof(int));
+    binaryIo.close();
+}
+void DataLoader::gen_data_size(int &v_cnt, size_t &e_cnt, const std::string& path) {
+    std::fstream binaryIo;
+    binaryIo.open(path, std::ios::out| std::ios::binary | std::ios::trunc);
+    binaryIo.seekp(0);
+    binaryIo.write((char *)&v_cnt, sizeof(int));
+    binaryIo.write((char *)&e_cnt, sizeof(size_t));
     binaryIo.close();
 }
 
@@ -336,5 +371,215 @@ int DataLoader::open_mmp_w(const std::string& path, size_t size_int, int *ptr) {
 
 void DataLoader::close_mmp(int fd, int size, int *ptr) {
     munmap(ptr, size*sizeof(int));
+    close(fd);
+}
+
+int DataLoader::large_graph_v(const std::string& raw) {
+    
+    if (freopen(raw.c_str(), "r", stdin) == NULL)
+    {
+        printf("File not found. %s\n", raw.c_str());
+        return -1;
+    }
+    int x;
+    int l=0;
+    while(scanf("%d",&x)!=EOF) {
+        l=std::max(l,x);
+    }
+    return l;
+}
+
+void DataLoader::load_large_graph(const std::string& raw, const std::string& bin, int v, size_t mem_limit) {
+    if (freopen(raw.c_str(), "r", stdin) == NULL)
+    {
+        printf("File not found. %s\n", raw.c_str());
+        return ;
+    }
+    int x,y;
+    std::vector<std::vector<int>> adj_list;
+    adj_list.resize(v);
+    size_t global_count=0;
+    size_t count=0;
+    int sub_file=0;
+    printf("start scanning\n");
+    std::cout << "start scanning\n";
+    double t1 = get_wall_time();
+    mem_limit /= sizeof(int)*2;
+    while(scanf("%d%d",&x,&y)!=EOF) {
+        if (x==y) continue;
+        adj_list[x].push_back(y);
+        adj_list[y].push_back(x);
+        count+=1;
+        global_count += 1;
+        if (global_count % (1000*1000*1000) ==0) {
+            // printf("scan time: %.6lf\n", get_wall_time() - t1);
+            std::cout << "scan time: " << get_wall_time() - t1 << std::endl;
+            t1=get_wall_time();
+            // printf("process %dG\n",global_count/(1000*1000*1000));
+            std::cout << "process " << global_count/(1000*1000*1000) << "G" << std::endl;
+        }
+        if (count>mem_limit) {
+            printf("dump e %lld\n",count);
+            std::string s(bin);
+            s+="_";
+            s.append(std::to_string(sub_file));
+            size_t offset=0;
+            std::vector<size_t> vs;
+            for (auto i:adj_list) {
+                vs.push_back(offset);
+                offset+=i.size();
+            }
+            std::ofstream binaryIo(s.c_str(), std::ios::binary | std::ios::trunc);
+
+            binaryIo.write((char*)vs.data(), vs.size() * sizeof(vs[0]));
+            for (auto i:adj_list) {
+                for (auto j:i) assert(j>0);
+                binaryIo.write((char*)i.data(), i.size()*sizeof(i[0]));
+            }
+            binaryIo.close();
+            std::string ssize(s);
+            ssize+=".size";
+            std::ofstream binaryIo2(ssize.c_str(), std::ios::binary | std::ios::trunc);
+            
+            binaryIo2.write((char*)&v, sizeof(v));
+            binaryIo2.write((char*)&offset, sizeof(offset));
+            binaryIo2.close();
+            adj_list.clear();
+            adj_list.resize(v);
+            sub_file+=1;
+            count=0;
+        }
+    }
+    printf("%d of %lld reach the end\n",sub_file,global_count);
+    std::string s(bin);
+    s+="_";
+    s.append(std::to_string(sub_file));
+    size_t offset=0;
+    std::vector<size_t> vs;
+    for (auto i:adj_list) {
+        vs.push_back(offset);
+        offset+=i.size();
+    }
+    std::ofstream binaryIo(s.c_str(), std::ios::binary | std::ios::trunc);
+
+    binaryIo.write((char*)vs.data(), vs.size() * sizeof(vs[0]));
+    for (auto i:adj_list) {
+        binaryIo.write((char*)i.data(), i.size()*sizeof(i[0]));
+    }
+    binaryIo.close();
+    adj_list.clear();
+    std::string ssize(s);
+    ssize+=".size";
+    std::ofstream binaryIo2(ssize.c_str(), std::ios::binary | std::ios::trunc);
+    
+    binaryIo2.write((char*)&v, sizeof(v));
+    binaryIo2.write((char*)&offset, sizeof(offset));
+    binaryIo2.close();
+    sub_file+=1;
+    merge_graph(bin,sub_file);
+    merge_size(bin,sub_file);
+}
+
+void DataLoader::merge_size(const std::string &bin, int packs) {
+    int v;
+    size_t ecnt=0;
+    for (int i=0;i<packs;i++) {
+        std::string s(bin);
+        s+="_";
+        s+=std::to_string(i);
+        std::string ss(s);
+        ss+=".size";
+        
+        std::fstream sizeIo;
+        size_t e;
+        sizeIo.open(ss, std::ios::in | std::ios::binary);
+        sizeIo.read(reinterpret_cast<char *>(&v), sizeof(int)); // read the number of elements
+        sizeIo.read(reinterpret_cast<char *>(&e), sizeof(size_t));
+
+        ecnt +=e;
+    }
+    std::string ss(bin);
+    ss+=".size";
+    gen_data_size(v,ecnt,ss);
+}
+
+void DataLoader::merge_graph(const std::string &bin, int packs) {
+    std::vector<size_t*> vmap;
+    std::vector<int*> emap;
+    std::vector<int> fdmap;
+    std::vector<size_t> es;
+    size_t ecnt = 0;
+    int v;
+    printf("start merge\n");
+    for (int i=0;i<packs;i++) {
+        std::string s(bin);
+        s+="_";
+        s+=std::to_string(i);
+        std::string ss(s);
+        ss+=".size";
+        
+        std::fstream sizeIo;
+        size_t e;
+        sizeIo.open(ss, std::ios::in | std::ios::binary);
+        sizeIo.read(reinterpret_cast<char *>(&v), sizeof(int)); // read the number of elements
+        sizeIo.read(reinterpret_cast<char *>(&e), sizeof(size_t));
+        
+        
+        int fd = open(s.c_str(), O_RDWR);
+        fdmap.push_back(fd);
+        printf("prev fd %d\n",fd);
+        char *ptr = (char *)mmap(NULL, v*sizeof(size_t)+e*sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+        size_t *vptr = (size_t *)ptr;
+        int *eptr = (int *)(vptr+v);
+        // for (size_t j=0;j<e;j++){
+        //     // if (eptr[j]<0)
+        //     assert(eptr[j]>=0 &&eptr[j]<v);
+        // }
+        vmap.push_back(vptr);
+        emap.push_back(eptr);
+        ecnt +=e;
+        printf("read e %lld\n",e);
+        es.push_back(e);
+        printf("v %d\n",v);
+    }
+
+    
+    int fd = open(bin.c_str(), O_RDWR| O_CREAT,0777);
+    lseek (fd, v*sizeof(size_t)+ecnt*sizeof(int)-1, SEEK_SET);
+    write (fd, "", 1);
+    char *ptr = (char *)mmap(NULL, v*sizeof(size_t)+ecnt*sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    size_t *vptr = (size_t *)ptr;
+    int *eptr = (int *)(vptr+v);
+    size_t offset=0;
+    printf("fd %d\n",fd);
+    printf("ecnt %lld\n",ecnt);
+    for (int vtx=0;vtx<v;vtx++) {
+        vptr[vtx]=offset;
+        if(vtx%(1000*1000)==0) printf("process %dM V\n",vtx/(1000*1000));
+        // ptr[vtx] = offset;
+        if (vtx != v-1)
+            for (auto i: vmap) offset += i[vtx+1]-i[vtx];
+        else for (int i=0;i<packs;i++) offset += es[i] - vmap[i][vtx];
+        std::vector<int> edges;
+        for (int i=0;i<packs;i++) {
+            size_t l,r;
+            if (vtx==v-1) r=es[i];
+            else r=vmap[i][vtx+1];
+            l=vmap[i][vtx];
+            assert(r<=es[i]);
+            // printf("L R %lld %lld\n",l,r);
+            for (size_t a=l; a<r; a++) {
+                // assert(emap[i][a]>=0);
+                // assert(emap[i][a]<v);
+                edges.push_back(emap[i][a]);
+            }
+        }
+        std::sort(edges.begin(),edges.end());
+        for (auto j:edges) assert(j>=0);
+        // printf("%d %d\n",vptr[vtx]+edges.size(),offset);
+        assert(vptr[vtx]+edges.size()==offset);
+        memcpy(eptr+vptr[vtx],edges.data(),edges.size());
+    }
+    munmap(ptr,v*sizeof(size_t)+ecnt*sizeof(int));
     close(fd);
 }

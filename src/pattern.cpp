@@ -43,17 +43,27 @@ Pattern::Pattern(const Pattern& p)
 }
 
 Pattern::Pattern(PatternType type) {
-    if( type == PatternType::Rectangle) {
+    if( type == PatternType::P1) {
+        size = 3;
+        adj_mat = new int[size * size];
+        memset(adj_mat, 0, size * size * sizeof(int));
+        add_edge(0, 1);
+        add_edge(0, 2);
+        add_edge(1, 2); 
+        return;
+    }
+    if( type == PatternType::P4) {
         size = 4;
         adj_mat = new int[size * size];
         memset(adj_mat, 0, size * size * sizeof(int));
         add_edge(0, 1);
         add_edge(0, 2);
-        add_edge(1, 3);
+        add_edge(0, 3);
+        add_edge(1, 2);
         add_edge(2, 3);
         return;
     }
-    if( type == PatternType::QG3) {
+    if( type == PatternType::P2) {
         size = 4;
         // 0 - 2
         // | \ |
@@ -65,20 +75,10 @@ Pattern::Pattern(PatternType type) {
         add_edge(0, 3);
         add_edge(1, 2);
         add_edge(1, 3);
+        add_edge(2, 3);
         return;
     }
-    if( type == PatternType::Pentagon) {
-        size = 5;
-        adj_mat = new int[size * size];
-        memset(adj_mat, 0, size * size * sizeof(int));
-        add_edge(0, 1); 
-        add_edge(0, 2); 
-        add_edge(1, 3); 
-        add_edge(2, 4); 
-        add_edge(3, 4); 
-        return;
-    }
-    if( type == PatternType::House) {
+    if( type == PatternType::P3) {
         //   3
         //  / \
         // 0 - 1
@@ -89,27 +89,16 @@ Pattern::Pattern(PatternType type) {
         add_edge(0, 1);
         add_edge(0, 2);
         add_edge(0, 3);
-        add_edge(1, 3);
-        add_edge(1, 4);
-        add_edge(2, 4);
-        return;
-    }
-    if( type == PatternType::Hourglass) {
-        size = 6;
-        adj_mat = new int[size * size];
-        memset(adj_mat, 0, size * size * sizeof(int));
-        add_edge(0, 1);
-        add_edge(0, 2);
         add_edge(0, 4);
         add_edge(1, 2);
-        add_edge(1, 5);
+        add_edge(1, 3);
+        add_edge(1, 4);
         add_edge(2, 3);
+        add_edge(2, 4);
         add_edge(3, 4);
-        add_edge(3, 5);
-        add_edge(4, 5);
         return;
     }
-    if( type == PatternType::Cycle_6_Tri) {
+    if( type == PatternType::P5) {
         size = 6;
         adj_mat = new int[size * size];
         memset(adj_mat, 0, size * size * sizeof(int));
@@ -122,16 +111,6 @@ Pattern::Pattern(PatternType type) {
         add_edge(2, 5);
         add_edge(0, 4);
         add_edge(0, 5);
-        return;
-    }
-    if( type == PatternType::Clique_7_Minus) {
-        size = 7;
-        adj_mat = new int[size * size];
-        memset(adj_mat, 0, size * size * sizeof(int));
-        for(int i = 0; i < size; ++i)
-            for(int j = 0; j < i; ++j)
-                if( i != size - 1|| j != size - 2) 
-                    add_edge(j, i);
         return;
     }
 

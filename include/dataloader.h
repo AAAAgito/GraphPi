@@ -44,8 +44,16 @@ public:
     static void load_partition_data(int &v_cnt, unsigned int &e_cnt, unsigned int *v, int *e, const std::string& path);
 
     static void load_data_size(int &v_cnt, unsigned int &e_cnt, const std::string& path);
+
+    static void load_data_size(int &v_cnt, size_t &e_cnt, const std::string& path);
+
+    static void load_data_size(int &v_cnt, int &e_cnt, const std::string& path);
     
     static void gen_data_size(int &v_cnt, unsigned int &e_cnt, const std::string& path);
+    
+    static void gen_data_size(int &v_cnt, int &e_cnt, const std::string& path);
+
+    static void gen_data_size(int &v_cnt, size_t &e_cnt, const std::string& path);
 
     static int load_data_aggregate(std::vector<int> &data, const std::string& path);
 
@@ -56,6 +64,14 @@ public:
     static int open_mmp_w(const std::string& path, size_t size, int *ptr);
 
     static void close_mmp(int fd, int size, int *ptr);
+
+    static void load_large_graph(const std::string &raw, const std::string &bin, int v, size_t mem_limit);
+
+    static int large_graph_v(const std::string &raw);
+
+    static void merge_graph(const std::string &bin, int packs);
+
+    static void merge_size(const std::string &bin, int packs);
 
 private:
     static bool cmp_pair(std::pair<int,int>a, std::pair<int,int>b);

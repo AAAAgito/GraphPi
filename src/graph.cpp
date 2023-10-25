@@ -13,12 +13,123 @@
 #include <stack>
 #include <iostream>
 
+size_t Graph::intersection_size_clique(int v1,int v2, int v3) {
+    size_t l1, r1;
+    get_large_mmp_edge_index(v1, l1, r1);
+    size_t l2, r2;
+    get_large_mmp_edge_index(v2, l2, r2);
+    size_t l3, r3;
+    get_large_mmp_edge_index(v3, l3, r3);
+    int min_vertex = v3;
+    size_t ans = 0;
+    if (mmp_edge[l1] >= min_vertex || mmp_edge[l2] >= min_vertex || mmp_edge[l3] >= min_vertex)
+        return 0;
+    while(l1 < r1 && l2 < r2 && l3 < r3) {
+        if(mmp_edge[l1] < std::max(mmp_edge[l3],mmp_edge[l2])) {
+            if (mmp_edge[++l1] >= min_vertex)
+                break;
+        }
+        if(mmp_edge[l2] < std::max(mmp_edge[l3],mmp_edge[l1])) {
+            if (mmp_edge[++l2] >= min_vertex)
+                break;
+        }
+        else {
+            if(mmp_edge[l3] < std::max(mmp_edge[l1],mmp_edge[l2])) {
+                if (mmp_edge[++l3] >= min_vertex)
+                    break;
+            }
+            else {
+                ++ans;
+                if (mmp_edge[++l1] >= min_vertex)
+                    break;
+                if (mmp_edge[++l2] >= min_vertex)
+                    break;
+                if (mmp_edge[++l3] >= min_vertex)
+                    break;
+            }
+        }
+    }
+    return ans;
+}
+
+size_t Graph::intersection_size_clique(int v1,int v2) {
+    size_t l1, r1;
+    assert(v1>=0);
+    get_large_mmp_edge_index(v1, l1, r1);
+    size_t l2, r2;
+    assert(v2>=0);
+    get_large_mmp_edge_index(v2, l2, r2);
+    int min_vertex = v2;
+    size_t ans = 0;
+    if (mmp_edge[l1] >= min_vertex || mmp_edge[l2] >= min_vertex)
+        return 0;
+    while(l1 < r1 && l2 < r2) {
+        if(mmp_edge[l1] < mmp_edge[l2]) {
+            if (mmp_edge[++l1] >= min_vertex)
+                break;
+        }
+        else {
+            if(mmp_edge[l2] < mmp_edge[l1]) {
+                if (mmp_edge[++l2] >= min_vertex)
+                    break;
+            }
+            else {
+                ++ans;
+                if (mmp_edge[++l1] >= min_vertex)
+                    break;
+                if (mmp_edge[++l2] >= min_vertex)
+                    break;
+            }
+        }
+    }
+    return ans;
+}
+
+long long Graph::triangle_counting_mt(int thread_count) {
+    long long ans = 0;
+#pragma omp parallel num_threads(thread_count)
+    {
+        tc_mt(&ans);
+    }
+    printf("done\n");
+    return ans;
+}
+
+void Graph::tc_mt(long long *global_ans) {
+    long long my_ans = 0;
+    int period = g_vcnt/100;
+    #pragma omp for schedule(dynamic)
+    for(int v = 0; v < g_vcnt; ++v) {
+        // for v in G
+        if (v%period==0) printf("progress %d\n",v/period);
+        size_t l, r;
+        get_large_mmp_edge_index(v, l, r);
+        for(size_t v1 = l; v1 < r; ++v1) {
+            if (v <= mmp_edge[v1])
+                break;
+            //for v1 in N(v)
+
+            my_ans += intersection_size_clique(v,mmp_edge[v1]);
+        }
+    }
+    #pragma omp critical
+    {
+        *global_ans += my_ans;
+    }
+}
 
 void Graph::get_edge_index(int v, unsigned int& l, unsigned int& r) const
 {
     l = vertex[v];
     if (v == v_cnt -1) r = e_cnt;
     else r = vertex[v + 1];
+}
+
+void Graph::get_large_mmp_edge_index(int v, size_t& l, size_t& r) const
+{
+    l = mmp_l_vertex[v];
+    if (v == g_vcnt -1) r = lg_ecnt;
+    else r = mmp_l_vertex[v + 1];
 }
 
 void Graph::get_mmp_edge_index(int v, unsigned int& l, unsigned int& r) const
@@ -238,26 +349,14 @@ void Graph::pattern_matching_aggressive_func_oc(const Schedule& schedule, Vertex
 
         unsigned int l, r;
         get_mmp_edge_index(load_v, l, r);
-        int *patch_merge_data = NULL;
-        int *input_data;
         int size = r-l;
         // if adj list not changed, directly used, else regenerate
-        if(false) {
-        // if (test(dirty_bit,load_v)) {
-            bandaid(patch_merge_data,load_v,size);
-            
-            clear(dirty_bit,load_v);
-            input_data = patch_merge_data;
-        }
-        else {
-            input_data = mmp_edge+l;
-        }
 
         
         bool is_zero = false;
         for (int prefix_id = schedule.get_last(depth); prefix_id != -1; prefix_id = schedule.get_next(prefix_id))
         {
-            vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, input_data, (int)size, prefix_id, load_v);
+            vertex_set[prefix_id].build_vertex_set(schedule, vertex_set, mmp_edge+l, (int)size, prefix_id, load_v);
             if( vertex_set[prefix_id].get_size() == 0) {
                 is_zero = true;
                 break;
@@ -269,7 +368,6 @@ void Graph::pattern_matching_aggressive_func_oc(const Schedule& schedule, Vertex
         pattern_matching_aggressive_func_oc(schedule, vertex_set, subtraction_set, tmp_set, local_ans, depth + 1);// @@@
 
         subtraction_set.pop_back(); // @@@
-        if (patch_merge_data != NULL) delete[] patch_merge_data;
         
     }
 

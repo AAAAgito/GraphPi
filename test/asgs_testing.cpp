@@ -2,9 +2,9 @@
 #include "dataloader.h"
 #include "common.h"
 
-std::string test_graph("orkut");
+// std::string test_graph("orkut");
 // std::string test_graph("friendster");
-// std::string test_graph("patents");
+std::string test_graph("patents");
 //single function test
 
 
@@ -12,8 +12,8 @@ TEST(testrunning, hello) {
     printf("hello world\n");
     std::cout << __cplusplus << std::endl;
     int test_size = 3*1000*1000;
-    int *p = new int[test_size];
     double t1 = get_wall_time();
+    int *p = new int[test_size];
     for (int i=0; i<test_size;i++) {
         p[i] = i;
     }
@@ -104,22 +104,22 @@ TEST(test_counting, oc) {
     printf("loaded %dv %llde\n",g.v_cnt,g.e_cnt);
 }
 
-// TEST(unit_test, generate_update_request) {
-//     std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/";
-//     graph_path.append(test_graph);
-//     Graph g(graph_path);
-//     g.memory_map();
-//     std::vector<int> insertion, deletion;
-//     g.generate_request(0.1,0.1,insertion,deletion);
+TEST(unit_test, generate_update_request) {
+    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/";
+    graph_path.append(test_graph);
+    Graph g(graph_path);
+    g.memory_map();
+    std::vector<int> insertion, deletion;
+    g.generate_request(0.1,0.1,insertion,deletion);
     
-//     printf("%ld %ld\n",insertion.size(),deletion.size());
-//     for (int i=0; i< (int)insertion.size()/2;i++) {
-//         ASSERT_LE(insertion[2*i],insertion[2*i+1]);
-//     }
-//     for (int i=0; i< (int)deletion.size()/2;i++) {
-//         ASSERT_LE(deletion[2*i],deletion[2*i+1]);
-//     }
-// }
+    printf("%ld %ld\n",insertion.size(),deletion.size());
+    for (int i=0; i< (int)insertion.size()/2;i++) {
+        ASSERT_LE(insertion[2*i],insertion[2*i+1]);
+    }
+    for (int i=0; i< (int)deletion.size()/2;i++) {
+        ASSERT_LE(deletion[2*i],deletion[2*i+1]);
+    }
+}
 
 // TEST(unit_test, verify_request) {
 //     std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/";
@@ -188,105 +188,109 @@ TEST(test_counting, oc) {
 
 // }
 
-// TEST(unit_test, update) {
-//     std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/";
-//     graph_path.append(test_graph);
-//     Graph g(graph_path);
-//     Graph g2(graph_path);
-//     g2.load_global_graph(graph_path);
-//     g.memory_map();
-//     printf("gsize: %d\n",g.g_ecnt);
-//     std::string insert_p(graph_path);
-//     insert_p.append("_insert.edge");
-//     std::string delete_p(graph_path);
-//     delete_p.append("_delete.edge");
-//     std::vector<int> ins_set, del_set;
+TEST(unit_test, update) {
+    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/";
+    graph_path.append(test_graph);
+    Graph g(graph_path);
+    Graph g2(graph_path);
+    g2.load_global_graph(graph_path);
+    g.memory_map();
+    printf("gsize: %d\n",g.g_ecnt);
+    std::string insert_p(graph_path);
+    insert_p.append("_insert.edge");
+    std::string delete_p(graph_path);
+    delete_p.append("_delete.edge");
+    std::vector<int> ins_set, del_set;
     
-//     int size = DataLoader::load_data_aggregate(del_set,insert_p);
-//     g.set_threads(1);
-//     printf("ingest size %d %d\n",ins_set.size(),del_set.size());
-//     double tg1 = get_wall_time();
-//     g.update(ins_set,del_set);
-//     double tg2 = get_wall_time();
-//     printf("\n update time: %.6lf\n", tg2 - tg1);
+    int size = DataLoader::load_data_aggregate(del_set,insert_p);
+    g.set_threads(40);
+    printf("ingest size %d %d\n",ins_set.size(),del_set.size());
+    double tg1 = get_wall_time();
+    g.update(ins_set,del_set);
+    double tg2 = get_wall_time();
+    printf("\n update time: %.6lf\n", tg2 - tg1);
     
-//     tg1 = get_wall_time();
-//     g.dump_v(0);
-//     tg2 = get_wall_time();
-//     printf("\n dump time: %.6lf\n", tg2 - tg1);
-//     int prev_ecnt = g.g_ecnt;
-//     for (int i=0; i<g.extra_v_cnt;i++) {
-//         int li,ld,ri,rd;
-//         li = g.mmp_patch_vertex[i];
-//         ld = g.mmp_patch_delete_vertex[i];
-//         if (i==g.extra_v_cnt-1) {
-//             ri = g.insert_cnt;
-//             rd = g.delete_cnt;
-//         }
-//         else {
-//             ri = g.mmp_patch_vertex[i+1];
-//             rd = g.mmp_patch_delete_vertex[i+1];
-//         }
-//         ASSERT_EQ(g.patch_vd[i].size(),rd-ld);
-//         for (int j=0;j<ri-li;j++) {
-//             ASSERT_EQ(g.patch_vi[i][j],g.mmp_patch_edge[j+li]);
-//         }
-//         for (int j=0;j<rd-ld;j++) {
-//             ASSERT_EQ(g.patch_vd[i][j],g.mmp_patch_delete_edge[j+ld]);
-//         }
-//     }
+    tg1 = get_wall_time();
+    g.dump_v(0);
+    tg2 = get_wall_time();
+    printf("\n dump time: %.6lf\n", tg2 - tg1);
+    // int prev_ecnt = g.g_ecnt;
+    // for (int i=0; i<g.extra_v_cnt;i++) {
+    //     int li,ld,ri,rd;
+    //     li = g.mmp_patch_vertex[i];
+    //     ld = g.mmp_patch_delete_vertex[i];
+    //     if (i==g.extra_v_cnt-1) {
+    //         ri = g.insert_cnt;
+    //         rd = g.delete_cnt;
+    //     }
+    //     else {
+    //         ri = g.mmp_patch_vertex[i+1];
+    //         rd = g.mmp_patch_delete_vertex[i+1];
+    //     }
+    //     ASSERT_EQ(g.patch_vd[i].size(),rd-ld);
+    //     for (int j=0;j<ri-li;j++) {
+    //         ASSERT_EQ(g.patch_vi[i][j],g.mmp_patch_edge[j+li]);
+    //     }
+    //     for (int j=0;j<rd-ld;j++) {
+    //         ASSERT_EQ(g.patch_vd[i][j],g.mmp_patch_delete_edge[j+ld]);
+    //     }
+    // }
 
-//     ASSERT_EQ(g.insert_cnt,0);
-//     ASSERT_EQ(g.delete_cnt,del_set.size());
-//     // printf("aaaa\n");
-//     double t1 = get_wall_time();
-//     g.refine_graph();
-//     double t2 = get_wall_time();
-//     printf("\nrefine time: %.6lf\n", t2 - t1);
+    // ASSERT_EQ(g.insert_cnt,0);
+    // ASSERT_EQ(g.delete_cnt,del_set.size());
+    // printf("aaaa\n");
+    double t1 = get_wall_time();
+    g.refine_graph();
+    double t2 = get_wall_time();
+    printf("\nrefine time: %.6lf\n", t2 - t1);
 
-//     g.free_map(g.g_fd);
-//     g.memory_map();
-//     printf("gsize: %d\n",g.g_ecnt);
-//     int now_ecnt = g.g_ecnt;
-//     ASSERT_EQ(del_set.size(),prev_ecnt-now_ecnt);
-//     for (int i=0; i<g.extra_v_cnt;i++) {
-//         unsigned int l,r,ll,rr;
-//         g2.get_edge_index(i,ll,rr);
-//         g.get_mmp_edge_index(i,l,r);
-//     }
+    g.free_map(g.g_fd);
+    g.memory_map();
+    printf("gsize: %d\n",g.g_ecnt);
+    int now_ecnt = g.g_ecnt;
+    // ASSERT_EQ(del_set.size(),prev_ecnt-now_ecnt);
+    for (int i=0; i<g.extra_v_cnt;i++) {
+        unsigned int l,r,ll,rr;
+        g2.get_edge_index(i,ll,rr);
+        g.get_mmp_edge_index(i,l,r);
+    }
 
-//     printf("update\n");
+    printf("update\n");
     
-//     int is = DataLoader::load_data_aggregate(ins_set,insert_p);
-//     int ds = DataLoader::load_data_aggregate(del_set,delete_p);
-//     g.update(ins_set,del_set);
+    int is = DataLoader::load_data_aggregate(ins_set,insert_p);
+    int ds = DataLoader::load_data_aggregate(del_set,delete_p);
+    tg1 = get_wall_time();
+    g.update(ins_set,del_set);
+    printf("ingest size2 %d %d\n",ins_set.size(),del_set.size());
+    tg2 = get_wall_time();
+    printf("\n dump time: %.6lf\n", tg2 - tg1);
     
-//     int ins_sum=0,del_sum=0;
-//     for (int i=0; i<g.g_vcnt;i++) {
-//         auto in = g.patch_vi[i];
-//         ins_sum += in.size();
-//         auto de = g.patch_vd[i];
-//         del_sum += de.size();
-//     }
-//     EXPECT_EQ(is, ins_sum);
-//     EXPECT_EQ(ds, del_sum);
+    int ins_sum=0,del_sum=0;
+    for (int i=0; i<g.g_vcnt;i++) {
+        auto in = g.patch_vi[i];
+        ins_sum += in.size();
+        auto de = g.patch_vd[i];
+        del_sum += de.size();
+    }
+    EXPECT_EQ(is, ins_sum);
+    EXPECT_EQ(ds, del_sum);
 
 
-//     g.dump_v(0);
-//     ASSERT_EQ(g.delete_cnt,del_set.size());
-//     ASSERT_EQ(g.insert_cnt,ins_set.size());
-//     t1 = get_wall_time();
-//     g.refine_graph();
-//     g.free_map(g.g_fd);
-//     t2 = get_wall_time();
-//     printf("\nrefine time: %.6lf\n", t2 - t1);
-//     g.memory_map();
-//     printf("gsize: %d\n",g.g_ecnt);
-//     ASSERT_EQ((int)g.g_ecnt-now_ecnt,(int)ins_set.size()-del_set.size());
+    g.dump_v(0);
+    ASSERT_EQ(g.delete_cnt,del_set.size());
+    ASSERT_EQ(g.insert_cnt,ins_set.size());
+    t1 = get_wall_time();
+    g.refine_graph();
+    g.free_map(g.g_fd);
+    t2 = get_wall_time();
+    printf("\nrefine time: %.6lf\n", t2 - t1);
+    g.memory_map();
+    printf("gsize: %d\n",g.g_ecnt);
+    ASSERT_EQ((int)g.g_ecnt-now_ecnt,(int)ins_set.size()-del_set.size());
 
-//     // test insertion
+    // test insertion
 
-// }
+}
 
 TEST(testMatching, match_in_patch) {
     Pattern tc_pattern(3);
@@ -298,7 +302,7 @@ TEST(testMatching, match_in_patch) {
     int performance_type = 2;
     int restricts_type = 2;
     int thread_num = 40;
-    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/orkut";
+    std::string graph_path = "/home/yanglaoyuan/AsyncSubGraphStorage/dataset/bin/patents";
 
     std::string insert_p(graph_path);
     insert_p.append("_insert.edge");
@@ -325,8 +329,8 @@ TEST(testMatching, match_in_patch) {
     p1.append("_patch.insert");
     std::string p2(graph_path);
     p2.append("_patch.delete");
-    g2.update_patch(p1,p2,inum,dnum);
     double t1 = get_wall_time();
+    g2.update_patch(p1,p2,inum,dnum);
     long oc_result = g2.pattern_matching_oca(tc_schedule, thread_num);
     double t2 = get_wall_time();
     printf("out of core time: %.6lf\n", t2 - t1);
@@ -341,7 +345,7 @@ TEST(testMatching, match_in_partition_c) {
     tc_pattern.add_edge(0, 1);
     tc_pattern.add_edge(1, 2);
     tc_pattern.add_edge(2, 0);
-    Pattern house(House);
+    // Pattern house(House);
 
     // setting
     bool is_pattern_valid;
