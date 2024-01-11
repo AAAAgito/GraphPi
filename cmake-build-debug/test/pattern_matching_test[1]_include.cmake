@@ -1,5 +1,0 @@
-if(EXISTS "/mnt/d/Github/GraphPi/cmake-build-debug/test/pattern_matching_test[1]_tests.cmake")
-  include("/mnt/d/Github/GraphPi/cmake-build-debug/test/pattern_matching_test[1]_tests.cmake")
-else()
-  add_test(pattern_matching_test_NOT_BUILT pattern_matching_test_NOT_BUILT)
-endif()

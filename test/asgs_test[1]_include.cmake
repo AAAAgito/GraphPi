@@ -1,5 +1,0 @@
-if(EXISTS "/mnt/d/Github/GraphPi/test/asgs_test[1]_tests.cmake")
-  include("/mnt/d/Github/GraphPi/test/asgs_test[1]_tests.cmake")
-else()
-  add_test(asgs_test_NOT_BUILT asgs_test_NOT_BUILT)
-endif()

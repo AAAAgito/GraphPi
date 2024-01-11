@@ -1,1 +1,0 @@
-mpicxx  -fopenmp  -O0 -Wall -g -ggdb -fopenmp CMakeFiles/asgs_test.dir/gtest_main.cpp.o CMakeFiles/asgs_test.dir/asgs_testing.cpp.o -o ../bin/asgs_test  -Wl,-rpath,/mnt/d/Github/GraphPi/libs /usr/local/lib/libgtest.a ../libs/libgraph_mining.so -lpthread -lgomp 

@@ -1,5 +1,0 @@
-if(EXISTS "/mnt/d/Github/GraphPi/cmake-build-debug/test/graph_mining_test[1]_tests.cmake")
-  include("/mnt/d/Github/GraphPi/cmake-build-debug/test/graph_mining_test[1]_tests.cmake")
-else()
-  add_test(graph_mining_test_NOT_BUILT graph_mining_test_NOT_BUILT)
-endif()

@@ -1,7 +1,0 @@
-/mnt/d/Github/GraphPi/src/CMakeFiles/graph_mining.dir
-/mnt/d/Github/GraphPi/src/CMakeFiles/run_general_tc.dir
-/mnt/d/Github/GraphPi/src/CMakeFiles/run_mpi_trivial.dir
-/mnt/d/Github/GraphPi/src/CMakeFiles/schedule_printer.dir
-/mnt/d/Github/GraphPi/src/CMakeFiles/restricts_printer.dir
-/mnt/d/Github/GraphPi/src/CMakeFiles/edit_cache.dir
-/mnt/d/Github/GraphPi/src/CMakeFiles/rebuild_cache.dir

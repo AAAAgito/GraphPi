@@ -1,1 +1,0 @@
-mpicxx  -fopenmp  -O0 -Wall -g -ggdb -fopenmp CMakeFiles/run_general_tc.dir/run_general_tc.cpp.o -o ../bin/run_general_tc  -Wl,-rpath,/mnt/d/Github/GraphPi/libs ../libs/libgraph_mining.so 

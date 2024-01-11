@@ -19,6 +19,8 @@ ADD_LIBRARY(graph_mining SHARED ${GraphMiningSrc})
 ADD_EXECUTABLE(export_graph export_graph.cpp)
 TARGET_LINK_LIBRARIES(export_graph graph_mining)
 
+ADD_EXECUTABLE(pattern_match pattern_match.cpp)
+TARGET_LINK_LIBRARIES(pattern_match graph_mining)
 
 ADD_EXECUTABLE(graph_client graph_client.cpp)
 TARGET_LINK_LIBRARIES(graph_client graph_mining)
