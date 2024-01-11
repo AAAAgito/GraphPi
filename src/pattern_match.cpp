@@ -4,6 +4,8 @@
 #include <iostream>
 #include "pattern.h"
 #include <fstream>
+#include <sys/resource.h>
+#include <unistd.h>
 
 void init(Graph &g) {
     for (int i = 0; i < g.g_vcnt - 1; i++) {
@@ -19,6 +21,16 @@ int main(int argc, char **argv){
         printf("param err\n");
         return 0;
     }
+    // struct rlimit rl;
+    // // Set the limit, in bytes
+    // rl.rlim_cur = 1024 * 1024 * 10; // 50 MB
+    // rl.rlim_max = 1024 * 1024 * 20; // 100 MB
+
+    // // Apply the limit
+    // if (setrlimit(RLIMIT_RSS, &rl) == -1) {
+    //     perror("setrlimit");
+    //     return 1;
+    // }
     const char *graph_p = argv[1];
     int query = std::atoi(argv[2]);
     int setting = std::atoi(argv[3]);
@@ -38,13 +50,14 @@ int main(int argc, char **argv){
     
     int fd = g.memory_map();
     init(g);
-    g.load_global_graph(graph_path);
+    // g.load_global_graph(graph_path);
     g.available_threads = enable_thread;
     bool valid;
     Schedule s(p, valid, 2, 2, false, g.g_vcnt, g.g_ecnt,0);
     double t1 = get_wall_time();
-    unsigned long long res = g.pattern_matching(s,enable_thread);
+    unsigned long long res = g.pattern_matching_oc(s,enable_thread);
     double t2 = get_wall_time();
+    // res = g.pattern_matching(s,enable_thread);
     printf("%lld, %.6lf\n",res, t2 - t1);
     g.free_map(fd);
 }
