@@ -34,8 +34,11 @@ void Graph::to_global_csr(const std::string &path) {
         v_order.push_back(v_order.size());
         cursor+= len;
     }
-    DataLoader::gen_partition_file(v_cnt,e_cnt,vtx_offset.data(),edges.data(),path);
-    std::string graph_size(path);
+    vtx_offset.push_back(e_cnt);
+    std::string csr_path(path);
+    csr_path.append("_csr");
+    DataLoader::gen_partition_file(v_cnt+1,e_cnt,vtx_offset.data(),edges.data(),csr_path);
+    std::string graph_size(csr_path);
     // printf("%d %d %s\n",v_cnt,e_cnt,path.c_str());
     graph_size.append(".size");
     DataLoader::gen_data_size(v_cnt,e_cnt,graph_size);

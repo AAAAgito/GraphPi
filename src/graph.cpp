@@ -135,8 +135,14 @@ void Graph::get_large_mmp_edge_index(int v, size_t& l, size_t& r) const
 void Graph::get_mmp_edge_index(int v, unsigned int& l, unsigned int& r) const
 {
     l = mmp_vertex[v];
-    if (v == g_vcnt -1) r = g_ecnt;
-    else r = mmp_vertex[v + 1];
+    // if (v == g_vcnt -1) r = g_ecnt;
+    // else r = mmp_vertex[v + 1];
+    r = mmp_vertex[v+1];
+
+    // // prefetch
+    // if (KMD[2*v]!=-1) {
+    //     madvise(mmp_edge+KMD[2*v],KMD[2*v+1],MADV_WILLNEED);
+    // }
 }
 
 void Graph::get_mmp_patch_edge_index(int v, unsigned int& l, unsigned int& r) const
@@ -634,5 +640,207 @@ void Graph::pattern_matching_func(const Schedule& schedule, VertexSet* vertex_se
         subtraction_set.push_back(vertex);
         pattern_matching_func(schedule, vertex_set, subtraction_set, local_ans, depth + 1, clique);
         subtraction_set.pop_back();
+    }
+}
+
+void Graph::Sampling_exploring(std::vector<std::vector<int>> &edge_list, std::map<int,int> &cc, std::unordered_set<int> & bin, double rate, int depth) {
+    double t1 = get_wall_time2();
+    std::random_device e; 
+    int v=0;
+    srand(time(NULL));
+    printf("rate %.6lf\n",rate);
+    std::vector<int> sample_vertex_degree(g_vcnt,0);
+    int sample_ecnt;
+    for(unsigned int i=0; i<g_ecnt;i++) {
+        if (v!= g_vcnt && i >= mmp_vertex[v+1]) {
+            v+=1;
+        }
+        if (mmp_edge[i] > v) continue;
+        double roll = (double)(rand()/(double)RAND_MAX);
+        // printf("roll %.6lf %.6lf\n",roll,rate);
+        if (roll < rate) {
+            edge_list[v].push_back(mmp_edge[i]);
+            edge_list[mmp_edge[i]].push_back(v);
+            sample_vertex_degree[v]+=1;
+            sample_vertex_degree[mmp_edge[i]]+=1;
+        }
+    }
+    printf("collected done\n");
+    // printf("sample edge %d\n",sample_edges.size());
+    std::vector<bool> visited(g_vcnt,false);
+    for (int v=0; v<g_vcnt; v++){
+        if (sample_vertex_degree[v] > 0 && !visited[v]) {
+            bin.insert(v);
+            visited[v]=true;
+        }
+    }
+    
+        
+    double t2 = get_wall_time2();
+    printf("Function Sampling Times: %.6lf Bin %d\n", t2 - t1,bin.size());
+}
+
+void Graph::Gathering(int repeat, double rate, int depth, int threshold) {
+    double t1 = get_wall_time2();
+    std::unordered_map<int,int> counter;
+    std::map<int,int> cc;
+    std::vector<std::vector<int>> edge_list;
+    edge_list.resize(g_vcnt);
+    for(int i=0; i< repeat; i++) {
+        std::unordered_set<int> bin;
+        Sampling_exploring(edge_list, cc, bin, rate, depth);
+        
+        for (auto j : bin) {
+            if (counter.find(j)==counter.end()) counter[j]=0;
+            else counter[j]+=1;
+        }
+    }
+    std::unordered_set<int> set;
+    for (int i=0; i<repeat; i++) {
+        for (auto j: counter) {
+            if(j.second < threshold) continue;
+            set.insert(j.first);
+        }
+    }
+    
+    ConnectedComponent(edge_list,set,cc);
+    printf("collected done %d\n",set.size());
+    
+    for (auto& element : Bins) {
+        element = -1;
+    }
+    Disk_benchmark();
+
+    int component=0;
+    for (auto a:cc) {
+        component=std::max(a.second,component);
+    }
+    for(auto c : set) {
+        Bins[c]=cc[c];
+    }
+    Advise_Translation(component);
+    double t2 = get_wall_time2();
+    printf("Function Gathering Times: %.6lf\n", t2 - t1);
+}
+
+int Graph::ConnectedComponent(std::vector<std::vector<int>> &edge_list, const std::unordered_set<int> &set, std::map<int,int> &cc) {
+    double t1 = get_wall_time2();
+    std::unordered_map<int,bool> visited;
+    // for (auto v: edge_list) {
+    //     if (v.size()>10)
+    //         printf("vsize %d\n",v.size());
+    // }
+    for(auto j:set) {
+        visited[j]=false;
+    }
+    int component=0;
+    // printf("v0 %d\n",edge_list[0].size());
+    for (auto j : set) {
+        // printf("visiting\n");
+        if(!visited[j]) {
+            std::stack<int> dfs;
+            visited[j]=true;
+            dfs.push(j);
+            cc[j]=component;
+            while (!dfs.empty()){
+                int vtx = dfs.top();
+                dfs.pop();
+                for (auto e : edge_list[vtx]){
+                    if (visited[e] || set.find(e)==set.end()){
+                        continue;
+                    }
+                    visited[e]=true;
+                    dfs.push(e);
+                    cc[e]=cc[j];
+                }
+
+            }
+            component+=1;
+        }
+    }
+    double t2 = get_wall_time2();
+    
+    printf("Function CC Times: %.6lf\n", t2 - t1);
+    return component;
+}
+
+void Graph::Advise_Translation(int component) {
+    double t1 = get_wall_time2();
+    reading.resize(component);
+    printf("component %d\n",component);
+    for (int c=0; c<component; c++) {
+        int cc_num=0;
+        unsigned int prev_start=0,prev_end=0;
+        printf("cur com %d\n",c);
+        for (int v=0; v< g_vcnt;v++) {
+            if (Bins[v]!=c) continue;
+            // printf("v %d\n",v);
+            cc_num+=1;
+            // initial case
+            if (prev_end==0) {
+                get_mmp_edge_index(v,prev_start,prev_end);
+                reading[c].push_back(interval{prev_start,prev_end});
+                continue;
+            }
+            unsigned int present_start,present_end;
+            get_mmp_edge_index(v,present_start,present_end);
+            double sequential_speed = (present_start-prev_start)*4/system_disk.sequential_read;
+            double split= 1/system_disk.iops + (prev_end-prev_start)*4/ system_disk.sequential_read;
+            if (split < sequential_speed) {
+                prev_start=present_start;
+                prev_end=present_end;
+                // reading[c].push_back(interval{prev_start,prev_end});
+            }
+            else {
+                prev_end = present_end;
+                // reading[c].back().end = prev_end;
+            }
+        }
+        printf("Advise length %d cc num:%d\n",reading[c].size(),cc_num);
+    }
+    double t2 = get_wall_time2();
+    
+    printf("Function Advise Times: %.6lf\n", t2 - t1);
+}
+
+void Graph::Disk_benchmark() {
+    system_disk.iops=98,000;
+    system_disk.sequential_read=550,000,000;
+}
+
+void Graph::KMeasureDecompose(double density_threshold, int adt) {
+    // available_degree_threshold
+    KMD = new unsigned int[2*g_vcnt];
+    printf("gvcnt %d\n",g_vcnt);
+    for (int v=0; v < g_vcnt; v++) {
+        KMD[2*v] = -1;
+        unsigned int l,r;
+        l=mmp_vertex[v];
+        r=mmp_vertex[v+1];
+        assert(r>l);
+        if (r-l < adt) continue;
+        unsigned int density_index=l;
+        double density=0.0;
+        for (unsigned int w=l; w < r-adt; w++) {
+            double cal = (double)adt/(double)(mmp_edge[w+adt]-mmp_edge[w]);
+            if (density < cal) {
+                density = cal;
+                density_index=w;
+            }
+        }
+        int radius = adt;
+        if (density < density_threshold) continue;
+        while (density_index>l && density_index < r-radius-1)
+        {
+            double cal_l = (radius+1)/(mmp_edge[density_index-1]-mmp_edge[density_index+radius]);
+            double cal_r = (radius+1)/(mmp_edge[density_index]-mmp_edge[density_index+radius+1]);
+            if (cal_l < density_threshold && cal_r < density_threshold) break;
+            radius+=1;
+            if (cal_r < cal_l) {
+                density_index-=1;
+            }
+        }
+        KMD[2*v] = density_index;
+        KMD[2*v+1] = radius;
     }
 }

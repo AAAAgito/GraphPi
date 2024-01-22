@@ -25,14 +25,12 @@ int Graph::memory_map() {
     DataLoader::load_data_size(g_vcnt,g_ecnt,graph_size);
     
     int fd = open(raw_data_path.c_str(),O_RDWR);
-    mem = static_cast<int*>(mmap(NULL, (g_vcnt+g_ecnt)*sizeof(int), PROT_READ, MAP_SHARED ,fd,0));
+    mem = static_cast<int*>(mmap(NULL, (g_vcnt+1+g_ecnt)*sizeof(int), PROT_READ, MAP_SHARED ,fd,0));
     mmp_vertex = (unsigned int *)mem;
-    mmp_edge = mem+g_vcnt;
-    extra_v_cnt = g_vcnt;
-    if (bitmap!=NULL) delete[] bitmap;
-    bitmap = new bool[g_vcnt];
-    memset(bitmap,0,g_vcnt);
+    mmp_edge = mem+g_vcnt+1;
     g_fd = fd;
+    // Before accessing specific regions// After mmap
+    madvise(mmp_edge, g_ecnt*sizeof(int), MADV_RANDOM);
     return fd;
 }
 

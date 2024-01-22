@@ -10,10 +10,12 @@
 #include <omp.h>
 #include <memory>
 #include <unordered_map>
+#include <unordered_set>
 #include <sys/time.h>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <random>
 
 class Graphmpi;
 
@@ -27,6 +29,23 @@ struct pair
 class GraphTask {
 public:
 
+};
+
+
+struct interval
+{
+    unsigned int start;
+    unsigned int end;
+    /* data */
+};
+
+class DiskConfig {
+public:
+    int random_read;
+    int sequential_read;
+    int random_write;
+    int sequential_write;
+    int iops;
 };
 
 class Graph {
@@ -87,6 +106,10 @@ public:
     int back_fd;
     int g_fd;
 
+    
+
+    unsigned int *KMD=NULL;
+
     Graph(std:: string path = "/home/yanglaoyuan/AsyncSubGraphStorage/docker_graphPi/bin/") {
         v_cnt = 0;
         e_cnt = 0;
@@ -105,6 +128,8 @@ public:
     ~Graph() {
         delete[] edge;
         delete[] vertex;
+        if (KMD!=NULL)
+            delete[] KMD;
     }
 
     size_t intersection_size_clique(int v1,int v2);
@@ -188,8 +213,18 @@ public:
     
     int clear(int *p, int i) {return p[i >> SHIFT] & ~(1 << (i & MASK));}
 
+    void Gathering(int repeat, double rate, int depth, int threshold);
+
+    void KMeasureDecompose(double density_threshold, int adt);
+
 private:
     friend Graphmpi;
+
+    std::vector<int> Bins;
+
+    std::vector<std::vector<interval>> reading;
+
+    DiskConfig system_disk;
 
     void pattern_matching_mmap_func(const Schedule& schedule, VertexSet* vertex_set, VertexSet& subtraction_set, VertexSet& tmp_set, long long& local_ans, int depth);
     
@@ -206,4 +241,12 @@ private:
         }
         return (double)time.tv_sec + (double)time.tv_usec * 0.000001;
     }
+
+    void Sampling_exploring(std::vector<std::vector<int>> &edge_list, std::map<int,int> &cc, std::unordered_set<int> & bin, double rate, int depth);
+
+    int ConnectedComponent(std::vector<std::vector<int>> &edge_list, const std::unordered_set<int> &set, std::map<int,int> &cc);
+
+    void Advise_Translation(int);
+
+    void Disk_benchmark();
 };
