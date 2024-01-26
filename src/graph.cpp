@@ -173,6 +173,11 @@ long long Graph::pattern_matching(const Schedule& schedule, int thread_count, bo
 #pragma omp for schedule(dynamic) nowait
         for (int vertex_id = 0; vertex_id < v_cnt; vertex_id++)
         {
+            // do prefetch
+            if (do_prefetch){
+                int pref_v=vertex_id+thread_count;
+                madvise(mmp_edge+KMD[2*pref_v],KMD[2*pref_v+1],MADV_WILLNEED);
+            }
             unsigned int l,r;
             int vtx = vertex_id;
             get_edge_index(vtx,l,r);
@@ -205,6 +210,11 @@ long long Graph::pattern_matching_oc(const Schedule& schedule, int thread_count,
 #pragma omp for schedule(dynamic) nowait
         for (int vertex_id = 0; vertex_id < g_vcnt; vertex_id++)
         {
+            if (do_prefetch){
+                int pref_v=vertex_id+prefetch_interval;
+                if (pref_v < g_vcnt)
+                    madvise(mmp_edge+KMD[2*pref_v],KMD[2*pref_v+1],MADV_WILLNEED);
+            }
             unsigned int l,r;
             int vtx = vertex_id;
             get_mmp_edge_index(vtx,l,r);
@@ -808,39 +818,66 @@ void Graph::Disk_benchmark() {
     system_disk.sequential_read=550,000,000;
 }
 
-void Graph::KMeasureDecompose(double density_threshold, int adt) {
+void Graph::KMeasureDecompose(double density_threshold, double threshold) {
+    // density = degree of useful / total space
     // available_degree_threshold
     KMD = new unsigned int[2*g_vcnt];
     printf("gvcnt %d\n",g_vcnt);
+    
+#pragma omp parallel for
     for (int v=0; v < g_vcnt; v++) {
+        // printf("%d\n",v);
         KMD[2*v] = -1;
         unsigned int l,r;
         l=mmp_vertex[v];
         r=mmp_vertex[v+1];
+        unsigned int adt = std::floor(threshold*(r-l));
+        if (adt==0) continue;
         assert(r>l);
-        if (r-l < adt) continue;
         unsigned int density_index=l;
         double density=0.0;
+        unsigned int useful_space=0;
+        // printf("%lld\n",r-adt);
         for (unsigned int w=l; w < r-adt; w++) {
-            double cal = (double)adt/(double)(mmp_edge[w+adt]-mmp_edge[w]);
+            int sum=0;
+            for (unsigned int m=0;m<adt;m++) {
+                // contained vertex ids
+                int neighbor = mmp_edge[w+m];
+                sum += mmp_vertex[neighbor+1]-mmp_vertex[neighbor];
+            }
+            int start_v = mmp_edge[w];
+            int end_v = mmp_edge[w+adt-1];
+            assert(w+adt-1 < r);
+            assert(w+adt -1 >= l);
+            assert(start_v <= end_v);
+            unsigned int radius = mmp_vertex[end_v+1]-mmp_vertex[start_v];
+            double cal = (double)sum/(double)radius;
+            assert(cal <= 1.0);
             if (density < cal) {
                 density = cal;
                 density_index=w;
+                useful_space = radius;
             }
         }
-        int radius = adt;
         if (density < density_threshold) continue;
-        while (density_index>l && density_index < r-radius-1)
-        {
-            double cal_l = (radius+1)/(mmp_edge[density_index-1]-mmp_edge[density_index+radius]);
-            double cal_r = (radius+1)/(mmp_edge[density_index]-mmp_edge[density_index+radius+1]);
-            if (cal_l < density_threshold && cal_r < density_threshold) break;
-            radius+=1;
-            if (cal_r < cal_l) {
-                density_index-=1;
-            }
-        }
+        // while (density_index>l && density_index < r-radius-1)
+        // {
+        //     int start_v = mmp_edge[density_index];
+        //     int left_explore_v = mmp_edge[density_index-1];
+        //     int right_explore_v = mmp_edge[density_index+radius];
+
+        //     double cal_l = (useful_space + mmp_vertex[left_explore_v+1] - mmp_vertex[left_explore_v]) / (mmp_vertex[start_v+radius]-mmp_vertex[left_explore_v]);
+        //     double cal_r = (useful_space + mmp_vertex[right_explore_v+1] - mmp_vertex[right_explore_v]) / (mmp_vertex[start_v+radius+1]-mmp_vertex[start_v]);
+        //     if (cal_l < density_threshold && cal_r < density_threshold) break;
+        //     radius+=1;
+        //     if (cal_r < cal_l) {
+        //         density_index-=1;
+        //         useful_space += mmp_vertex[left_explore_v+1] - mmp_vertex[left_explore_v];
+        //     } else {
+        //         useful_space += mmp_vertex[right_explore_v+1] - mmp_vertex[right_explore_v];
+        //     }
+        // }
         KMD[2*v] = density_index;
-        KMD[2*v+1] = radius;
+        KMD[2*v+1] = useful_space;
     }
 }

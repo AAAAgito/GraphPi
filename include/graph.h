@@ -73,6 +73,10 @@ public:
     int *edge; // edges
     unsigned int *vertex; // v_i's neighbor is in edge[ vertex[i], vertex[i+1]-1]
 
+    int doing_v;
+    bool do_prefetch;
+    int prefetch_interval;
+
     int *mem;
     int *mmp_edge;
     unsigned int *mmp_vertex;
@@ -173,6 +177,8 @@ public:
 
     void to_global_csr(const std::string& path);
 
+    void to_global_csr_random_weight(const std::string& path);
+
     void load_global_graph(const std::string &path);
 
     void get_edge_index(int v, unsigned int& l, unsigned int& r) const;
@@ -215,7 +221,7 @@ public:
 
     void Gathering(int repeat, double rate, int depth, int threshold);
 
-    void KMeasureDecompose(double density_threshold, int adt);
+    void KMeasureDecompose(double density_threshold, double threshold);
 
 private:
     friend Graphmpi;

@@ -18,7 +18,7 @@ void init(Graph &g) {
 }
 int main(int argc, char **argv){
     
-    if (argc < 2) {
+    if (argc < 8) {
         printf("param err\n");
         return 0;
     }
@@ -38,8 +38,11 @@ int main(int argc, char **argv){
     const char *graph_p = argv[1];
     int query = std::atoi(argv[2]);
     // 0: mmap(), 1: mmap() with prefetch, 2: load into memory
-    int optimization_setting = std::atoi(argv[3]);
+    int do_prefetch = std::atoi(argv[3]);
     int enable_thread = std::atoi(argv[4]);
+    double threshold = std::atof(argv[5]);
+    double density = std::atof(argv[6]);
+    int interval = std::atoi(argv[7]);
     
     PatternType t[5];
     t[0]=P1;
@@ -55,15 +58,20 @@ int main(int argc, char **argv){
     
     int fd = g.memory_map();
     init(g);
-    int avg_degree = 30;
-    // double rate = 0.5/avg_degree;
-    // // g.Gathering(5,rate,1,4);
-    g.KMeasureDecompose(0.1,2*avg_degree);
+    g.do_prefetch = do_prefetch==1;
+    g.prefetch_interval = interval;
+    g.KMeasureDecompose(density,threshold);
     int count=0;
+    int sum=0;
+    unsigned int max=0;
     for (int i=0;i<g.g_vcnt;i++) {
-        if (g.KMD[2*i]!=-1) count+=1;
+        if (g.KMD[2*i]!=-1) {
+            count+=1;
+            sum+=g.KMD[2*i+1];
+            max = std::max(max,g.KMD[2*i+1]);
+        }
     }
-    printf("KMD count %d\n",count);
+    printf("KMD count %d %d %lld\n",count, sum/count, max);
     // g.load_global_graph(graph_path);
     g.available_threads = enable_thread;
     bool valid;

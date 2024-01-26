@@ -44,6 +44,38 @@ void Graph::to_global_csr(const std::string &path) {
     DataLoader::gen_data_size(v_cnt,e_cnt,graph_size);
 }
 
+void Graph::to_global_csr_random_weight(const std::string &path) {
+    std::vector<int> vid, edges, v_order;
+    std::vector<unsigned int> vtx_offset;
+    unsigned int cursor = 0;
+    for (int i=0; i< v_cnt; i++) {
+        std::vector<int> local_edges;
+        int len;
+        if (i == v_cnt - 1) len = e_cnt - vertex[i];
+        else len = vertex[i+1] - vertex[i];
+        for (int j = 0; j < len; j++) local_edges.push_back(edge[vertex[i]+j]);
+        std::sort(local_edges.begin(), local_edges.end());
+        for (auto j : local_edges) edges.push_back(j);
+        vtx_offset.push_back(cursor);
+        vid.push_back(i);
+        v_order.push_back(v_order.size());
+        cursor+= len;
+    }
+    vtx_offset.push_back(e_cnt);
+    std::string csr_path(path);
+    csr_path.append("_csr");
+    for (size_t i=0;i<e_cnt;i++) {
+        edges.push_back(rand()%100);
+    }
+    assert(edges.size()==2*e_cnt);
+    assert(vtx_offset.size()==v_cnt+1);
+    DataLoader::gen_partition_file(v_cnt+1,edges.size(),vtx_offset.data(),edges.data(),csr_path);
+    std::string graph_size(csr_path);
+    // printf("%d %d %s\n",v_cnt,e_cnt,path.c_str());
+    graph_size.append(".size");
+    DataLoader::gen_data_size(v_cnt,e_cnt,graph_size);
+}
+
 void Graph::load_global_graph(const std::string &path) {
     std::string graph_size(path);
     graph_size.append(".size");
